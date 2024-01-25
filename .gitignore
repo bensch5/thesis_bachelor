@@ -1,3 +1,4 @@
+# pdflatex
 *.acn
 *.aux
 *.glo
@@ -9,9 +10,14 @@
 *.slo
 *.toc
 
+# makeglossaries
 *.acr
 *.alg
 *.glg
 *.gls
 *.slg
 *.sls
+
+# bibtex
+*.bbl
+*.blg
