@@ -1,11 +1,74 @@
 % Encoding: UTF-8
+@article{1_merrell,
+author = {Merrell, Paul},
+title = {Example-Based Procedural Modeling Using Graph Grammars},
+year = {2023},
+issue_date = {August 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {42},
+number = {4},
+issn = {0730-0301},
+url = {https://doi.org/10.1145/3592119},
+doi = {10.1145/3592119},
+abstract = {We present a method for automatically generating polygonal shapes from an example using a graph grammar. Most procedural modeling techniques use grammars with manually created rules, but our method can create them automatically from an example. Our graph grammars generate graphs that are locally similar to a given example. We disassemble the input into small pieces called primitives and then reassemble the primitives into new graphs. We organize all possible locally similar graphs into a hierarchy and find matching graphs within the hierarchy. These matches are used to create a graph grammar that can construct every locally similar graph. Our method generates graphs using the grammar and then converts them into a planar graph drawing to produce the final shape.},
+journal = {ACM Trans. Graph.},
+month = {jul},
+articleno = {60},
+numpages = {16},
+keywords = {local similarity, graph grammar, inverse procedural modeling}
+}
 
-@book{adams1995douglas,
-  title={Douglas Adams Trilogy/Hitchhiker's Guide to Galaxy/Restaurant at the End of the Universe/Life, the Universe and Everything},
-  author={Adams, D.},
-  isbn={9780345397041},
-  url={https://books.google.de/books?id=bMWkPQAACAAJ},
-  year={1995},
-  publisher={Random House Incorporated}
+@inproceedings{3_bokeloh_et_al,
+author = {Bokeloh, Martin and Wand, Michael and Seidel, Hans-Peter},
+title = {A connection between partial symmetry and inverse procedural modeling},
+year = {2010},
+isbn = {9781450302104},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1833349.1778841},
+doi = {10.1145/1833349.1778841},
+abstract = {In this paper, we address the problem of inverse procedural modeling: Given a piece of exemplar 3D geometry, we would like to find a set of rules that describe objects that are similar to the exemplar. We consider local similarity, i.e., each local neighborhood of the newly created object must match some local neighborhood of the exemplar. We show that we can find explicit shape modification rules that guarantee strict local similarity by looking at the structure of the partial symmetries of the object. By cutting the object into pieces along curves within symmetric areas, we can build shape operations that maintain local similarity by construction. We systematically collect such editing operations and analyze their dependency to build a shape grammar. We discuss how to extract general rewriting systems, context free hierarchical rules, and grid-based rules. All of this information is derived directly from the model, without user interaction. The extracted rules are then used to implement tools for semi-automatic shape modeling by example, which are demonstrated on a number of different example data sets. Overall, our paper provides a concise theoretical and practical framework for inverse procedural modeling of 3D objects.},
+booktitle = {ACM SIGGRAPH 2010 Papers},
+articleno = {104},
+numpages = {10},
+keywords = {modeling by example, inverse procedural modeling, geometry synthesis},
+location = {Los Angeles, California},
+series = {SIGGRAPH '10}
+}
+
+@ARTICLE{5_van_der_linden_et_al,
+author={van der Linden, Roland and Lopes, Ricardo and Bidarra, Rafael},
+journal={IEEE Transactions on Computational Intelligence and AI in Games}, 
+title={Procedural Generation of Dungeons}, 
+year={2014},
+volume={6},
+number={1},
+pages={78-89},
+doi={10.1109/TCIAIG.2013.2290371}}
+
+@inproceedings{9_togelius_et_al,
+author = {Togelius, Julian and Kastbjerg, Emil and Schedl, David and Yannakakis, Georgios N.},
+title = {What is procedural content generation? Mario on the borderline},
+year = {2011},
+isbn = {9781450308724},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2000919.2000922},
+doi = {10.1145/2000919.2000922},
+abstract = {We try to clarify the concept of procedural content generation (PCG) through contrasting it to other forms of content generation in games with which it could easily be mistaken, and through discussing some properties of PCG which are sometimes thought of as necessary but are actually not. After drawing up some clear demarcations for what is and what is not PCG, we present two versions of a content generation system for Infinite Mario Bros which is intentionally designed to question these same demarcations. We argue that, according to our own definition, one version of the system is an example of PCG while the other is not, even though they are mostly identical. We hope that this paper answers some questions but raises others, and inspires researchers and developers to thread some less common ground in developing content generation techniques.},
+booktitle = {Proceedings of the 2nd International Workshop on Procedural Content Generation in Games},
+articleno = {3},
+numpages = {6},
+location = {Bordeaux, France},
+series = {PCGames '11}
+}
+
+@ARTICLE{10_freiknecht,
+author = {Freiknecht, Jonas},
+title = {Procedural content generation for games},
+year = {2021},
+url = {https://madoc.bib.uni-mannheim.de/59000},
+numpages = {149}
 }
 
