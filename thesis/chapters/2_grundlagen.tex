@@ -1,8 +1,9 @@
 % @author Benjamin Schröder
 %
 \chapter{Grundlagen}
-In diesem Kapitel werden einige grundlegende Konzepte als auch Verfahren der prozeduralen Generierung vorgestellt, welche zum
-Verständnis dieser Arbeit beitragen.
+In diesem Kapitel werden einige grundlegende Konzepte behandelt, welche zum Verständnis dieser Arbeit beitragen. Zunächst wird
+erklärt, was genau unter dem Begriff der prozeduralen Generierung zu verstehen ist, woraufhin einige der fundamentalen Verfahren
+vorgestellt werden.
 
 \section{Prozedurale Generierung}
 Prozedurale Generierung, oft auch \gls{ac:pcg}, beschreibt eine Menge von Verfahren zum
@@ -56,26 +57,44 @@ Grafikkarten und Prozessoren auch zu einem immer größeren Vorteil. \cite{17_la
 
 Perlin Noise kann für eine beliebige Anzahl an Dimensionen berechnet werden. Dazu wird der n-dimensionale Raum in eine reguläre gitterartige
 Struktur aufgespalten. Die Punkte auf dem Gitter sind dabei all jene, die an ausschließlich ganzzahligen Koordinaten liegen. Im zweidimensionalen
-Raum also die Menge an Punkten \(\{(x, y) \| x, y \in \mathbb{N}\}\). Alle anderen Punkte im Raum befinden sich dann jeweils innerhalb
+Raum wäre dies also die Menge an Punkten \(\{(x, y) \ \| \ x, y \in \mathbb{N}\}\). Alle anderen Punkte im Raum befinden sich dann jeweils innerhalb
 einer der von den Gitterpunkten aufgespannten Zellen.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\imgHeight]{images/noise_example.png}
-    \caption{example thingy}
-    \label{fig:noise_example}
+    \includegraphics[height=\imgHeight]{images/noise_cell.png}
+    \caption{Beispiel einer Gitterzelle im 2D}
+    \label{fig:noise_cell}
 \end{figure}
 
-Jeder der Gitterpunkte bekommt außerdem einen pseudozufälligen Gradienten (Richtungsvektor der Länge 1) zugeordnet. Soll jetzt der Noise-Wert
-für einen Punkt im Raum berechnet werden, werden zunächst die Eckpunkte der betroffenen Zelle, inklusive der zugeordneten Gradienten ermittelt.
-Außerdem werden die Vektoren berechnet, die von den Eckpunkten in Richtung des aktuellen Punktes zeigen. Anschließend wird dann für jeden Eckpunkt
+Jeder der Gitterpunkte bekommt außerdem einen pseudozufälligen Gradienten (Richtungsvektor der Länge 1) zugeordnet.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[height=\imgHeight]{images/noise_gradient.png}
+    \caption{Pseudozufällige Gradienten für die Eckpunkte einer Zelle im 2D}
+    \label{fig:noise_gradient}
+\end{figure}
+
+Soll jetzt der Noise-Wert
+für einen Punkt im Raum berechnet werden, werden zunächst die Eckpunkte der betroffenen Zelle und deren zugeordnete Gradienten ermittelt.
+Außerdem werden die Vektoren berechnet, die von den Eckpunkten in Richtung des aktuellen Punktes zeigen.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[height=\imgHeight]{images/noise_vectors.png}
+    \caption{Vektoren von den Eckpunkten zu einem Punkt im Inneren einer Zelle im 2D}
+    \label{fig:noise_vectors}
+\end{figure}
+
+Anschließend wird dann für jeden Eckpunkt
 das Skalarprodukt aus dem dortigen Gradienten und dem Vektor in Richtung des Punktes gebildet. Der Mittelwert all dieser Skalarprodukte ergibt
 dann den finalen Noise-Wert. \cite{16_perlin}\footnote{Erklärung in Anlehnung an https://mzucker.github.io/html/perlin-noise-math-faq.html}
 
-TODO: Erklärung mathematisch beschreiben, Abbildungen einfügen
+TODO: Erklärung mathematisch beschreiben, Abbildungen erneuern/in eine Abbildung zusammenfassen
 
 \section{L-Systeme}
-Ein weiteres viel genutztes Konzept ist das der L-Systeme \dots
+Ein weiteres bekanntes Konzept ist das der L-Systeme.
 
 \section{Fraktale}
 \cite{19_mandelbrot_frame}
