@@ -1,3 +1,29 @@
 % @author Benjamin Schröder
 %
 \chapter{Theorie}
+Im Folgenden werden die theoretischen Konzepte hinter dem praktischen Teil dieser Arbeit betrachtet. Das implementierte Verfahren wird
+Schritt für Schritt vorgestellt und im Detail erläutert.
+
+Konzepte:
+- Graphen, Graph-Grammatiken, Graphersetzungssysteme (Erstellen von Regeln), Graphisomorphismen (Anwenden von Regeln)
+- Local Similarity
+- Einfärben von Facetten
+- Kanten-Label (gleiche anliegenden Farben, gleicher Tangentenwinkel)
+- Kanten, Halbkanten
+- Teilen und Zusammenkleben (Branch & Loop Gluing) von Kanten
+- Vollständige & unvollständige Graphen
+- Positive & negative turns
+- Graph Boundary String
+- Einfachheit/Simplicity von Graphen
+- Reduzierbarkeit (reducible graphs)
+- Irreducible Graphs (alle Graphen sind entweder reduzierbar oder unvollständig)
+- (Lösen von LGS zum Bestimmen der Knotenpositionen)
+
+\section{Überblick}
+- Beispielstruktur als Input (Graph)
+- Aufteilen in Primitives (Teilen von Kanten in Halbkanten)
+- Primitives in allen möglichen Wegen zusammenkleben zum Erstellen von Hierarchie
+- Erstellen von Graph-Grammatik aus Hierarchie (im Idealfall können hiermit dann alle locally similar Graphen erstellt werden)
+- Ableiten von neuen Graphen aus der Grammatik
+- Festsetzen von Knotenpositionen des Graphen, um die letztendliche Geometrie zu erhalten
+- Optional: Dekorieren/Texturieren der erhaltenen Geometrie (wahrscheinlich nicht direkt relevant für diese Arbeit)
