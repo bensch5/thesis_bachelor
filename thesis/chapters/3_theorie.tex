@@ -29,3 +29,25 @@ Konzepte:
 - Ableiten von neuen Graphen aus der Grammatik
 - Festsetzen von Knotenpositionen des Graphen, um die letztendliche Geometrie zu erhalten
 - Optional: Dekorieren/Texturieren der erhaltenen Geometrie (wahrscheinlich nicht direkt relevant für diese Arbeit)
+
+Bevor es um die Einzelheiten und spezifischen Konzepte geht, werde ich zunächst einen groben Überblick zum Ablauf des umgesetzten
+Verfahrens liefern. Das Ganze beginnt mit einer polygonalen Inputstruktur, d.h. einem Gebilde bestehend aus einem oder mehreren Polygonen.
+Diese Inputstruktur wird anschließend umgewandelt in einen Graphen, in welchem die Punkte des Polygons als Knoten und die Verbindung zwischen
+den Punkten als Kanten dargestellt werden. Die Darstellung als Graph ist nützlich, da in dieser die konkrete Geometrie des Inputs keine Rolle
+mehr spielt und sich auf die für das Verfahren wichtigen Eigenschaften des Inputs konzentriert werden kann.
+
+Im nächsten Schritt wird der erstellte Graph nun in seine kleinstmöglichen Einzelteile zerlegt. Dazu werden alle Kanten in zwei Halbkanten
+aufgeteilt. Das Ergebnis sind viele Teilgraphen, welche jeweils nur noch aus einem Knoten und einigen Halbkanten bestehen. Einen solchen Teilgraphen
+nennen wir \textit{Primitiv}. Diese Primitive werden dann Schritt für Schritt in allen möglichen Kombinationen zusammengeklebt, was zum Entstehen
+einer Hierarchie an immer komplizierter werdenden Graphen führt. Beim Aufbau der Hierarchie werden die neu entstehenden Graphen auf bestimmte
+Eigenschaften überprüft, die es uns erlauben, daraus Regeln für Graphersetzungssystem abzuleiten. Das einfachste Beispiel hierfür sind
+vollständige Graphen, also Graphen, die nur noch aus in sich geschlossenen Kreisen bestehen und keine Halbkanten mehr besitzen. Aus diesen lässt
+sich eine sogennante Startregel ableiten, welche den leeren Graphen mit dem gefundenen vollständigen Graphen ersetzt. Das Finden von weiteren
+Regeln ist deutlich komplizierter und wird später im Detail erläutert.
+
+TODO: Bild von Startregel
+
+Sobald man nun eine Menge von Regeln für das Graphersetzungssystem gefunden hat, kann man diese verwenden um verschiedenste zum Inputgraphen
+ähnliche Graphen abzuleiten, indem zufällig verschiedene Regeln nach und nach angewendet werden. Für einen solchen Graphen müssen dann noch
+konkrete Knotenpositionen und Kantenlängen bestimmt werden, sodass dieser wieder als Struktur aus Polygonen dargestellt werden kann. Hier
+findet das Verfahren schließlich auch sein Ende.
