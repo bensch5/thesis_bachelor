@@ -1,37 +1,38 @@
 % @author Benjamin Schröder
 %
 \chapter{Theorie}
-Im Folgenden werden die theoretischen Konzepte hinter dem praktischen Teil dieser Arbeit betrachtet. Das implementierte Verfahren wird
-Schritt für Schritt vorgestellt und im Detail erläutert.
+Im Folgenden werden die theoretischen Konzepte hinter dem praktischen Teil der Arbeit betrachtet. Das implementierte Verfahren wird
+Schritt für Schritt vorgestellt und im Detail erläutert. Die vorgestellten Konzepte beruhen auf den Erkenntnissen von Paul Merrell
+in seiner Arbeit aus dem Jahr 2023 \cite{1_merrell}.
 
-Konzepte:
-- Graphen, Graph-Grammatiken, Graphersetzungssysteme (Erstellen von Regeln), Graphisomorphismen (Anwenden von Regeln)
-- Local Similarity
-- Einfärben von Facetten
-- Facetten-Label
-- Kanten-Label (gleiche anliegenden Farben, gleicher Tangentenwinkel)
-- Kanten, Halbkanten
-- Teilen (Cut-Operation) und Zusammenkleben (Branch & Loop Gluing) von Kanten
-- Vollständige & unvollständige Graphen
-- Planarität
-- Positive & negative turns
-- Graph Boundary String
-- Einfachheit/Simplicity von Graphen
-- Reduzierbarkeit (reducible graphs)
-- Irreducible Graphs (alle Graphen sind entweder reduzierbar oder unvollständig)
-- (Lösen von LGS zum Bestimmen der Knotenpositionen)
+% Konzepte:
+% - Graphen, Graph-Grammatiken, Graphersetzungssysteme (Erstellen von Regeln), Graphisomorphismen (Anwenden von Regeln)
+% - Local Similarity
+% - Einfärben von Facetten
+% - Facetten-Label
+% - Kanten-Label (gleiche anliegenden Farben, gleicher Tangentenwinkel)
+% - Kanten, Halbkanten
+% - Teilen (Cut-Operation) und Zusammenkleben (Branch \& Loop Gluing) von Kanten
+% - Vollständige \& unvollständige Graphen
+% - Planarität
+% - Positive \& negative turns
+% - Graph Boundary String
+% - Einfachheit/Simplicity von Graphen
+% - Reduzierbarkeit (reducible graphs)
+% - Irreducible Graphs (alle Graphen sind entweder reduzierbar oder unvollständig)
+% - (Lösen von LGS zum Bestimmen der Knotenpositionen)
 
 \section{Überblick}
-- Beispielstruktur als Input (Graph)
-- Aufteilen in Primitives (Teilen von Kanten in Halbkanten)
-- Primitives in allen möglichen Wegen zusammenkleben zum Erstellen von Hierarchie
-- Erstellen von Graph-Grammatik aus Hierarchie (im Idealfall können hiermit dann alle locally similar Graphen erstellt werden)
-- Ableiten von neuen Graphen aus der Grammatik
-- Festsetzen von Knotenpositionen des Graphen, um die letztendliche Geometrie zu erhalten
-- Optional: Dekorieren/Texturieren der erhaltenen Geometrie (wahrscheinlich nicht direkt relevant für diese Arbeit)
+% - Beispielstruktur als Input (Graph)
+% - Aufteilen in Primitives (Teilen von Kanten in Halbkanten)
+% - Primitives in allen möglichen Wegen zusammenkleben zum Erstellen von Hierarchie
+% - Erstellen von Graph-Grammatik aus Hierarchie (im Idealfall können hiermit dann alle locally similar Graphen erstellt werden)
+% - Ableiten von neuen Graphen aus der Grammatik
+% - Festsetzen von Knotenpositionen des Graphen, um die letztendliche Geometrie zu erhalten
+% - Optional: Dekorieren/Texturieren der erhaltenen Geometrie (wahrscheinlich nicht direkt relevant für diese Arbeit)
 
-Bevor es um die Einzelheiten und spezifischen Konzepte geht, werde ich zunächst einen groben Überblick zum Ablauf des umgesetzten
-Verfahrens liefern. Das Ganze beginnt mit einer polygonalen Inputstruktur, d.h. einem Gebilde bestehend aus einem oder mehreren Polygonen.
+Bevor es um die Einzelheiten und spezifischen Konzepte geht, wird zunächst ein grober Überblick zum Ablauf des umgesetzten
+Verfahrens geliefert. Das Ganze beginnt mit einer polygonalen Inputstruktur, d.h. einem Gebilde bestehend aus einem oder mehreren Polygonen.
 Diese Inputstruktur wird anschließend umgewandelt in einen Graphen, in welchem die Punkte des Polygons als Knoten und die Verbindung zwischen
 den Punkten als Kanten dargestellt werden. Die Darstellung als Graph ist nützlich, da in dieser die konkrete Geometrie des Inputs keine Rolle
 mehr spielt und sich auf die für das Verfahren wichtigen Eigenschaften des Inputs konzentriert werden kann.
@@ -40,14 +41,33 @@ Im nächsten Schritt wird der erstellte Graph nun in seine kleinstmöglichen Ein
 aufgeteilt. Das Ergebnis sind viele Teilgraphen, welche jeweils nur noch aus einem Knoten und einigen Halbkanten bestehen. Einen solchen Teilgraphen
 nennen wir \textit{Primitiv}. Diese Primitive werden dann Schritt für Schritt in allen möglichen Kombinationen zusammengeklebt, was zum Entstehen
 einer Hierarchie an immer komplizierter werdenden Graphen führt. Beim Aufbau der Hierarchie werden die neu entstehenden Graphen auf bestimmte
-Eigenschaften überprüft, die es uns erlauben, daraus Regeln für Graphersetzungssystem abzuleiten. Das einfachste Beispiel hierfür sind
+Eigenschaften überprüft, die es uns erlauben, daraus Regeln für ein Graphersetzungssystem abzuleiten. Das einfachste Beispiel hierfür sind
 vollständige Graphen, also Graphen, die nur noch aus in sich geschlossenen Kreisen bestehen und keine Halbkanten mehr besitzen. Aus diesen lässt
 sich eine sogennante Startregel ableiten, welche den leeren Graphen mit dem gefundenen vollständigen Graphen ersetzt. Das Finden von weiteren
 Regeln ist deutlich komplizierter und wird später im Detail erläutert.
 
-TODO: Bild von Startregel
+% TODO: Bild von Startregel
 
 Sobald man nun eine Menge von Regeln für das Graphersetzungssystem gefunden hat, kann man diese verwenden um verschiedenste zum Inputgraphen
 ähnliche Graphen abzuleiten, indem zufällig verschiedene Regeln nach und nach angewendet werden. Für einen solchen Graphen müssen dann noch
 konkrete Knotenpositionen und Kantenlängen bestimmt werden, sodass dieser wieder als Struktur aus Polygonen dargestellt werden kann. Hier
 findet das Verfahren schließlich auch sein Ende.
+
+\section{Input}
+Der Algorithmus kann mit beliebigen polygonalen Strukturen als Input arbeiten. Dies können einfache Rechtecke oder aber auch komplizierte Gebilde
+aus verschiedenen Häusern oder ähnlichem sein. Wichtig ist lediglich, dass der Input als Sammlung von Punkten und Kanten beschrieben werden kann.
+So sind z.B. Kreise oder andere Strukturen mit Rundungen kein valider Input und können wenn dann nur durch komplexe Polygone angenähert werden.
+
+Zur Verarbeitung des Inputs wird dieser in einen Graphen umgewandelt, in welchem die spezifischen Positionen der Knoten keine Rolle spielen.
+Stattdessen wird nur abgebildet, welche Knoten es überhaupt gibt, welche der Knoten durch Kanten miteinander verbunden sind, und in welchem Winkel
+diese Kanten verlaufen. Außerdem können die einzelnen Polygone mit Farben versehen werden, um verschiedene abgegrenzte Bereiche zu markieren.
+Die Kanten im Graphen werden mit einem entsprechenden Label versehen, welches neben den Start- und Endknoten ebenfalls Informationen zum
+Tangentenwinkel, sowie zu den Farben der links und rechts anliegenden Polygone enthält. Ein Kantenlabel besitzt die Form
+\(\tilde{a} = (l,r,\theta)\), wobei \(\tilde{a}\) die Bezeichnung der Kante, \(l\) und \(r\) die Farben der anliegenden Polygone, und
+\(\theta\) der Tangentenwinkel der Kante sind.
+
+\section{Lokale Ähnlichkeit}
+Ziel des Algorithmus ist es, Variationen des Inputs zu erzeugen. Dabei soll der Output eine gewisse Ähnlichkeit zum Input beibehalten. Global
+vorzugehen und die vollständigen Input- und Output-Strukturen miteinander zu vergleichen führt hierbei allerdings zu keinem vernünftigen
+Ergebnis. Der Output muss sich zwingend vom Input unterscheiden, ansonsten ist das Ergebnis nicht zu gebrauchen. Um Vergleiche auf einer kleineren
+Ebene vornehmen zu können, stellen wir hier das Konzept der \textit{lokalen Ähnlichkeit} vor.
