@@ -1,0 +1,64 @@
+% @author Benjamin Schröder
+%
+% Quellen: 5, 9, 10, 14, 15, 16, 17, 18, 19, 24, 25
+%
+% 5:
+%   - Definition von PCG
+%   - Vorstellen von einigen Verfahren
+%
+% 9:
+%   - Definition von PCG durch Abgrenzung von anderen Verfahren
+%
+% 10:
+%   - Geschichte und Verwendung von PCG
+%   - Vorstellen einiger Verfahren
+%
+% 14:
+%   - Vorstellen einiger Verfahren
+%   - Unterscheidung zwischen assisted/non-assisted
+%
+% 15: The Death of the Level Designer
+%   - kurze Definition von PCG
+%   - Übersicht zu verschiedenen Anwendungsmöglichkeiten von PCG
+%
+% 16: An Image Synthesizer
+%   - Perlin Noise
+%
+% 17: A Survey of Procedural Noise Functions
+%   - Verwendung von Noise für PCG
+%
+% 18: Improving Noise
+%   - Verbesserung von Perlin Noise
+%
+% 19: Fractals and the Geometry of Nature
+%   - Fraktale (Mandelbrot)
+%
+% 24: A Very Short History of Dynamic and Procedural Content Generation
+%   - Geschichte von PCG
+%
+% 25: Procedural Content Generation for Games: A Survey
+%   - Klassifikation verschiedener Arten von PCG
+%
+% Weitere Links:
+%   - https://en.wikipedia.org/wiki/Procedural_generation
+%   Perlin Noise:
+%   - https://mzucker.github.io/html/perlin-noise-math-faq.html#whatsnoise
+%   - https://adrianb.io/2014/08/09/perlinnoise.html
+%   - https://mrl.cs.nyu.edu/~perlin/doc/oscar.html
+%   Simplex Noise:
+%   - https://thebookofshaders.com/11/?lan=de
+
+\chapter{Grundlagen}
+Als Grundlage für das Verständnis des weiteren Inhalts dieser Arbeit machen wir zunächst einen kurzen Abstecher in den
+Bereich der prozeduralen Generierung allgemein. Wir stellen klar, was unter diesem Begriff zu verstehen ist und widmen
+uns außerdem kurz der zugrundeliegenden Geschichte. Dabei werden einige fundamentale Errungenschaften und Verfahren
+betrachtet, die den Weg zum momentanen Forschungsstand geprägt haben.
+
+\section{Prozedurale Generierung}
+Prozedurale Generierung, oft auch \gls{ac:pcg}, beschreibt eine Menge von Verfahren zum
+algorithmischen Erstellen von Inhalten ("Content"). Dabei handelt es sich meist um Verfahren, die automatisch Texturen
+oder verschiedene Gebilde im Kontext von Videospielen erzeugen können, so z.B. Landschaften, Flüsse, Straßennetze,
+Städte oder Höhlenstrukturen. Auch Musik kann durch solche Verfahren generiert werden, was für diese Arbeit allerdings
+weniger relevant ist. \cite{9_togelius_et_al}
+
+\section{Geschichte von PCG}
