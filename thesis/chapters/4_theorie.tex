@@ -71,3 +71,12 @@ Ziel des Algorithmus ist es, Variationen des Inputs zu erzeugen. Dabei soll der 
 vorzugehen und die vollständigen Input- und Output-Strukturen miteinander zu vergleichen führt hierbei allerdings zu keinem vernünftigen
 Ergebnis. Der Output muss sich zwingend vom Input unterscheiden, ansonsten ist das Ergebnis nicht zu gebrauchen. Um Vergleiche auf einer kleineren
 Ebene vornehmen zu können, stellen wir hier das Konzept der \textit{lokalen Ähnlichkeit} vor.
+
+Zwei Polygonstrukturen sind sich lokal ähnlich, wenn sich jeder Teil der einen Struktur zu einem Teil der anderen Struktur zuordnen lässt. Es
+müssen sich also alle Kanten und Polygonfarben mit gleicher Anordnung irgendwo in beiden Strukturen finden lassen. Befindet sich im Input z.B.
+ein Eckpunkt, welcher mit einer vertikalen und einer horizontalen Kante verbunden ist, so muss der Output ebenfalls einen Eckpunkt enthalten,
+der an einer vertikalen und einer horizontalen Kante anliegt.
+
+% TODO: Beispielbild
+
+Ein sehr ähnliches Konzept, das zum Verständnis beitragen kann, ist das der \textit{r-Ähnlichkeit} \cite{3_bokeloh_et_al}. Hier wird...
