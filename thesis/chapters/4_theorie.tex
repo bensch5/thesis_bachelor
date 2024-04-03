@@ -63,7 +63,7 @@ Stattdessen wird nur abgebildet, welche Knoten es überhaupt gibt, welche der Kn
 diese Kanten verlaufen. Außerdem können die einzelnen Polygone mit Farben versehen werden, um verschiedene abgegrenzte Bereiche zu markieren.
 Die Kanten im Graphen werden mit einem entsprechenden Label versehen, welches neben den Start- und Endknoten ebenfalls Informationen zum
 Tangentenwinkel, sowie zu den Farben der links und rechts anliegenden Polygone enthält. Ein Kantenlabel besitzt die Form
-\(\tilde{a} = (l,r,\theta)\), wobei \(\tilde{a}\) die Bezeichnung der Kante, \(l\) und \(r\) die Farben der anliegenden Polygone, und
+\(\tilde{k} = (l,r,\theta)\), wobei \(\tilde{k}\) die Bezeichnung der Kante, \(l\) und \(r\) die Farben der anliegenden Polygone, und
 \(\theta\) der Tangentenwinkel der Kante sind.
 
 \section{Lokale Ähnlichkeit}
@@ -95,6 +95,14 @@ Kantenwinkel dabei beibehalten werden.
 
 % TODO: was genau hat Boundary String mit der Planarität zu tun?
 
-
 \section{Grundlegende Operationen}
-% cutting & gluing
+\textit{Zerteilen.} Eine Kante \(\tilde{k}\) kann in zwei Halbkanten \(k\) und \(\overline{k}\) zerteilt werden. Im Gegensatz zu \(\tilde{k}\)
+sind diese beiden Halbkanten gerichtet und zeigen in entgegengesetze Richtungen. Dabei zeigt k stets in positive Richtung und besitzt einen
+positiven Tangentenwinkel \(\theta \in [0\degree,180\degree) \), während \(\overline{k}\) immer in negative Richtung zeigt und einen negativen
+Tangentenwinkel \(\theta \in [-180\degree,0\degree) \) besitzt. Ein Tangentenwinkel von 0° zählt hier als positiv. Der entgegengesetze Winkel
+von 180\degree\ gilt als negativ, da dieser ebenfalls als -180\degree\ interpretiert werden kann. Das Zerteilen von Kanten wird hauptsächlich im
+ersten Teil des Algorithms angewandt und ermöglicht das Zerlegen vom Input in die jeweiligen Primitive.
+
+\textit{Zusammenkleben.} Zwei entgegengesetze Halbkanten \(k\) und \(\overline{k}\) können wieder zu einer vollständigen und ungerichteten Kante
+\(\tilde{k}\) zusammengeklebt werden. Die Klebe-Operation stellt das Gegenteil zum Zerteilen dar und wird dazu genutzt, die immer komplexer
+werdenden Graphen in der später zu erstellenden Graph-Hierarchie zu generieren.
