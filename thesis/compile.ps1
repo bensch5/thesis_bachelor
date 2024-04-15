@@ -1,3 +1,4 @@
+cd thesis
 pdflatex thesis.tex
 bibtex thesis
 makeglossaries thesis
