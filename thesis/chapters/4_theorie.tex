@@ -23,35 +23,37 @@ Schritt für Schritt vorgestellt und im Detail erläutert. Die vorgestellten Kon
 in seiner Arbeit aus dem Jahr 2023 \cite{1_merrell}.
 
 \section{Überblick}
-% TODO: auf Abbildungen verweisen
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\imgWidth]{images/overview.pdf}
+    \caption{Überblick zum Ablauf des Verfahrens}
+    \label{fig:overview}
+\end{figure}
+
 Bevor es um die Einzelheiten und spezifischen Konzepte geht, wird zunächst ein grober Überblick zum Ablauf des umgesetzten
-Verfahrens geliefert. Das Ganze beginnt mit einer polygonalen Inputstruktur, d.h. einem Gebilde bestehend aus einem oder mehreren Polygonen.
+Verfahrens geliefert. Das Ganze beginnt mit einer polygonalen Inputstruktur, d.h. einem Gebilde bestehend aus einem oder mehreren Polygonen
+(siehe Abbildung \ref{fig:overview}-I).
 Diese Inputstruktur wird anschließend umgewandelt in einen Graphen, in welchem die konkrete Geometrie des Inputs keine Rolle
 mehr spielt und sich auf die für das Verfahren wichtigen Eigenschaften des Inputs konzentriert werden kann.
 
 Im nächsten Schritt wird der erstellte Graph nun in seine kleinstmöglichen Einzelteile zerlegt. Dazu werden alle Kanten in zwei Halbkanten
-aufgeteilt. Das Ergebnis sind viele Teilgraphen, welche jeweils nur noch aus einem Knoten und einigen Halbkanten bestehen. Einen solchen Teilgraphen
-nennen wir \textit{Primitiv}. Diese Primitive werden dann Schritt für Schritt in allen möglichen Kombinationen zusammengeklebt, was zum Entstehen
-einer Hierarchie an immer komplexer werdenden Graphen führt.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[height=\imgHeight]{images/overview.pdf}
-    \caption{Zerteilen des Inputs und Aufbauen der Hierarchie}
-    \label{fig:overview}
-\end{figure}
+aufgeteilt. Das Ergebnis sind viele Teilgraphen, welche jeweils nur noch aus einem Knoten und einigen Halbkanten bestehen.
+Einen solchen Teilgraphen nennen wir \textit{Primitiv}. Diese Primitive werden dann Schritt für Schritt in allen möglichen Kombinationen
+zusammengeklebt, was zum Entstehen einer Hierarchie an immer komplexer werdenden Graphen führt (siehe Abbildungen \ref{fig:overview}-II und
+\ref{fig:overview}-III).
 
 Beim Aufbau der Hierarchie werden die neu entstehenden Graphen auf bestimmte
-Eigenschaften überprüft, die es uns erlauben, daraus Regeln für ein Graphersetzungssystem abzuleiten. Das einfachste Beispiel hierfür sind
+Eigenschaften überprüft, die es uns erlauben, daraus Regeln für ein Graphersetzungssystem abzuleiten (siehe Abbildung \ref{fig:overview}-IV).
+Das einfachste Beispiel hierfür sind
 vollständige Graphen, also Graphen, die nur noch aus in sich geschlossenen Kreisen bestehen und keine Halbkanten mehr besitzen. Aus diesen lässt
 sich eine sogennante Startregel ableiten, welche den leeren Graphen mit dem gefundenen vollständigen Graphen ersetzt. Das Finden von weiteren
 Regeln ist deutlich komplizierter und wird später im Detail erläutert.
 
-% TODO: Bild von Startregel
-
 Sobald man nun eine Menge von Regeln für das Graphersetzungssystem gefunden hat, kann man diese verwenden um verschiedenste zum Inputgraphen
-ähnliche Graphen abzuleiten, indem zufällig verschiedene Regeln nach und nach angewendet werden. Für einen solchen Graphen müssen dann noch
-konkrete Knotenpositionen und Kantenlängen bestimmt werden, sodass dieser wieder als Struktur aus Polygonen dargestellt werden kann.
+ähnliche Graphen abzuleiten, indem zufällig verschiedene Regeln nach und nach angewendet werden (siehe Abbildung \ref{fig:overview}-V).
+Für einen solchen Graphen müssen dann noch konkrete Knotenpositionen und Kantenlängen bestimmt werden, sodass dieser wieder als Struktur
+aus Polygonen dargestellt werden kann (siehe Abbildung \ref{fig:overview}-VI).
 
 \section{Grundlagen}
 \subsection{Input}
@@ -88,7 +90,7 @@ ein Eckpunkt, welcher mit einer vertikalen und einer horizontalen Kante verbunde
 der an einer vertikalen und einer horizontalen Kante anliegt.
 
 % TODO: Beispielbild
-\begin{figure}[h]
+\begin{figure}[t]
     \centering
     \includegraphics[height=\imgHeight]{images/referencegrid.pdf}
     \caption{reference grid}
@@ -100,7 +102,7 @@ Ein verwandtes Konzept, das zum Verständnis beitragen kann, ist das der \textit
 dieses Kreises (r-Nachbarschaft des Punktes) genauso in der anderen Struktur wiederfinden lässt.
 
 % TODO: Beispielbild
-\begin{figure}[h]
+\begin{figure}[t]
     \centering
     \includegraphics[height=\imgHeight]{images/test.pdf}
     \caption{Beispiel für r-Ähnlichkeit}
