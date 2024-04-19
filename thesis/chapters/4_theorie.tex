@@ -83,29 +83,18 @@ vorzugehen und die vollständigen Input- und Output-Strukturen miteinander zu ve
 Ergebnis. Der Output muss sich zumindest teilweise vom Input unterscheiden, ansonsten ist das Ergebnis nicht zu gebrauchen. Um Vergleiche
 auf einer kleineren Ebene vornehmen zu können, stellen wir hier das Konzept der \textit{lokalen Ähnlichkeit} vor.
 
-% TODO: Formulierung verbessern
 Zwei Polygonstrukturen sind sich lokal ähnlich, wenn sich jeder Teil der einen Struktur zu einem Teil der anderen Struktur zuordnen lässt. Es
-müssen sich also alle Kanten und Polygonfarben mit gleicher Anordnung irgendwo in beiden Strukturen finden lassen. Befindet sich im Input z.B.
-ein Eckpunkt, welcher mit einer vertikalen und einer horizontalen Kante verbunden ist, so muss der Output ebenfalls einen Eckpunkt enthalten,
-der an einer vertikalen und einer horizontalen Kante anliegt.
-
-% TODO: Beispielbild
-\begin{figure}[t]
-    \centering
-    \includegraphics[height=\imgHeight]{images/referencegrid.pdf}
-    \caption{reference grid}
-    \label{fig:reference}
-\end{figure}
-
-Ein verwandtes Konzept, das zum Verständnis beitragen kann, ist das der \textit{r-Ähnlichkeit} \cite{3_bokeloh_et_al}. Zwei Strukturen sind hier
+müssen sich also alle verschiedenen Arten von Kanten und alle Polygonfarben irgendwo in beiden Strukturen finden lassen. Ein verwandtes Konzept,
+das zum Verständnis beitragen kann, ist das der \textit{r-Ähnlichkeit} \cite{3_bokeloh_et_al}. Zwei Strukturen sind hier
 \textit{r}-ähnlich, wenn wir für jeden Punkt innerhalb der einen Struktur einen Kreis mit Radius \textit{r} aufspannen können und sich der Inhalt
-dieses Kreises (r-Nachbarschaft des Punktes) genauso in der anderen Struktur wiederfinden lässt.
+dieses Kreises (r-Nachbarschaft des Punktes) genauso in der anderen Struktur wiederfinden lässt. Ein Beispiel hierfür befindet sich in Abbildung
+\ref{fig:rsimilarity}.
 
-% TODO: Beispielbild
 \begin{figure}[t]
     \centering
-    \includegraphics[height=\imgHeight]{images/test.pdf}
+    \includegraphics[height=\imgHeight]{images/rsimilarity.pdf}
     \caption{Beispiel für r-Ähnlichkeit}
+    \label{fig:rsimilarity}
 \end{figure}
 
 Die hier verwendete lokale Ähnlichkeit funktioniert nach dem gleichen Konzept, mit der Ausnahme, dass der Radius so klein wie möglich gehalten
@@ -114,7 +103,8 @@ egal ist. So können die betrachteten Strukturen beliebig skaliert werden und tr
 Kantenwinkel dabei beibehalten werden.
 
 \subsection{Planarität und der Graph Boundary String}
-% inkl. Erklärung zu Turns
+Damit die erzeugten Graphen später auch ohne Überschneidungen der Kanten dargestellt werden können, muss sichergestellt werden, dass diese
+planar sind.
 
 % TODO: was genau hat Boundary String mit der Planarität zu tun?
 
