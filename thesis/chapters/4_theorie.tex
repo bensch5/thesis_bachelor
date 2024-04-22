@@ -103,13 +103,52 @@ egal ist. So können die betrachteten Strukturen beliebig skaliert werden und tr
 Kantenwinkel dabei beibehalten werden.
 
 \subsection{Planarität und der Graph Boundary String}
-Damit die erzeugten Graphen später auch ohne Überschneidungen der Kanten dargestellt werden können, muss sichergestellt werden, dass diese
-planar sind.
+Damit die erzeugten Winkelgraphen später auch ohne Überschneidungen der Kanten dargestellt werden können, muss sichergestellt werden, dass diese
+planar sind. Die letztendlich erzeugten vollständigen Winkelgraphen bestehen nur noch aus geschlossenen Kreisen. Diese können dann als Polygone
+dargestellt werden, vorausgesetzt der jeweilige Kreis war planar.
 
-% TODO: was genau hat Boundary String mit der Planarität zu tun?
+Ein geschlossener Kreis ist planar, wenn wir uns beim Traversieren seiner Kanten exakt einmal um 360° gedreht haben. Wenn wir also iterativ
+alle Kanten eines solchen Kreises gegen den Uhrzeigersinn betrachten, jeweils die Differenz der Winkel berechnen und diese Differenzen
+aufsummieren, so erhalten wir einen Gesamtwinkel von 360°. Es kann allerdings auch vorkommen, dass wir beim Entlanglaufen eines Pfades um
+einen geschlossenen Kreis herum einen Gesamtwinkel von mehr als 360° erhalten, so z.B. 720°. Ist dies der Fall, so muss sich der Pfad zwingend
+selbst gekreuzt haben. Analog würde es bei der Darstellung der Kanten des entsprechenden Kreises mindestens eine unvermeidliche Überschneidung
+geben. Somit wäre der Winkelgraph, der diesen Kreis enthalten hat, nicht mehr planar.
 
-\subsection{Grundlegende Operationen}
-\textit{Teil-Operation.}
+% TODO: Abbildung mit Drehung um 360° und 720°
+
+Zum Vorbeugen dieses Problems definieren wir hier das Konzept der \textit{Graph Boundary} und die dazugehörige Notation in Form vom
+\textit{\gls{ac:gbs}}. Jeder Winkelgraph besitzt eine solche Boundary. Diese beschreibt einen Pfad außen um den entsprechenden
+Winkelgraphen herum und enthält alle vorhandenen Halbkanten, sowie Informationen dazu, wie sich die Winkel entlang des Pfades ändern.
+Der Pfad verläuft gegen den Uhrzeigersinn und hat keinen festen Startpunkt. Wichtig ist lediglich die relative Anordnung der enthaltenen
+Elemente. Um dies abbilden zu können, muss sich der \gls{ac:gbs} nicht als Liste mit festem Start- und Endpunkt vorgestellt werden,
+sondern als Kreis mit einer zusätzlichen Verbindung zwischen Anfang und Ende.
+
+Um den aktuellen Drehwinkel in Relation zum Startpunkt des Pfades zu ermitteln, können wir uns jeweils die Kantenlabel der traversierten
+Kanten anschauen und dort den Tangentenwinkel entnehmen. Dies wird allerdings problematisch, sobald sich der Pfad dann doch einmal um mehr als
+360° dreht, da die Tangentenwinkel bei 180° bzw. -180° umgebrochen werden. Berechnen wir den aktuellen Drehwinkel entlang der Boundary mithilfe
+dieser Tangentenwinkel, so können wir nie eine Differenz von über 360° erhalten. Haben wir uns vom Startpunkt aus z.B. tatsächlich um 400°
+gedreht, so würde die hier berechnete Differenz lediglich \(400\degree - 360\degree = 40\degree\) betragen. Analog wissen wir nie, ob wir uns
+aktuell um den Winkel \(\theta\), \(\theta + 360\degree\), \(\theta + 720\degree\) oder noch mehr gedreht haben.
+Dieses Problem lässt sich durch Einführung des Konzepts der \textit{positiven und negativen Drehungen} umgehen.
+
+\textit{Positive Drehung \(\wedge\).} Dreht sich der Pfad aktuell gegen den Uhrzeigersinn wird der Winkel mit jeder gefundenen Kante größer. Stoßen wir
+dabei allerdings auf den Schwellwert von 180°, so bricht der Winkel auf einmal in den negativen Bereich um. Diesen Umbruch bezeichnen wir als
+positive Drehung. Finden wir also beim Entlanglaufen des Pfades erst eine positiv und dann eine negativ verlaufende Kante, so fügen wir eine
+positive Drehung in Form des Symbols \(\wedge\) in den \gls{ac:gbs} ein. Die Boundary eines planaren Winkelgraphen muss zwingend eine
+solche positive Drehung enthalten.
+
+\textit{Negative Drehung \(\vee\).} Die negative Drehung stellt das Gegenteil zur positiven Drehung dar. Dreht sich der Pfad aktuell mit dem
+Uhrzeigersinn, so nähern sich die gefunden Winkel nach und nach dem Schwellwert von -180°. Anschließend bricht der Winkel in den positiven Bereich
+um, was wir als negative Drehung bezeichnen und mit dem Symbol \(\vee\) im \gls{ac:gbs} notieren.
+
+Diese beiden Drehungen heben sich gegenseitig auf. Die Differenz zwischen den positiven und negativen Drehungen in einem Winkelgraphen muss also
+exakt 1 betragen, damit dieser planar ist. Befinden sich eine positive und eine negative Drehung nebeneinander im \gls{ac:gbs}, so können
+diese entfernt werden. Ebenfalls kann an jeder beliebigen Stelle ein \(\wedge\vee\) oder ein \(\vee\wedge\) eingefügt werden ohne die Bedeutung
+des jeweiligen \gls{ac:gbs} zu verändern.
+
+% TODO: Abbildung von Winkelgraph mit dazugehörigem Boundary String etc.
+
+\subsection{Teil-Operation}
 Eine Kante \(\tilde{k}\) kann in zwei Halbkanten \(k\) und \(\overline{k}\) zerteilt werden. Im Gegensatz zu \(\tilde{k}\)
 sind diese beiden Halbkanten gerichtet und zeigen in entgegengesetze Richtungen. Dabei zeigt k stets in positive Richtung und besitzt einen
 positiven Tangentenwinkel \(\theta \in [0\degree,180\degree) \), während \(\overline{k}\) immer in negative Richtung zeigt und einen negativen
@@ -117,13 +156,15 @@ Tangentenwinkel \(\theta \in [-180\degree,0\degree) \) besitzt. Ein Tangentenwin
 von 180\degree\ gilt als negativ, da dieser ebenfalls als -180\degree\ interpretiert werden kann. Die Teil-Operation ermöglicht das Zerlegen vom
 Input in die jeweiligen Primitive.
 
-\textit{Klebe-Operation.}
+\subsection{Klebe-Operation}
 Zwei entgegengesetze Halbkanten \(k\) und \(\overline{k}\) können wieder zu einer vollständigen und ungerichteten Kante
 \(\tilde{k}\) zusammengeklebt werden. Dies ermöglicht die Kombination von mehreren kleineren Graphen, vorausgesetzt diese besitzen passende
-Halbkanten. Die Klebe-Operation stellt somit das Gegenteil zur Teil-Operation dar und wird dazu genutzt, Schritt für Schritt die Graph-Hierarchie
-aufzubauen.
+Halbkanten. Hier ist erneut der \gls{ac:gbs} von Relevanz, da aus diesem alle möglichen Klebe-Operationen abgeleitet werden können, welche
+die Planarität der entstehenden Graphen bewahren. Grundlegend gibt es zwei verschiedene Arten von Klebe-Operationen:
 
-% TODO: Branch und Loop Gluing erklären?
+\textit{Branch Gluing.}
+
+\textit{Loop Gluing.}
 
 \section{Ablauf}
 \subsection{Anpassen des Inputs}
