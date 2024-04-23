@@ -17,7 +17,7 @@ in seiner Arbeit aus dem Jahr 2023 \cite{1_merrell}.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\imgWidth]{images/overview.pdf}
-    \caption{Überblick zum Ablauf des Verfahrens}
+    \caption{Überblick zum Ablauf des Verfahrens.}
     \label{fig:overview}
 \end{figure}
 
@@ -83,7 +83,7 @@ dieses Kreises (r-Nachbarschaft des Punktes) genauso in der anderen Struktur wie
 \begin{figure}[t]
     \centering
     \includegraphics[height=\imgHeight]{images/rsimilarity.pdf}
-    \caption{Beispiel für r-Ähnlichkeit}
+    \caption{Beispiel für r-Ähnlichkeit.}
     \label{fig:rsimilarity}
 \end{figure}
 
@@ -102,19 +102,25 @@ alle Kanten eines solchen Kreises gegen den Uhrzeigersinn betrachten, jeweils di
 aufsummieren, so erhalten wir einen Gesamtwinkel von 360°. Es kann allerdings auch vorkommen, dass wir beim Entlanglaufen eines Pfades um
 einen geschlossenen Kreis herum einen Gesamtwinkel von mehr als 360° erhalten, so z.B. 720°. Ist dies der Fall, so muss sich der Pfad zwingend
 selbst gekreuzt haben. Analog würde es bei der Darstellung der Kanten des entsprechenden Kreises mindestens eine unvermeidliche Überschneidung
-geben. Somit wäre der Winkelgraph, der diesen Kreis enthalten hat, nicht mehr planar.
+geben. Somit wäre der Winkelgraph, der diesen Kreis enthalten hat, nicht mehr planar, was ebenfalls in Abbildung \ref{fig:planarity} zu erkennen ist.
 
-% TODO: Abbildung mit Drehung um 360° und 720°
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=(\imgWidth*3/4)]{images/planarity.pdf}
+    \caption{Der Zusammenhang zwischen Drehwinkel und Planarität.}
+    \label{fig:planarity}
+\end{figure}
 
 Zum Vorbeugen dieses Problems definieren wir hier das Konzept der \textit{Graph Boundary} und die dazugehörige Notation in Form vom
 \textit{\gls{ac:gbs}}. Jeder Winkelgraph besitzt eine solche Boundary. Diese beschreibt einen Pfad außen um den entsprechenden
 Winkelgraphen herum und enthält alle vorhandenen Halbkanten, sowie Informationen dazu, wie sich die Winkel entlang des Pfades ändern.
 Der Pfad verläuft gegen den Uhrzeigersinn und hat keinen festen Startpunkt. Wichtig ist lediglich die relative Anordnung der enthaltenen
 Elemente. Um dies abbilden zu können, muss sich der \gls{ac:gbs} nicht als Liste mit festem Start- und Endpunkt vorgestellt werden,
-sondern als Kreis mit einer zusätzlichen Verbindung zwischen Anfang und Ende.
+sondern als Kreis mit einer zusätzlichen Verbindung zwischen Anfang und Ende. Angenommen \(abc\wedge\) ist ein \gls{ac:gbs}, dann gilt
+\(abc\wedge = bc\wedge a = c\wedge ab = \wedge abc\).
 
 Um den aktuellen Drehwinkel in Relation zum Startpunkt des Pfades zu ermitteln, können wir uns jeweils die Kantenlabel der traversierten
-Kanten anschauen und dort den Tangentenwinkel entnehmen. Dies wird allerdings problematisch, sobald sich der Pfad dann doch einmal um mehr als
+Kanten anschauen und dort den Tangentenwinkel entnehmen. Dies wird allerdings problematisch, sobald sich der Pfad um mehr als
 360° dreht, da die Tangentenwinkel bei 180° bzw. -180° umgebrochen werden. Berechnen wir den aktuellen Drehwinkel entlang der Boundary mithilfe
 dieser Tangentenwinkel, so können wir nie eine Differenz von über 360° erhalten. Haben wir uns vom Startpunkt aus z.B. tatsächlich um 400°
 gedreht, so würde die hier berechnete Differenz lediglich \(400\degree - 360\degree = 40\degree\) betragen. Analog wissen wir nie, ob wir uns
@@ -133,7 +139,7 @@ um, was wir als negative Drehung bezeichnen und mit dem Symbol \(\vee\) im \gls{
 
 Diese beiden Drehungen heben sich gegenseitig auf. Die Differenz zwischen den positiven und negativen Drehungen in einem Winkelgraphen muss also
 exakt 1 betragen, damit dieser planar ist. Befinden sich eine positive und eine negative Drehung nebeneinander im \gls{ac:gbs}, so können
-diese entfernt werden. Ebenfalls kann an jeder beliebigen Stelle ein \(\wedge\vee\) oder ein \(\vee\wedge\) eingefügt werden ohne die Bedeutung
+diese entfernt werden. Ebenfalls kann an jeder beliebigen Stelle ein \(\wedge\vee\) oder ein \(\vee\wedge\) eingefügt werden, ohne die Bedeutung
 des jeweiligen \gls{ac:gbs} zu verändern.
 
 % TODO: Abbildung von Winkelgraph mit dazugehörigem Boundary String etc.
@@ -168,7 +174,7 @@ Graphen in einen neuen, größeren Graphen. Besitzt Graph G die Kante \(\overlin
 durchgeführt werden. Hierbei gibt es wieder zwei Optionen:
 
 \begin{center}
-    \(\overline{a}G\) an \(a\): \(a \longrightarrow G \vee\) \ \ \ bzw. \ \ \ \(a H\) an \(\overline{a}\): \(\overline{a} \longrightarrow H \vee\)
+    \(\overline{a}G\) an \(a\): \(a \longrightarrow G \vee\) \ \ \ bzw. \ \ \ \(a H\) an \(\overline{a}\): \(\overline{a} \longrightarrow \vee H\)
 \end{center}
 
 Die Großbuchstaben G und H stehen hier jeweils für den Rest des \gls{ac:gbs}s der Graphen G und H. Der \gls{ac:gbs} des neu enstandenen Graphen
@@ -180,8 +186,8 @@ negativen Drehung.
 \section{Ablauf}
 \subsection{Anpassen des Inputs}
 Bevor wir mit dem Verfahren beginnen können, muss der Input an bestimmte Anforderungen angepasst werden. Die übergebene Polygonstruktur
-kann so nicht direkt verarbeitet werden und muss erst einmal in einen Winkelgraphen umgewandelt werden. Dazu werden zunächst einfach
-alle Knoten und
+kann so nicht direkt verarbeitet werden und muss erst einmal in einen Winkelgraphen umgewandelt werden. Ohne diesen Schritt liegen uns keine
+Informationen zu den Kantenwinkeln vor, welche ausschlaggebend für die weiteren Schritte sind. Hierzu werden zunächst einfach alle Knoten und
 Kanten aus dem Input übernommen. Anschließend werden die Knotenpositionen genutzt, um den Verlauf der Kanten in Form eines Tangentenwinkels zu
 ermitteln. Sobald dies geschehen ist, können die Knotenpositionen dann ignoriert werden, da lediglich die Ausrichtung der Kanten eine Rolle
 für die weiteren Schritte spielt. Die restlichen Informationen zur Geometrie werden nicht benötigt und erst beim Erzeugen des finalen Outputs
@@ -193,8 +199,11 @@ gesamte Verfahren. Aus ihnen werden alle weiteren Strukturen abgeleitet, weshalb
 ermitteln. Glücklicherweise wird dies durch die vorgestellte Teil-Operation recht trivial. Wenden wir diese auf jede Kante des gegebenen
 Winkelgraphen an, so bleiben nur Teilgraphen übrig, welche nur aus einem einzelnen Knoten, sowie einigen Halbkanten bestehen. Diese Teilgraphen
 sind dann auch schon die gesuchten Primitive. Hier können allerdings einige identische Teilgraphen entstehen, falls Teile des Input eine ähnliche
-Struktur vorzuweisen hatten. Solche Duplikate sollen natürlich nicht in die weiteren Schritte des Verfahrens übernommen werden und müssen daher
-entfernt werden.
+Struktur vorzuweisen hatten. Solche Duplikate sind natürlich nicht relevant für die weiteren Schritte und werden ignoriert.
 
 \subsection{Aufbauen der Hierarchie}
-% TODO
+% Warum ist die Hierarchie nützlich?
+% Woraus besteht sie und wie wird sie aufgebaut?
+% Ableiten weiterer Graphen idealerweise bis alle zum Input lokal ähnlichen Graphen gefunden wurden
+% -> in der Praxis nicht besonders trivial (Verweisen auf Sonderfälle, Wachstum der Hierarchie, etc)
+% Ableiten von Regeln sowie Sonderfälle dann in eigenem Kapitel
