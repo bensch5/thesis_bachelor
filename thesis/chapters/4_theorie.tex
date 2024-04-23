@@ -1,21 +1,11 @@
 % @author Benjamin Schröder
 %
 % Konzepte:
-% - Graphen, Graph-Grammatiken, Graphersetzungssysteme (Erstellen von Regeln), Graphisomorphismen (Anwenden von Regeln)
-% - Local Similarity
-% - Einfärben von Facetten
-% - Facetten-Label
-% - Kanten-Label (gleiche anliegenden Farben, gleicher Tangentenwinkel)
-% - Kanten, Halbkanten
-% - Teilen (Cut-Operation) und Zusammenkleben (Branch \& Loop Gluing) von Kanten
+% - Splicing
 % - Vollständige \& unvollständige Graphen
-% - Planarität
-% - Positive \& negative turns
-% - Graph Boundary String
 % - Einfachheit/Simplicity von Graphen
 % - Reduzierbarkeit (reducible graphs)
 % - Irreducible Graphs (alle Graphen sind entweder reduzierbar oder unvollständig)
-% - (Lösen von LGS zum Bestimmen der Knotenpositionen)
 
 \chapter{Theorie}
 Im Folgenden werden die theoretischen Konzepte hinter dem praktischen Teil der Arbeit betrachtet. Das implementierte Verfahren wird
@@ -158,13 +148,34 @@ Input in die jeweiligen Primitive.
 
 \subsection{Klebe-Operation}
 Zwei entgegengesetze Halbkanten \(k\) und \(\overline{k}\) können wieder zu einer vollständigen und ungerichteten Kante
-\(\tilde{k}\) zusammengeklebt werden. Dies ermöglicht die Kombination von mehreren kleineren Graphen, vorausgesetzt diese besitzen passende
-Halbkanten. Hier ist erneut der \gls{ac:gbs} von Relevanz, da aus diesem alle möglichen Klebe-Operationen abgeleitet werden können, welche
-die Planarität der entstehenden Graphen bewahren. Grundlegend gibt es zwei verschiedene Arten von Klebe-Operationen:
+\(\tilde{k}\) zusammengeklebt werden. Dies ermöglicht das Schließen von Kreisen innerhalb eines Graphen oder die Kombination von mehreren
+kleineren Graphen, vorausgesetzt diese besitzen passende Halbkanten. Hier ist erneut der \gls{ac:gbs} von Relevanz, da aus diesem alle
+möglichen Klebe-Operationen abgeleitet werden können, welche die Planarität der entstehenden Graphen bewahren. Grundlegend gibt es zwei
+verschiedene Arten von Klebe-Operationen: Loop Gluing und Branch Gluing.
 
-\textit{Branch Gluing.}
+\textit{Loop Gluing} beschreibt das Zusammenkleben zweier Kanten innerhalb eines einzigen Graphen. Das Anwenden einer solchen Operation
+führt zum Schließen eines Kreises innerhalb des Graphen. Ob ein Loop Gluing auf einen Graphen angewandt werden kann, lässt sich durch das
+Vorhandensein eines der zwei Teilstrings \(a \overline{a}\) oder \(\overline{a}\vee a\wedge\) innerhalb des \gls{ac:gbs} ermitteln. Werden
+die gefundenen Kanten dann zusammengeklebt, muss der \gls{ac:gbs} noch entsprechend angepasst werden. Für das Loop Gluing ist diese Anpassung
+besonders einfach und es muss lediglich der gefundene Teilstring entfernt werden. Die entsprechenden String-Ersetzungen besitzen die Form:
 
-\textit{Loop Gluing.}
+\begin{center}
+    \(a \overline{a} \longrightarrow \epsilon\) \ \ \ bzw. \ \ \ \(\overline{a}\vee a\wedge \longrightarrow \epsilon\) 
+\end{center}
+
+\textit{Branch Gluing} beschreibt das Zusammenkleben zweier Kanten von verschiedenen Graphen. Dies führt zur Vereinigung der beiden betroffenen
+Graphen in einen neuen, größeren Graphen. Besitzt Graph G die Kante \(\overline{a}\) und Graph H die Kante \(a\), so kann ein Branch Gluing
+durchgeführt werden. Hierbei gibt es wieder zwei Optionen:
+
+\begin{center}
+    \(\overline{a}G\) an \(a\): \(a \longrightarrow G \vee\) \ \ \ bzw. \ \ \ \(a H\) an \(\overline{a}\): \(\overline{a} \longrightarrow H \vee\)
+\end{center}
+
+Die Großbuchstaben G und H stehen hier jeweils für den Rest des \gls{ac:gbs}s der Graphen G und H. Der \gls{ac:gbs} des neu enstandenen Graphen
+stellt die Kombination der beiden kleineren \gls{ac:gbs}s dar, allerdings ohne die zusammengeklebten Halbkanten und mit einer zusätzlichen
+negativen Drehung.
+
+% TODO: Abbildung der Gluing Operationen
 
 \section{Ablauf}
 \subsection{Anpassen des Inputs}
@@ -186,4 +197,4 @@ Struktur vorzuweisen hatten. Solche Duplikate sollen natürlich nicht in die wei
 entfernt werden.
 
 \subsection{Aufbauen der Hierarchie}
-
+% TODO
