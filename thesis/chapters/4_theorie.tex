@@ -34,13 +34,13 @@ zusammengeklebt, was zum Entstehen einer Hierarchie an immer komplexer werdenden
 \ref{fig:overview}-III).
 
 Beim Aufbau der Hierarchie werden die neu entstehenden Graphen auf bestimmte
-Eigenschaften überprüft, die es uns erlauben, daraus Regeln für ein Graphersetzungssystem abzuleiten (siehe Abbildung \ref{fig:overview}-IV).
+Eigenschaften überprüft, die es uns erlauben, daraus Regeln für eine Graph-Grammatik abzuleiten (siehe Abbildung \ref{fig:overview}-IV).
 Das einfachste Beispiel hierfür sind
 vollständige Graphen, also Graphen, die nur noch aus in sich geschlossenen Kreisen bestehen und keine Halbkanten mehr besitzen. Aus diesen lässt
 sich eine sogennante Startregel ableiten, welche den leeren Graphen mit dem gefundenen vollständigen Graphen ersetzt. Das Finden von weiteren
 Regeln ist deutlich komplizierter und wird später im Detail erläutert.
 
-Sobald man nun eine Menge von Regeln für das Graphersetzungssystem gefunden hat, kann man diese verwenden um verschiedenste zum Inputgraphen
+Sobald man nun eine Menge von Regeln für die Graph-Grammatik gefunden hat, kann man diese verwenden um verschiedenste zum Inputgraphen
 ähnliche Graphen abzuleiten, indem zufällig verschiedene Regeln nach und nach angewendet werden (siehe Abbildung \ref{fig:overview}-V).
 Für einen solchen Graphen müssen dann noch konkrete Knotenpositionen und Kantenlängen bestimmt werden, sodass dieser wieder als Struktur
 aus Polygonen dargestellt werden kann (siehe Abbildung \ref{fig:overview}-VI).
@@ -201,9 +201,42 @@ Winkelgraphen an, so bleiben nur Teilgraphen übrig, welche nur aus einem einzel
 sind dann auch schon die gesuchten Primitive. Hier können allerdings einige identische Teilgraphen entstehen, falls Teile des Input eine ähnliche
 Struktur vorzuweisen hatten. Solche Duplikate sind natürlich nicht relevant für die weiteren Schritte und werden ignoriert.
 
-\subsection{Aufbauen der Hierarchie}
-% Warum ist die Hierarchie nützlich?
-% Woraus besteht sie und wie wird sie aufgebaut?
-% Ableiten weiterer Graphen idealerweise bis alle zum Input lokal ähnlichen Graphen gefunden wurden
-% -> in der Praxis nicht besonders trivial (Verweisen auf Sonderfälle, Wachstum der Hierarchie, etc)
-% Ableiten von Regeln sowie Sonderfälle dann in eigenem Kapitel
+\subsection{Aufbauen der Graph-Hierarchie}
+Die vorgestellten Klebe-Operationen ermöglichen es uns, die gefundenen Primitive nach und nach zu komplexeren Graphen zusammenzusetzen.
+Diese lassen sich in verschiedene Generationen einer Hierarchie einordnen. In Generation 0 befinden sich alle verschiedenartigen
+Kanten, also alle Kanten mit einem einzigartigen Kantenlabel. In Generation 1 befinden sich alle gefundenen Primitive. Anschließend können
+die nachfolgenden Generationen automatisch generiert werden. Dazu werden alle Winkelgraphen der zuletzt generierten Generation enumeriert
+und alle möglichen Klebe-Operationen angewandt. Zu den möglichen Klebe-Operationen zählen zum einen das Schließen von Kreisen innerhalb einzelner
+Graphen durch Loop Gluing, und zum anderen alle Branch Gluing Operationen zwischen den enumerierten Graphen und den gefundenen Primitives.
+Wird eine mögliche Klebe-Operation gefunden und dadurch ein neuer Graph erzeugt, so gilt dieser als Kind des anderen Graphen. Jeder Graph wird
+also neben der Einordnung in eine Generation außerdem in eine Eltern-Kind-Beziehung gebracht. Die Struktur der Hierarchie selbst ähnelt somit
+fast der eines Baumes, allerdings kann ein und derselbe Kindsgraph durch verschiedene Elterngraphen erzeugt werden, wodurch wiederum Kreise
+innerhalb der Hierarchie entstehen.
+
+In der Theorie können alle Kombinationen an Primitiven erzeugt werden, wenn wir dieses Vorgehen bis in die Unendlichkeit weiterführen. Somit
+würden garantiert alle zum Input lokal ähnlichen Winkelgraphen erzeugt werden und man könnte einfach jeden beliebigen vollständigen Graphen
+aus der Hierarchie entnehmen, um jeden validen Output des Verfahrens erzeugen zu können. Praktisch gesehen ist dies natürlich leider nicht
+umsetzbar, da uns weder unendlich viele Ressourcen noch Zeit zur Verfügung stehen. Um diesen Ansatz also praktisch zu machen, müssen einige
+Anpassungen gemacht werden.
+
+\subsection{Ableiten der Graph-Grammatik}
+Statt zuerst eine ``vollständige'' Hierarchie zu erzeugen und aus
+dieser dann weitere Schritte abzuleiten, wird die Hierarchie inkrementell erzeugt. Jedes Mal, wenn ein neuer Graph abgeleitet wird, überprüfen
+wir diesen auf bestimmte Eigenschaften, die es uns erlauben daraus Regeln für eine Graph-Grammatik abzuleiten. Ein solche Regel ermöglicht es
+uns bereits erzeugte Winkelgraphen zu reduzieren, was wiederum bedeutet, dass wir diese nicht mehr benötigen und aus der Hierarchie entfernen
+können. Ein detaillierter Einblick zu der Theorie dahinter wird erst in den folgenden Unterkapiteln gegeben, jedoch ist es genau diese Eigenschaft,
+die es uns ermöglicht, das Wachstum der Hierarchie einzugrenzen. Im Optimalfall erreichen wir irgendwann einen Punkt, an dem alle bereits erzeugten
+Graphen durch eine der Regeln reduziert werden konnten. Wurde dies erreicht, so können wir garantieren, dass sich aus den Regeln alle vollständigen
+und zum Inputgraphen lokal ähnlichen Winkelgraphen aus der erzeugten Grammatik ableiten lassen. In den meisten Fällen werden wir allerdings auf
+Szenarien stoßen, in denen die Anzahl der neuen Graphen schneller wächst, als wir andere Graphen entfernen können. Kommt dies vor, so muss das
+Erstellen der Hierarchie irgendwann frühzeitig abgebrochen werden und die Graph-Grammatik ist eventuell nicht in der Lage, alle lokal ähnlichen
+Graphen zu erzeugen. Trotzdem kann die Grammatik dann zum Ableiten einer Vielzahl von lokal ähnlichen Winkelgraphen genutzt werden.
+
+\subsubsection{Graph-Grammatiken}
+Bevor wir die Erzeugung der Graph-Grammatik genauer betrachten, soll erst einmal der Begriff der Graph-Grammatik klar definiert werden.
+
+\subsubsection{Theorie hinter der Funktionsweise}
+
+\subsubsection{Ableiten einer Produktionsregel}
+
+\subsubsection{Sonderfälle bei der Bildung von Produktionsregeln}
