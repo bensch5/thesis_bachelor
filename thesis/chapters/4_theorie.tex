@@ -2,8 +2,6 @@
 %
 % Konzepte:
 % - Splicing
-% - Vollständige \& unvollständige Graphen
-% - Einfachheit/Simplicity von Graphen
 % - Reduzierbarkeit (reducible graphs)
 % - Irreducible Graphs (alle Graphen sind entweder reduzierbar oder unvollständig)
 
@@ -66,6 +64,14 @@ geschlossenen Kreisen. In späteren Verarbeitungsschritten wird dieser allerding
 \textit{Halbkanten} enthalten können. Im Gegensatz zu den vorher erwähnten Kanten sind diese gerichtet, können aber trotzdem durch ein
 gleichartiges Kantenlabel beschrieben werden. In späteren Abschnitten wird noch etwas genauer auf die Relevanz von Halbkanten und deren
 spezifische Notation eingegangen.
+
+\subsubsection{Komplexität}
+Einige Winkelgraphen müssen in späteren Teilschritten des Verfahrens miteinander verglichen werden. Dabei muss bestimmt werden können, welcher
+von zwei Graphen komplexer bzw. simpler ist. Dies ist nicht schwierig, sollte jedoch einmal eindeutig definiert werden. Das ausschlaggebendste
+Kriterium hierbei ist die Anzahl der Halbkanten der verglichenen Graphen. Ein Graph mit weniger
+Halbkanten gilt direkt als simpler als ein Graph mit mehr Halbkanten. In vielen Fällen werden die verglichenen Graphen jedoch die gleiche Anzahl
+an Halbkanten vorzuweisen haben. Hier wird die Graph-Hierarchie wichtig. Wurde ein Graph früher in die Hierarchie eingefügt, so gilt dieser als
+simpler. Dies kann immer eindeutig bestimmt werden und es kommt zu keinen weiteren Konflikten.
 
 \subsection{Lokale Ähnlichkeit}
 Ziel des Algorithmus ist es, Variationen des Inputs zu erzeugen. Dabei soll der Output eine gewisse Ähnlichkeit zum Input beibehalten. Global
@@ -221,7 +227,7 @@ Anpassungen gemacht werden.
 
 \subsection{Ableiten der Graph-Grammatik}
 Statt zuerst eine ``vollständige'' Hierarchie zu erzeugen und aus
-dieser dann weitere Schritte abzuleiten, wird die Hierarchie inkrementell erzeugt. Jedes Mal, wenn ein neuer Graph abgeleitet wird, überprüfen
+dieser dann weitere Schritte abzuleiten, wird die Hierarchie inkrementell erzeugt. Jedes Mal, wenn ein neuer Graph erstellt wird, überprüfen
 wir diesen auf bestimmte Eigenschaften, die es uns erlauben daraus Regeln für eine Graph-Grammatik abzuleiten. Ein solche Regel ermöglicht es
 uns bereits erzeugte Winkelgraphen zu reduzieren, was wiederum bedeutet, dass wir diese nicht mehr benötigen und aus der Hierarchie entfernen
 können. Ein detaillierter Einblick zu der Theorie dahinter wird erst in den folgenden Unterkapiteln gegeben, jedoch ist es genau diese Eigenschaft,
@@ -248,18 +254,39 @@ et al. \cite{7_ehrig_et_al}. Innerhalb dieses Ansatzes haben sich zwei verschied
 \gls{ac:dpo} Ansatz, wovon wir den letzteren verwenden. Der Begriff ``Pushout'' stammt aus der Kategorientheorie, welche ebenfalls zum Beschreiben
 von Graph-Grammatiken genutzt werden kann. \cite{1_merrell}
 
-Die Produktionen im verwendeten \gls{ac:dpo} Ansatz bestehen aus drei Teilen. Einem linken und rechten Graphen (\(L\) und \(R\)), welche
-unsere Mutter- und Tochtergraphen darstellen, sowie einem sogenannten Interface \(I\), was den Einbettungsmechanismus darstellt. Wie
-in Abbildung TODO REF zu sehen ist, repräsentiert \(L\) einen Graphen, der mithilfe eines Graphmorphismus auf einen größeren Graphen \(G\)
-abbilden kann. Das Finden einer solchen Abbildung zwischen zwei Graphen \(L\) und \(G\) bedeutet, dass \(L\) als Teilgraph in \(G\) enthalten
-ist. % weitere Teile der DPO-Produktion beschreiben (Merrell 5.0)
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\imgWidth/2]{images/dpo_rule.pdf}
+    \caption{Double Pushout Produktionsregel.}
+    \label{fig:dpo_rule}
+\end{figure}
 
-% TODO: Abbildung von DPO-Produktion
+Die Produktionen im verwendeten \gls{ac:dpo} Ansatz bestehen aus drei Teilen. Einem linken und rechten Graphen (\(L\) und \(R\)), welche jeweils
+den Mutter- und Tochtergraphen darstellen, sowie einem Interface-Graphen \(I\), welcher den Einbettungsmechanismus darstellt.Wie in Abbildung
+\ref{fig:dpo_rule} zu sehen ist, können diese Graphen mithilfe der Graphmorphismen \(\upvarphi L\) und \(\upvarphi R\) untereinander abbilden.
+Ist \(L\) als Teilgraph in einem anderen Graphen \(G\) enthalten, so kann die entsprechende Produktion zum Transformieren von \(G\) verwendet werden.
+Dazu muss \(L\) zunächst aus \(G\) herausgeschnitten werden. Hierfür wird das Interface benötigt. Dieses beschreibt die Gemeinsamkeiten zwischen
+der linken und der rechten Seite der Produktion und ermöglicht das problemlose Austauschen der beiden Seiten miteinander. Wird \(L\) aus \(G\)
+entfernt, so erhalten wir den sogenannten Klebegraphen \(K\). In diesen können wir nun \(R\) hineinkleben, um den transformierten Graphen \(H\)
+zu erhalten. Das Anwenden einer solchen Produktionsregel ist aber auch in die andere Richtung möglich. Alternativ kann auch zuerst \(R\) aus
+\(H\) ausgeschnitten und dann dort \(L\) eingeklebt werden, um \(G\) zu produzieren. \cite{7_ehrig_et_al}
 
 \subsubsection{Theorie hinter der Funktionsweise}
-% Merrell 5.2
+Die später aus der Hierarchie abzuleitenden Produktionsregeln werden so angeordnet, dass sich auf der linken Seite ein komplexerer Graph befindet,
+als auf der rechten Seiten. Wird die Regel von links nach rechts angwendet, so vereinfacht sie \(G\). Dies bezeichnen wir als \textit{destruktiv}.
+Wird sie von rechts nach links angewendet, so macht sie \(H\) komplexer, was wir wiederum als \textit{konstruktiv} berzeichnen. \cite{1_merrell}
 
-\subsubsection{Ableiten einer Produktionsregel}
+Wie bereits erwähnt, versuchen wir nach dem Erstellen der einzelnen Graphen Regeln zu finden, die bereits erzeugte Graphen in der Hierarchie
+vereinfachen können und entfernen diese dann ggf. aus der Hierarchie. Hier werden die Regeln stets nur destruktiv genutzt, was zunächst unlogisch
+erscheint. An diesem Punkt können wir uns die Invertierbarkeit der Produktionen zunutze machen. Wenn wir genug Regeln finden können, um alle Graphen
+in der Hierarchie zum leeren Graphen reduzieren zu können, indem wir diese destruktiv verwenden, so können wir im Umkehrschluss genau die gleichen
+Regeln konstruktiv benutzen, um aus dem leeren Graphen alle anderen Graphen abzuleiten. \cite{1_merrell}
+
+%\subsubsection{Ableiten einer Produktionsregel}
 % Zuerst eingehen auf Zusammenhang mit dem GBS (Merrell 5.0)
 
-\subsubsection{Sonderfälle bei der Bildung von Produktionsregeln}
+%\subsubsection{Sonderfälle bei der Bildung von Produktionsregeln}
+
+% TODO:
+% - Erstellen von Abbildungen: 1/3
+% - Hinzufügen von Quellen
