@@ -225,18 +225,41 @@ dieser dann weitere Schritte abzuleiten, wird die Hierarchie inkrementell erzeug
 wir diesen auf bestimmte Eigenschaften, die es uns erlauben daraus Regeln für eine Graph-Grammatik abzuleiten. Ein solche Regel ermöglicht es
 uns bereits erzeugte Winkelgraphen zu reduzieren, was wiederum bedeutet, dass wir diese nicht mehr benötigen und aus der Hierarchie entfernen
 können. Ein detaillierter Einblick zu der Theorie dahinter wird erst in den folgenden Unterkapiteln gegeben, jedoch ist es genau diese Eigenschaft,
-die es uns ermöglicht, das Wachstum der Hierarchie einzugrenzen. Im Optimalfall erreichen wir irgendwann einen Punkt, an dem alle bereits erzeugten
-Graphen durch eine der Regeln reduziert werden konnten. Wurde dies erreicht, so können wir garantieren, dass sich aus den Regeln alle vollständigen
-und zum Inputgraphen lokal ähnlichen Winkelgraphen aus der erzeugten Grammatik ableiten lassen. In den meisten Fällen werden wir allerdings auf
+die es uns ermöglicht, das Wachstum der Hierarchie einzugrenzen. Optimalerweise erreichen wir irgendwann einen Punkt, an dem alle bereits erzeugten
+Graphen durch eine der Regeln reduziert werden konnten. In diesem Fall können wir garantieren, dass sich aus den Regeln alle vollständigen
+und zum Inputgraphen lokal ähnlichen Winkelgraphen aus der erzeugten Grammatik ableiten lassen. Meistens werden wir allerdings auf
 Szenarien stoßen, in denen die Anzahl der neuen Graphen schneller wächst, als wir andere Graphen entfernen können. Kommt dies vor, so muss das
 Erstellen der Hierarchie irgendwann frühzeitig abgebrochen werden und die Graph-Grammatik ist eventuell nicht in der Lage, alle lokal ähnlichen
 Graphen zu erzeugen. Trotzdem kann die Grammatik dann zum Ableiten einer Vielzahl von lokal ähnlichen Winkelgraphen genutzt werden.
 
 \subsubsection{Graph-Grammatiken}
-Bevor wir die Erzeugung der Graph-Grammatik genauer betrachten, soll erst einmal der Begriff der Graph-Grammatik klar definiert werden.
+Bevor wir die Erzeugung dieser Datenstruktur genauer betrachten, soll erst einmal der Begriff der Graph-Grammatik klar definiert werden.
+Eine Graph-Grammatik ist ein formales System, welches spezifisch auf die Erstellung und Manipulation von Graphen in einem mathematisch
+präzisen Weg abzielt. Dazu wird eine Menge an Produktionsregeln definiert, welche verschiedene Operationen zum Ersetzen von Teilen
+eines Graphen beschreiben. Eine solche Produktion besteht üblicherweise aus drei Bestandteilen: zwei Graphen \(M\) und \(T\) (``Mutter'' und
+``Tochter''), sowie einem Einbettungsmechanismus \(E\). Diese Produktion kann nun auf jeden Graphen \(G\) angewandt werden, welcher \(M\)
+als Teilgraphen enthält. Um die Produktion anzuwenden, wird \(M\) aus \(G\) entfernt und mit \(T\) ersetzt. Dabei wird \(E\) genutzt, um zu
+definieren, wie genau \(T\) in \(G\) eingebettet werden kann. \cite{31_engelfriet_rozenberg}
+
+Das Konzept der Graph-Grammatiken existiert bereits seit den frühen 70er Jahren und wurde mit dem Paper von Ehrig et al. \cite{7_ehrig_et_al}
+zum ersten Mal formal definiert. Seitdem haben sich sehr viele verschiedene Herangehensweisen in diesem Kontext etabliert, was zu viel Verwirrung
+führen kann. \cite{30_könig_et_al} Wir beschränken uns hier auf den ursprünglich präsentierten algebraischen bzw. Gluing-Ansatz von Ehrig 
+et al. \cite{7_ehrig_et_al}. Innerhalb dieses Ansatzes haben sich zwei verschiedene Vorgehensweisen etabliert: der Single Pushout Ansatz und der
+\gls{ac:dpo} Ansatz, wovon wir den letzteren verwenden. Der Begriff ``Pushout'' stammt aus der Kategorientheorie, welche ebenfalls zum Beschreiben
+von Graph-Grammatiken genutzt werden kann. \cite{1_merrell}
+
+Die Produktionen im verwendeten \gls{ac:dpo} Ansatz bestehen aus drei Teilen. Einem linken und rechten Graphen (\(L\) und \(R\)), welche
+unsere Mutter- und Tochtergraphen darstellen, sowie einem sogenannten Interface \(I\), was den Einbettungsmechanismus darstellt. Wie
+in Abbildung TODO REF zu sehen ist, repräsentiert \(L\) einen Graphen, der mithilfe eines Graphmorphismus auf einen größeren Graphen \(G\)
+abbilden kann. Das Finden einer solchen Abbildung zwischen zwei Graphen \(L\) und \(G\) bedeutet, dass \(L\) als Teilgraph in \(G\) enthalten
+ist. % weitere Teile der DPO-Produktion beschreiben (Merrell 5.0)
+
+% TODO: Abbildung von DPO-Produktion
 
 \subsubsection{Theorie hinter der Funktionsweise}
+% Merrell 5.2
 
 \subsubsection{Ableiten einer Produktionsregel}
+% Zuerst eingehen auf Zusammenhang mit dem GBS (Merrell 5.0)
 
 \subsubsection{Sonderfälle bei der Bildung von Produktionsregeln}
