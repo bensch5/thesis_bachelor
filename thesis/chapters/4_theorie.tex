@@ -38,40 +38,17 @@ vollständige Graphen, also Graphen, die nur noch aus in sich geschlossenen Krei
 sich eine sogennante Startregel ableiten, welche den leeren Graphen mit dem gefundenen vollständigen Graphen ersetzt. Das Finden von weiteren
 Regeln ist deutlich komplizierter und wird später im Detail erläutert.
 
-Sobald man nun eine Menge von Regeln für die Graph-Grammatik gefunden hat, kann man diese verwenden um verschiedenste zum Inputgraphen
-ähnliche Graphen abzuleiten, indem zufällig verschiedene Regeln nach und nach angewendet werden (siehe Abbildung \ref{fig:overview}-V).
-Für einen solchen Graphen müssen dann noch konkrete Knotenpositionen und Kantenlängen bestimmt werden, sodass dieser wieder als Struktur
-aus Polygonen dargestellt werden kann (siehe Abbildung \ref{fig:overview}-VI).
+Sobald nun eine Menge von Regeln für die Graph-Grammatik gefunden wurde, kann man diese verwenden, um verschiedenste zum Inputgraphen
+ähnliche Graphen abzuleiten. Dazu werden die gefundenen nach und nach zufällig angewendet, was man in Abbildung \ref{fig:overview}-V sehen kann.
+Für einen solchen Graphen müssen dann nur noch konkrete Knotenpositionen und Kantenlängen bestimmt werden. (siehe Abbildung \ref{fig:overview}-VI).
 
 \section{Grundlagen}
 \subsection{Input}
 Der Algorithmus kann mit beliebigen polygonalen Strukturen als Input arbeiten. Dies können einfache Rechtecke oder aber auch komplizierte Gebilde
 aus verschiedenen Häusern oder ähnlichem sein. Wichtig ist lediglich, dass der Input als Sammlung von Polygonen beschrieben werden kann, welche
 wiederum als Sammlung von Punkten und Kanten beschrieben werden können.
-So sind z.B. Kreise oder andere Strukturen mit Rundungen kein valider Input und können wenn dann nur durch komplexe Polygone angenähert werden.
+So sind z.B. Kreise oder andere Strukturen mit Rundungen kein valider Input und könnten lediglich durch komplexe Polygone angenähert werden.
 Die einzelnen Polygone können außerdem mit Farben versehen werden, um verschiedene Arten von abgegrenzte Bereichen im Input zu markieren.
-
-\subsection{Der Winkelgraph}
-Zur Verarbeitung des Inputs wird dieser in einen sogenannten Winkelgraphen umgewandelt, in welchem die spezifischen Positionen der Knoten
-keine Rolle spielen. Stattdessen wird nur abgebildet, welche Knoten es überhaupt gibt, welche der Knoten durch Kanten miteinander verbunden
-sind, und in welchem Winkel diese Kanten verlaufen.
-Die Kanten im Graphen werden mit einem entsprechenden Label versehen, welches neben den Start- und Endknoten ebenfalls Informationen zum
-daraus ableitbaren Tangentenwinkel, sowie zu den Farben der links und rechts anliegenden Polygone enthält. Ein Kantenlabel besitzt die Form
-\(\tilde{k} = (l,r,\theta)\), wobei \(\tilde{k}\) die Bezeichnung der Kante, \(l\) und \(r\) die Farben der anliegenden Polygone, und
-\(\theta\) der Tangentenwinkel der Kante sind.
-Nach der Umwandlung des Inputs in einen Winkelgraphen ist dieser zunächst \textit{vollständig}, d.h. er besteht ausschließlich aus
-geschlossenen Kreisen. In späteren Verarbeitungsschritten wird dieser allerdings in unvollständige Teilgraphen zerlegt, welche dann außerdem
-\textit{Halbkanten} enthalten können. Im Gegensatz zu den vorher erwähnten Kanten sind diese gerichtet, können aber trotzdem durch ein
-gleichartiges Kantenlabel beschrieben werden. In späteren Abschnitten wird noch etwas genauer auf die Relevanz von Halbkanten und deren
-spezifische Notation eingegangen.
-
-\subsubsection{Komplexität}
-Einige Winkelgraphen müssen in späteren Teilschritten des Verfahrens miteinander verglichen werden. Dabei muss bestimmt werden können, welcher
-von zwei Graphen komplexer bzw. simpler ist. Dies ist nicht schwierig, sollte jedoch einmal eindeutig definiert werden. Das ausschlaggebendste
-Kriterium hierbei ist die Anzahl der Halbkanten der verglichenen Graphen. Ein Graph mit weniger
-Halbkanten gilt direkt als simpler als ein Graph mit mehr Halbkanten. In vielen Fällen werden die verglichenen Graphen jedoch die gleiche Anzahl
-an Halbkanten vorzuweisen haben. Hier wird die Graph-Hierarchie wichtig. Wurde ein Graph früher in die Hierarchie eingefügt, so gilt dieser als
-simpler. Dies kann immer eindeutig bestimmt werden und es kommt zu keinen weiteren Konflikten.
 
 \subsection{Lokale Ähnlichkeit}
 Ziel des Algorithmus ist es, Variationen des Inputs zu erzeugen. Dabei soll der Output eine gewisse Ähnlichkeit zum Input beibehalten. Global
@@ -81,7 +58,8 @@ auf einer kleineren Ebene vornehmen zu können, stellen wir hier das Konzept der
 
 Zwei Polygonstrukturen sind sich lokal ähnlich, wenn sich jeder Teil der einen Struktur zu einem Teil der anderen Struktur zuordnen lässt. Es
 müssen sich also alle verschiedenen Arten von Kanten und alle Polygonfarben irgendwo in beiden Strukturen finden lassen. Ein verwandtes Konzept,
-das zum Verständnis beitragen kann, ist das der \textit{r-Ähnlichkeit} \cite{3_bokeloh_et_al}. Zwei Strukturen sind hier
+das zum Verständnis beitragen kann, ist das der \textit{r-Ähnlichkeit}, welche im Paper von Bokeloh et al. \cite{3_bokeloh_et_al} vorgestellt wurde.
+Zwei Strukturen sind hier
 \textit{r}-ähnlich, wenn wir für jeden Punkt innerhalb der einen Struktur einen Kreis mit Radius \textit{r} aufspannen können und sich der Inhalt
 dieses Kreises (r-Nachbarschaft des Punktes) genauso in der anderen Struktur wiederfinden lässt. Ein Beispiel hierfür befindet sich in Abbildung
 \ref{fig:rsimilarity}.
@@ -89,18 +67,40 @@ dieses Kreises (r-Nachbarschaft des Punktes) genauso in der anderen Struktur wie
 \begin{figure}[t]
     \centering
     \includegraphics[height=\imgHeight]{images/rsimilarity.pdf}
-    \caption{Beispiel für r-Ähnlichkeit.}
+    \caption{r-Ähnlichkeit.}
     \label{fig:rsimilarity}
 \end{figure}
 
-Die hier verwendete lokale Ähnlichkeit funktioniert nach dem gleichen Konzept, mit der Ausnahme, dass der Radius so klein wie möglich gehalten
+Die von uns verwendete lokale Ähnlichkeit funktioniert nach dem gleichen Konzept, mit der Ausnahme, dass der Radius so klein wie möglich gehalten
 wird. Wir schauen uns also lediglich an, welche Kanten und Polygone direkt an einem Punkt anliegen, während uns die restliche Nachbarschaft
 egal ist. So können die betrachteten Strukturen beliebig skaliert werden und trotzdem ihre lokale Ähnlichkeit zueinander bewahren, solang alle
 Kantenwinkel dabei beibehalten werden.
 
+\subsection{Der Winkelgraph}
+Zur Verarbeitung des Inputs wird dieser in einen sogenannten Winkelgraphen umgewandelt, in welchem die spezifischen Positionen der Knoten
+keine Rolle spielen. Stattdessen wird nur abgebildet, welche Knoten es überhaupt gibt, welche der Knoten durch Kanten miteinander verbunden
+sind, und in welchem Winkel diese Kanten verlaufen.
+Die Kanten im Graphen werden mit einem \textit{Kantenlabel} versehen, welches neben den Start- und Endknoten ebenfalls Informationen zum
+daraus ableitbaren Tangentenwinkel, sowie zu den Farben der links und rechts anliegenden Polygone enthält. Ein Kantenlabel besitzt die Form
+\(\tilde{k} = (l,r,\theta)\), wobei \(\tilde{k}\) die Bezeichnung der Kante, \(l\) und \(r\) die Farben der anliegenden Polygone, und
+\(\theta\) der Tangentenwinkel der Kante sind.
+Nach der Umwandlung des Inputs in einen Winkelgraphen ist dieser zunächst \textit{vollständig}, d.h. er besteht ausschließlich aus
+geschlossenen Kreisen. In späteren Verarbeitungsschritten wird dieser allerdings in unvollständige Teilgraphen zerlegt, welche dann außerdem
+\textit{Halbkanten} enthalten können. Im Gegensatz zu den vorher erwähnten Kanten sind diese gerichtet, können aber trotzdem durch ein
+gleichartiges Kantenlabel beschrieben werden. In späteren Abschnitten wird noch etwas genauer auf die Relevanz von Halbkanten und deren
+spezifische Notation eingegangen.
+
+\subsubsection{Komplexität von Winkelgraphen}
+Später müssen einige der erstellten Winkelgraphen miteinander verglichen werden. Dabei muss bestimmt werden können, welcher
+von zwei Graphen komplexer bzw. simpler ist. Dies ist nicht schwierig, sollte jedoch einmal eindeutig definiert werden. Das ausschlaggebendste
+Kriterium hierbei ist die Anzahl der Halbkanten der verglichenen Graphen. Ein Graph mit weniger
+Halbkanten gilt direkt als simpler als ein Graph mit einer größeren Anzahl an Halbkanten. In vielen Fällen werden die verglichenen Graphen jedoch die gleiche Anzahl
+an Halbkanten vorzuweisen haben. Hier wird die Graph-Hierarchie wichtig. Wurde ein Graph früher in die Hierarchie eingefügt, so gilt dieser als
+simpler. Dies kann immer eindeutig bestimmt werden und es kommt zu keinen weiteren Konflikten.
+
 \subsection{Planarität und der Graph Boundary String}
-Damit die erzeugten Winkelgraphen später auch ohne Überschneidungen der Kanten dargestellt werden können, muss sichergestellt werden, dass diese
-planar sind. Die letztendlich erzeugten vollständigen Winkelgraphen bestehen nur noch aus geschlossenen Kreisen. Diese können dann als Polygone
+Damit die erzeugten Winkelgraphen später auch ohne Überschneidungen der Kanten dargestellt werden können, muss deren Planarität sichergestellt
+werden. Die endgültig erzeugten vollständigen Winkelgraphen bestehen nur noch aus geschlossenen Kreisen. Diese können dann als Polygone
 dargestellt werden, vorausgesetzt der jeweilige Kreis war planar.
 
 Ein geschlossener Kreis ist planar, wenn wir uns beim Traversieren seiner Kanten exakt einmal um 360° gedreht haben. Wenn wir also iterativ
@@ -108,7 +108,7 @@ alle Kanten eines solchen Kreises gegen den Uhrzeigersinn betrachten, jeweils di
 aufsummieren, so erhalten wir einen Gesamtwinkel von 360°. Es kann allerdings auch vorkommen, dass wir beim Entlanglaufen eines Pfades um
 einen geschlossenen Kreis herum einen Gesamtwinkel von mehr als 360° erhalten, so z.B. 720°. Ist dies der Fall, so muss sich der Pfad zwingend
 selbst gekreuzt haben. Analog würde es bei der Darstellung der Kanten des entsprechenden Kreises mindestens eine unvermeidliche Überschneidung
-geben. Somit wäre der Winkelgraph, der diesen Kreis enthalten hat, nicht mehr planar, was ebenfalls in Abbildung \ref{fig:planarity} zu erkennen ist.
+geben. Somit wäre der Winkelgraph, der diesen Kreis enthalten hat nicht mehr planar, was in Abbildung \ref{fig:planarity} visuell verdeutlicht wird.
 
 \begin{figure}[t]
     \centering
@@ -118,7 +118,7 @@ geben. Somit wäre der Winkelgraph, der diesen Kreis enthalten hat, nicht mehr p
 \end{figure}
 
 Zum Vorbeugen dieses Problems definieren wir hier das Konzept der \textit{Graph Boundary} und die dazugehörige Notation in Form vom
-\textit{\gls{ac:gbs}}. Jeder Winkelgraph besitzt eine solche Boundary. Diese beschreibt einen Pfad außen um den entsprechenden
+\textit{\gls{ac:gbs}}. Jeder Winkelgraph \(G\) besitzt eine solche Boundary \(\partial G\). Diese beschreibt einen Pfad außen um den entsprechenden
 Winkelgraphen herum und enthält alle vorhandenen Halbkanten, sowie Informationen dazu, wie sich die Winkel entlang des Pfades ändern.
 Der Pfad verläuft gegen den Uhrzeigersinn und hat keinen festen Startpunkt. Wichtig ist lediglich die relative Anordnung der enthaltenen
 Elemente. Um dies abbilden zu können, muss sich der \gls{ac:gbs} nicht als Liste mit festem Start- und Endpunkt vorgestellt werden,
@@ -127,36 +127,45 @@ sondern als Kreis mit einer zusätzlichen Verbindung zwischen Anfang und Ende. A
 
 Um den aktuellen Drehwinkel in Relation zum Startpunkt des Pfades zu ermitteln, können wir uns jeweils die Kantenlabel der traversierten
 Kanten anschauen und dort den Tangentenwinkel entnehmen. Dies wird allerdings problematisch, sobald sich der Pfad um mehr als
-360° dreht, da die Tangentenwinkel bei 180° bzw. -180° umgebrochen werden. Berechnen wir den aktuellen Drehwinkel entlang der Boundary mithilfe
+360° dreht, da die Tangentenwinkel bei 180° bzw. -180° umgebrochen werden. Berechnen wir den aktuellen Drehwinkel entlang der Graph Boundary mithilfe
 dieser Tangentenwinkel, so können wir nie eine Differenz von über 360° erhalten. Haben wir uns vom Startpunkt aus z.B. tatsächlich um 400°
-gedreht, so würde die hier berechnete Differenz lediglich \(400\degree - 360\degree = 40\degree\) betragen. Analog wissen wir nie, ob wir uns
+gedreht, so würde die hier berechnete Differenz lediglich \(400\degree - 360\degree = 40\degree\) betragen. Wir wissen also nie, ob wir uns
 aktuell um den Winkel \(\theta\), \(\theta + 360\degree\), \(\theta + 720\degree\) oder noch mehr gedreht haben.
 Dieses Problem lässt sich durch Einführung des Konzepts der \textit{positiven und negativen Drehungen} umgehen.
 
 \textit{Positive Drehung \(\wedge\).} Dreht sich der Pfad aktuell gegen den Uhrzeigersinn wird der Winkel mit jeder gefundenen Kante größer. Stoßen wir
 dabei allerdings auf den Schwellwert von 180°, so bricht der Winkel auf einmal in den negativen Bereich um. Diesen Umbruch bezeichnen wir als
-positive Drehung. Finden wir also beim Entlanglaufen des Pfades erst eine positiv und dann eine negativ verlaufende Kante, so fügen wir eine
+positive Drehung. Folgen wir beim Entlanglaufen des Pfades dem Verlauf einer positiven Kanten und wechseln dann auf eine negativ verlaufende Kante, so
+werden wir dabei in einigen Fällen diesen Schwellwert überschreiten. Falls dies geschieht, so fügen wir eine
 positive Drehung in Form des Symbols \(\wedge\) in den \gls{ac:gbs} ein. Die Boundary eines planaren Winkelgraphen muss zwingend eine
 solche positive Drehung enthalten.
 
-\textit{Negative Drehung \(\vee\).} Die negative Drehung stellt das Gegenteil zur positiven Drehung dar. Dreht sich der Pfad aktuell mit dem
+\textit{Negative Drehung \(\vee\).} Die negative Drehung stellt das Gegenteil zur positiven Drehung dar. Dreht sich der Pfad aktuell im
 Uhrzeigersinn, so nähern sich die gefunden Winkel nach und nach dem Schwellwert von -180°. Anschließend bricht der Winkel in den positiven Bereich
 um, was wir als negative Drehung bezeichnen und mit dem Symbol \(\vee\) im \gls{ac:gbs} notieren.
 
-Diese beiden Drehungen heben sich gegenseitig auf. Die Differenz zwischen den positiven und negativen Drehungen in einem Winkelgraphen muss also
-exakt 1 betragen, damit dieser planar ist. Befinden sich eine positive und eine negative Drehung nebeneinander im \gls{ac:gbs}, so können
-diese entfernt werden. Ebenfalls kann an jeder beliebigen Stelle ein \(\wedge\vee\) oder ein \(\vee\wedge\) eingefügt werden, ohne die Bedeutung
-des jeweiligen \gls{ac:gbs} zu verändern.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=(\imgWidth*3/4)]{images/turns.pdf}
+    \caption{Positive und negative Drehungen.}
+    \label{fig:turns}
+\end{figure}
 
-% TODO: Abbildung von Winkelgraph mit dazugehörigem Boundary String etc.
+Die beiden in Abbildung \ref{fig:turns} zu sehenden Drehungen heben sich gegenseitig auf. Befinden sich eine positive und eine negative Drehung
+nebeneinander im \gls{ac:gbs}, so können diese entfernt werden. Ebenfalls kann an jeder beliebigen Stelle ein ``\(\wedge\vee\)'' oder ein
+``\(\vee\wedge\)'' eingefügt werden, ohne die Bedeutung des jeweiligen \gls{ac:gbs} zu verändern. Eine weitere Eigenschaft, die sich für den \gls{ac:gbs}
+für alle planaren Winkelgraphen ergibt ist, dass sich darin immer genau eine positive Drehung mehr befinden muss, als es negative Drehungen gibt.
+Dies liegt daran, dass sich der Pfad um einen planaren Graphen insgesamt exakt um 360° dreht und der Drehwinkel somit zumindest einmal irgendwo
+den Schwellwert überschreiten muss. Da wir die Graph Boundary entgegen des Uhrzeigersinns ablaufen,
+handelt es sich dabei um eine positive Drehung \(\wedge\).
 
 \subsection{Teil-Operation}
 Eine Kante \(\tilde{k}\) kann in zwei Halbkanten \(k\) und \(\overline{k}\) zerteilt werden. Im Gegensatz zu \(\tilde{k}\)
-sind diese beiden Halbkanten gerichtet und zeigen in entgegengesetze Richtungen. Dabei zeigt k stets in positive Richtung und besitzt einen
+sind diese beiden Halbkanten gerichtet und zeigen in entgegengesetze Richtungen. Dabei zeigt \(k\) stets in positive Richtung und besitzt einen
 positiven Tangentenwinkel \(\theta \in [0\degree,180\degree) \), während \(\overline{k}\) immer in negative Richtung zeigt und einen negativen
 Tangentenwinkel \(\theta \in [-180\degree,0\degree) \) besitzt. Ein Tangentenwinkel von 0° zählt hier als positiv. Der entgegengesetze Winkel
 von 180\degree\ gilt als negativ, da dieser ebenfalls als -180\degree\ interpretiert werden kann. Die Teil-Operation ermöglicht das Zerlegen vom
-Input in die jeweiligen Primitive.
+Input in seine Primitive.
 
 \subsection{Klebe-Operation}
 Zwei entgegengesetze Halbkanten \(k\) und \(\overline{k}\) können wieder zu einer vollständigen und ungerichteten Kante
@@ -167,8 +176,8 @@ verschiedene Arten von Klebe-Operationen: Loop Gluing und Branch Gluing.
 
 \textit{Loop Gluing} beschreibt das Zusammenkleben zweier Kanten innerhalb eines einzigen Graphen. Das Anwenden einer solchen Operation
 führt zum Schließen eines Kreises innerhalb des Graphen. Ob ein Loop Gluing auf einen Graphen angewandt werden kann, lässt sich durch das
-Vorhandensein eines der zwei Teilstrings \(a \overline{a}\) oder \(\overline{a}\vee a\wedge\) innerhalb des \gls{ac:gbs} ermitteln. Werden
-die gefundenen Kanten dann zusammengeklebt, muss der \gls{ac:gbs} noch entsprechend angepasst werden. Für das Loop Gluing ist diese Anpassung
+Vorhandensein eines der zwei Teilstrings ``\(a \overline{a}\)'' oder ``\(\overline{a}\vee a\wedge\)'' innerhalb des \gls{ac:gbs} ermitteln. Werden
+die gefundenen Kanten dann zusammengeklebt, muss der \gls{ac:gbs} entsprechend angepasst werden. Für das Loop Gluing ist diese Anpassung
 besonders einfach und es muss lediglich der gefundene Teilstring entfernt werden. Die entsprechenden String-Ersetzungen besitzen die Form:
 
 \begin{center}
@@ -176,21 +185,27 @@ besonders einfach und es muss lediglich der gefundene Teilstring entfernt werden
 \end{center}
 
 \textit{Branch Gluing} beschreibt das Zusammenkleben zweier Kanten von verschiedenen Graphen. Dies führt zur Vereinigung der beiden betroffenen
-Graphen in einen neuen, größeren Graphen. Besitzt Graph G die Kante \(\overline{a}\) und Graph H die Kante \(a\), so kann ein Branch Gluing
+Graphen in einen neuen, größeren Graphen. Besitzt Graph \(G\) die Kante \(\overline{a}\) und Graph \(H\) die Kante \(a\), so kann ein Branch Gluing
 durchgeführt werden. Hierbei gibt es wieder zwei Optionen:
 
 \begin{center}
     \(\overline{a}G\) an \(a\): \(a \longrightarrow G \vee\) \ \ \ bzw. \ \ \ \(a H\) an \(\overline{a}\): \(\overline{a} \longrightarrow \vee H\)
 \end{center}
 
-Die Großbuchstaben G und H stehen hier jeweils für den Rest des \gls{ac:gbs}s der Graphen G und H. Der \gls{ac:gbs} des neu enstandenen Graphen
-stellt die Kombination der beiden kleineren \gls{ac:gbs}s dar, allerdings ohne die zusammengeklebten Halbkanten und mit einer zusätzlichen
+Die Großbuchstaben G und H stehen hier jeweils für den Rest des \gls{ac:gbs} der beiden Graphen. Der \gls{ac:gbs} des neu enstandenen Graphen
+stellt die Kombination der beiden kleineren \gls{ac:gbs} dar, allerdings ohne die zusammengeklebten Halbkanten und mit einer zusätzlichen
 negativen Drehung.
 
-% TODO: Abbildung der Gluing Operationen
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=(\imgWidth)]{images/gluing.pdf}
+    \caption{Branch und Loop Gluing.}
+    \label{fig:gluing}
+\end{figure}
 
 \section{Ablauf}
 \subsection{Anpassen des Inputs}
+% TODO: Anpassen oder Löschen
 Bevor wir mit dem Verfahren beginnen können, muss der Input an bestimmte Anforderungen angepasst werden. Die übergebene Polygonstruktur
 kann so nicht direkt verarbeitet werden und muss erst einmal in einen Winkelgraphen umgewandelt werden. Ohne diesen Schritt liegen uns keine
 Informationen zu den Kantenwinkeln vor, welche ausschlaggebend für die weiteren Schritte sind. Hierzu werden zunächst einfach alle Knoten und
@@ -205,16 +220,17 @@ gesamte Verfahren. Aus ihnen werden alle weiteren Strukturen abgeleitet, weshalb
 ermitteln. Glücklicherweise wird dies durch die vorgestellte Teil-Operation recht trivial. Wenden wir diese auf jede Kante des gegebenen
 Winkelgraphen an, so bleiben nur Teilgraphen übrig, welche nur aus einem einzelnen Knoten, sowie einigen Halbkanten bestehen. Diese Teilgraphen
 sind dann auch schon die gesuchten Primitive. Hier können allerdings einige identische Teilgraphen entstehen, falls Teile des Input eine ähnliche
-Struktur vorzuweisen hatten. Solche Duplikate sind natürlich nicht relevant für die weiteren Schritte und werden ignoriert.
+Struktur vorzuweisen hatten. Solche Duplikate sind nicht relevant für die weiteren Schritte und werden ignoriert.
 
 \subsection{Aufbauen der Graph-Hierarchie}
 Die vorgestellten Klebe-Operationen ermöglichen es uns, die gefundenen Primitive nach und nach zu komplexeren Graphen zusammenzusetzen.
 Diese lassen sich in verschiedene Generationen einer Hierarchie einordnen. In Generation 0 befinden sich alle verschiedenartigen
 Kanten, also alle Kanten mit einem einzigartigen Kantenlabel. In Generation 1 befinden sich alle gefundenen Primitive. Anschließend können
 die nachfolgenden Generationen automatisch generiert werden. Dazu werden alle Winkelgraphen der zuletzt generierten Generation enumeriert
-und alle möglichen Klebe-Operationen angewandt. Zu den möglichen Klebe-Operationen zählen zum einen das Schließen von Kreisen innerhalb einzelner
-Graphen durch Loop Gluing, und zum anderen alle Branch Gluing Operationen zwischen den enumerierten Graphen und den gefundenen Primitives.
-Wird eine mögliche Klebe-Operation gefunden und dadurch ein neuer Graph erzeugt, so gilt dieser als Kind des anderen Graphen. Jeder Graph wird
+und alle durchführbaren Klebe-Operationen auf diese angewandt. Gibt es in einem der enumerierten Graphen einen noch offenen Kreis, der aber
+durch eine einfach Loop Gluing Operation geschlossen werden kann, so wird diese angwandt. Außerdem werden jeweils alle der gefundenen Primitive
+betrachtet und ein Branch Gluing mit diesen ausgeführt, vorausgesetzt deren \gls{ac:gbs} lässt dies zu.
+Wird durch eine dieser Operationen ein neuer Graph erzeugt, so gilt dieser als Kind des anderen Graphen. Jeder Graph wird
 also neben der Einordnung in eine Generation außerdem in eine Eltern-Kind-Beziehung gebracht. Die Struktur der Hierarchie selbst ähnelt somit
 fast der eines Baumes, allerdings kann ein und derselbe Kindsgraph durch verschiedene Elterngraphen erzeugt werden, wodurch wiederum Kreise
 innerhalb der Hierarchie entstehen.
@@ -274,13 +290,13 @@ zu erhalten. Das Anwenden einer solchen Produktionsregel ist aber auch in die an
 \subsubsection{Theorie hinter der Funktionsweise}
 Die später aus der Hierarchie abzuleitenden Produktionsregeln werden so angeordnet, dass sich auf der linken Seite ein komplexerer Graph befindet,
 als auf der rechten Seiten. Wird die Regel von links nach rechts angwendet, so vereinfacht sie \(G\). Dies bezeichnen wir als \textit{destruktiv}.
-Wird sie von rechts nach links angewendet, so macht sie \(H\) komplexer, was wir wiederum als \textit{konstruktiv} berzeichnen. \cite{1_merrell}
+Wird sie von rechts nach links angewendet, so macht sie \(H\) komplexer, was wir wiederum als \textit{konstruktiv} berzeichnen.
 
 Wie bereits erwähnt, versuchen wir nach dem Erstellen der einzelnen Graphen Regeln zu finden, die bereits erzeugte Graphen in der Hierarchie
 vereinfachen können und entfernen diese dann ggf. aus der Hierarchie. Hier werden die Regeln stets nur destruktiv genutzt, was zunächst unlogisch
 erscheint. An diesem Punkt können wir uns die Invertierbarkeit der Produktionen zunutze machen. Wenn wir genug Regeln finden können, um alle Graphen
 in der Hierarchie zum leeren Graphen reduzieren zu können, indem wir diese destruktiv verwenden, so können wir im Umkehrschluss genau die gleichen
-Regeln konstruktiv benutzen, um aus dem leeren Graphen alle anderen Graphen abzuleiten. \cite{1_merrell}
+Regeln konstruktiv benutzen, um aus dem leeren Graphen alle anderen Graphen abzuleiten.
 
 %\subsubsection{Ableiten einer Produktionsregel}
 % Zuerst eingehen auf Zusammenhang mit dem GBS (Merrell 5.0)
@@ -288,5 +304,5 @@ Regeln konstruktiv benutzen, um aus dem leeren Graphen alle anderen Graphen abzu
 %\subsubsection{Sonderfälle bei der Bildung von Produktionsregeln}
 
 % TODO:
-% - Erstellen von Abbildungen: 1/3
+% - Referenzieren von Bildern
 % - Hinzufügen von Quellen
