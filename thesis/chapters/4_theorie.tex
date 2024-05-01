@@ -45,16 +45,26 @@ Für einen solchen Graphen müssen dann nur noch konkrete Knotenpositionen und K
 \section{Grundlagen}
 \subsection{Input}
 Der Algorithmus kann mit beliebigen polygonalen Strukturen als Input arbeiten. Dies können einfache Rechtecke oder aber auch komplizierte Gebilde
-aus verschiedenen Häusern oder ähnlichem sein. Wichtig ist lediglich, dass der Input als Sammlung von Polygonen beschrieben werden kann, welche
-wiederum als Sammlung von Punkten und Kanten beschrieben werden können.
-So sind z.B. Kreise oder andere Strukturen mit Rundungen kein valider Input und könnten lediglich durch komplexe Polygone angenähert werden.
+aus verschiedenen Häusern oder ähnlichem sein. Wichtig ist lediglich, dass der Input als Sammlung von Polygonen beschrieben werden kann.
+
+Ein Polygon ist eine geometrische Figur, die vollständig durch ein Tupel \(P\) von \(n\) verschiedenen Punkten beschrieben werden kann:
+\[P = (P_1,P_2,\dots,P_n), P_i \in \mathbb{R}^2, 3 \leq i \leq n\]
+Diese Punkte bezeichnen wir als \textit{Eckpunkte} des Polygons. Verbindet man zwei
+aufeinanderfolgende Eckpunkte in Form der Strecken \(\overline{P_i P_{i+1}}\) (für \(i = 1,\dots,n-1\)) und \(\overline{P_n P_1}\) miteinander, so
+erhält man eine \textit{Seite} des Polygons. All diese Seiten zusammen spannen das Polygon auf. Eine Beschränkung der Anzahl an Eckpunkten
+nach oben gibt es dabei nicht, jedoch werden mindestens drei verschiedene Punkte für unsere Definition des Polygons vorausgesetzt. Mit weniger
+als drei Punkten können lediglich Figuren ohne Fläche (Punkte, Linien) erzeugt werden, welche für uns nicht von Nutzen sind.
+Ebenso sind Kreise oder andere Strukturen mit Rundungen nicht als Polygon darstellbar und können lediglich durch komplexe Polygone angenähert
+werden. Der Input kann somit keine Rundungen enthalten.
+
 Die einzelnen Polygone können außerdem mit Farben versehen werden, um verschiedene Arten von abgegrenzte Bereichen im Input zu markieren.
 
 \subsection{Lokale Ähnlichkeit}
-Ziel des Algorithmus ist es, Variationen des Inputs zu erzeugen. Dabei soll der Output eine gewisse Ähnlichkeit zum Input beibehalten. Global
-vorzugehen und die vollständigen Input- und Output-Strukturen miteinander zu vergleichen führt hierbei allerdings zu keinem vernünftigen
+Ziel des Verfahrens ist es, Variationen des Inputs zu erzeugen. Dabei soll der Output eine gewisse Ähnlichkeit zum Input beibehalten. Global
+vorzugehen und die vollständigen Input- und Output-Strukturen miteinander zu vergleichen führt hierbei allerdings zu keinem brauchbaren
 Ergebnis. Der Output muss sich zumindest teilweise vom Input unterscheiden, ansonsten ist das Ergebnis nicht zu gebrauchen. Um Vergleiche
-auf einer kleineren Ebene vornehmen zu können, stellen wir hier das Konzept der \textit{lokalen Ähnlichkeit} vor.
+auf einer kleineren Ebene vornehmen zu können, stellen wir hier das Konzept der \textit{lokalen Ähnlichkeit} vor. Das Verfahren gilt als
+erfolgreich, wenn die letztendlich erzeugten Output-Strukturen eine solche lokale Ähnlichkeit zum Input vorweisen können.
 
 Zwei Polygonstrukturen sind sich lokal ähnlich, wenn sich jeder Teil der einen Struktur zu einem Teil der anderen Struktur zuordnen lässt. Es
 müssen sich also alle verschiedenen Arten von Kanten und alle Polygonfarben irgendwo in beiden Strukturen finden lassen. Ein verwandtes Konzept,
