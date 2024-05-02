@@ -11,13 +11,15 @@ Die Erstellung von fiktiven Welten spielt eine große Rolle in vielen Videospiel
 und weiteren Bereichen der Simulation. Hierfür wird eine Vielzahl an verschiedenen Objekten und Strukturen benötigt, um
 ein nicht-repetitives und immersives Erlebnis für den Endnutzer zu schaffen. All dies manuell anzufertigen, stellt vor
 allem kleinere Indie-Entwicklerstudios vor eine große Herausforderung und kann die Entwicklungszeit signifikant in die
-Länge ziehen. Selbst in größeren Teams mit einer Vielzahl von Designern, nimmt die Erstellung von realistischen Welten
+Länge ziehen. Selbst in größeren Teams mit einer Vielzahl von Designern nimmt die Erstellung von realistischen Welten zumindest
 einige Monate in Anspruch. \cite{10_freiknecht} Hier kann an vielen Stellen nachgeholfen werden, indem man das Erstellen
 von Inhalten automatisiert. Entsprechende Prozesse lassen sich dem Bereich der prozeduralen Generierung zuordnen.
+% TODO: Konkretisieren und mehr verschiedene Quellen angeben, Ausgangspunkt: Quelle 25
+
 
 Mithilfe von verschiedensten Verfahren können so z.B. einzelne Dungeons oder sogar ganze Welten und darin enthaltene Gebilde
 automatisch erzeugt werden. Diese bilden eine Grundstruktur für ein komplexeres Design, bei dem die Entwickler dann nur noch
-kleinere Details per Hand abändern oder hinzufügen müssen.
+kleinere Details per Hand abändern oder hinzufügen müssen. \cite{10_freiknecht}
 
 Andererseits existieren auch viele Videospiele, wie z.B. Minecraft\footnote{https://www.minecraft.net/} oder
 Terraria\footnote{https://terraria.org/}, die auf prozeduraler Generierung aufbauen, um ihr Spielkonzept umzusetzen.
@@ -29,29 +31,50 @@ unbegrenzt oft durchspielen, ohne dass es repetitiv wirkt. So etwas wäre ohne A
 % Hier wird dann darauf aufmerksam gemacht, dass es bei diesen Verfahren viele Limitationen gibt. Bei vielen Verfahren
 % ist es nötig, manuell Regeln für den Algorithmus zu erstellen, sodass dieser überhaupt arbeiten kann. Dies setzt wiederum
 % einiges an Kenntnissen voraus und ist somit nicht für jeden zugänglich. Außerdem werden weitere Probleme aufgezeigt.
+
+% Alte Formulierung:
+% Es gibt viele bekannte Verfahren, welche solche Ergebnisse unter der Verwendung von u.a. zellulären Automaten, generativen
+% Grammatiken oder Constraint-basierten Graphen erzielen können. \cite{5_van_der_linden_et_al} Ein Großteil dieser Verfahren erfordert jedoch
+% menschliches Eingreifen in einigen der Teilschritte. So z.B. muss beim Verwenden einer generativen Grammatik meist bereits eine Menge
+% an Produktionsregeln durch einen Menschen vorgegeben werden, bevor die automatische Generierung überhaupt beginnen kann. Das Erstellen
+% solcher Regeln ist mit viel Arbeit und Trial-and-Error verbunden und kann ohne ein ausgeprägtes Verständnis des angewandten Verfahrens
+% sehr schwierig werden. Dadurch kommt es für viele Designer letztendlich doch nicht in Frage. Auch gibt es Szenarien, in denen die Generierung
+% von Inhalten durch den Endnutzer beeinflusst werden kann, so z.B. in Spielen, in denen der Spieler dynamisch mit dem Terrain und anderen
+% Strukturen interagieren kann. In einem solchen Fall kann der Entwickler keinen direkten Einfluss auf den Generierungsprozess nehmen und alles
+% muss voll automatisiert sein. \cite{14_carli_et_al} Hier setzt diese Arbeit an und untersucht Möglichkeiten zur vollständigen Automatisierung
+% solcher Verfahren.
+
 Es gibt viele bekannte Verfahren, welche solche Ergebnisse unter der Verwendung von u.a. zellulären Automaten, generativen
-Grammatiken oder Constraint-basierten Graphen erzielen können. \cite{5_van_der_linden_et_al} Größtenteils beruhen diese jedoch auf der Anwendung
-von manuell erstellten Regeln, so z.B. eine Menge an gegebenen Produktionsregeln bei der Nutzung von Grammatiken. Das Erstellen
-solcher Regeln ist mit viel Arbeit und Trial-and-Error verbunden und kann ohne ein ausgeprägtes Verständnis des angewandten Verfahrens
-sehr schwierig werden. Dadurch kommt es für viele Designer letztendlich doch nicht in Frage. Hier setzt diese Arbeit an und untersucht
-die automatische Erstellung solcher Regeln.
+Grammatiken oder Constraint-basierten Graphen erzielen können. \cite{5_van_der_linden_et_al} Ein Großteil dieser Verfahren erfordert
+menschliches Eingreifen in einige der Teilschritte. Es gibt allerdings Szenarien, in denen dies problematisch wird. Hängt die Generierung von
+Inhalten eines Produkts z.B. von Entscheidungen des Endnutzers ab (z.B. in Spielen, in denen der Spieler dynamisch mit
+dem Terrain und anderen Strukturen interagiert), so kann der Entwickler keinen direkten Einfluss auf den Generierungsprozess
+nehmen und alles muss voll automatisiert sein. \cite{14_carli_et_al} Auch in Projekten, in denen dies nicht der Fall ist und der gesamte Inhalt
+im Voraus erstellt wird, kann das Voraussetzen von menschlicher Intervenierung als Teil des Prozesses zu einem Problem werden.
+Ein Beispiel hierfür wären Verfahren, die eine generative Grammatik nutzen und voraussetzen, dass dafür zunächst eine Menge an Produktionsregeln
+durch einen Menschen vorgegeben werden (bspw. \cite{33_adams}), bevor die automatische Generierung überhaupt beginnen kann. Das Erstellen solcher
+Regeln ist mit viel Arbeit und Trial-and-Error verbunden und kann ohne ein ausgeprägtes Verständnis des angewandten Verfahrens sehr schwierig werden.
+Dadurch wird der Einsatz eines solchen Verfahrens für viele Designer letztendlich nicht in Frage kommen.
+Hier setzt diese Arbeit an und untersucht Möglichkeiten zur Automatisierung des Erstellens solcher Regeln.
 
 \section{Ziele und Vorgehen}
 % Aus den aufgezeigten Problemen ergibt sich nun der Sinn dieser Arbeit. Inverse Verfahren beheben die oben genannten Probleme
 % und sollen deswegen genauer untersucht werden. Es werden verschiedene Verfahren analysiert und miteinander verglichen.
 % Anschließend wird ein entsprechendes und vielversprechendes Verfahren im Detail untersucht, theoretisch erläutert und
 % dann prototypisch implementiert.
-Spezifisch soll versucht werden, Muster in Beispielstrukturen zu erkennen. Aus diesen Mustern sollen dann Regeln zum Zusammensetzen
-von Strukturen mit ähnlichen Eigenschaften abgeleitet werden.
+Spezifisch soll versucht werden, Muster in Beispielstrukturen zu identifizieren. Aus diesen Mustern sollen dann Regeln zum Zusammensetzen
+von Strukturen mit ähnlichen Eigenschaften abgeleitet werden. Gelingt dies, so muss ein Designer lediglich ein einziges Beispielmodell erstellen,
+um damit seine kreative Vision abzubilden. Alle weiteren Schritte zum Ableiten von Variationen dieses Inputs laufen anschließend automatisch ab.
+Dies nennen wir \textit{inverse} prozedurale Generierung,
+da der Prozess mit einem soweit fertigen Modell beginnt und daraus dann die Regeln ableitet, statt wie in den klassischeren Verfahren zuerst mit
+der Erstellung der Regeln zu beginnen. Die Erstellung eines Beispielmodells erfordert zwar nach wie vor die Arbeit eines Designers, anschließend
+ist aber kein menschliches Eingreifen mehr nötig und das eigentliche Verfahren läuft vollautomatisch ab.
 
-Hier gibt es bereits verschiedene Verfahren, die einen solchen Ansatz verfolgen. Diese sind u.a. der Gitter-basierte Wave Function
+Es gibt bereits verschiedene Verfahren, die einen solchen Ansatz verfolgen. Diese sind u.a. der Gitter-basierte Wave Function
 Collapse Algorithmus von Maxim Gumin\footnote{https://github.com/mxgmn/WaveFunctionCollapse/}, die nach Symmetrien suchende inverse
 prozedurale Modellierung von Bokeloh et al. \cite{3_bokeloh_et_al}, oder das Polygon-basierte Verfahren von Paul Merrell. \cite{1_merrell}
 
-Diese Verfahren werden analysiert und anschließend das vielversprechendste davon praktisch umgesetzt. Das Endergebnis der Arbeit
-soll dann sein, dass das ausgewählte Konzept ausführlich und verständlich erläutert, und nach eigener Interpretation konkret
-implementiert wird. Im Rahmen dieser Arbeit soll dies lediglich für den zweidimensionalen Raum geschehen, könnte jedoch im Anschluss
-auch auf die dritte Dimension ausgeweitet werden.
-
-Ebenfalls soll eine grafische Benutzeroberfläche bereitgestellt werden, über welche der Endnutzer Inputstrukturen auswählen, sowie
-Parameter zur Beeinflussung des Algorithmus anpassen kann.
+Im Rahmen dieser Arbeit werden jene Verfahren grob analysiert und anschließend das vielversprechendste davon praktisch umgesetzt. Das Endergebnis
+der Arbeit soll dann sein, dass die Funktionsweise eines ausgewählten Konzepts ausführlich und verständlich dargestellt, und nach eigener
+Interpretation konkret implementiert wird. Wir begrenzen uns dabei auf die Generierung von Strukturen im zweidimensionalen Raum. Die genauen
+Anforderungen an das darzustellende Konzept sowie an die umgesetzte Software werden in den dazugehörigen Kapiteln näher erläutert.
