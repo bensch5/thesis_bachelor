@@ -5,7 +5,7 @@
 % - Reduzierbarkeit (reducible graphs)
 % - Irreducible Graphs (alle Graphen sind entweder reduzierbar oder unvollständig)
 
-\chapter{Theorie}
+\chapter{Konzept}
 Im Folgenden werden die theoretischen Konzepte hinter dem praktischen Teil der Arbeit betrachtet. Das implementierte Verfahren wird
 Schritt für Schritt vorgestellt und im Detail erläutert. Die vorgestellten Konzepte beruhen auf den Erkenntnissen von Paul Merrell
 in seiner Arbeit aus dem Jahr 2023 \cite{1_merrell}.
@@ -50,7 +50,7 @@ aus verschiedenen Häusern oder ähnlichem sein. Wichtig ist lediglich, dass der
 Ein Polygon ist eine geometrische Figur, die vollständig durch ein Tupel \(P\) von \(n\) verschiedenen Punkten beschrieben werden kann:
 \[P = (P_1,P_2,\dots,P_n), P_i \in \mathbb{R}^2, 3 \leq i \leq n\]
 Diese Punkte bezeichnen wir als \textit{Eckpunkte} des Polygons. Verbindet man zwei
-aufeinanderfolgende Eckpunkte in Form der Strecken \(\overline{P_i P_{i+1}}\) (für \(i = 1,\dots,n-1\)) und \(\overline{P_n P_1}\) miteinander, so
+aufeinanderfolgende Eckpunkte in Form einer Strecke \(\overline{P_i P_{i+1}}\) (für \(i = 1,\dots,n-1\)) bzw. \(\overline{P_n P_1}\) miteinander, so
 erhält man eine \textit{Seite} des Polygons. All diese Seiten zusammen spannen das Polygon auf. Eine Beschränkung der Anzahl an Eckpunkten
 nach oben gibt es dabei nicht, jedoch werden mindestens drei verschiedene Punkte für unsere Definition des Polygons vorausgesetzt. Mit weniger
 als drei Punkten können lediglich Figuren ohne Fläche (Punkte, Linien) erzeugt werden, welche für uns nicht von Nutzen sind.
@@ -308,10 +308,10 @@ erscheint. An diesem Punkt können wir uns die Invertierbarkeit der Produktionen
 in der Hierarchie zum leeren Graphen reduzieren zu können, indem wir diese destruktiv verwenden, so können wir im Umkehrschluss genau die gleichen
 Regeln konstruktiv benutzen, um aus dem leeren Graphen alle anderen Graphen abzuleiten.
 
-%\subsubsection{Ableiten einer Produktionsregel}
+\subsubsection{Ableiten einer Produktionsregel}
 % Zuerst eingehen auf Zusammenhang mit dem GBS (Merrell 5.0)
 
-%\subsubsection{Sonderfälle bei der Bildung von Produktionsregeln}
+\subsubsection{Sonderfälle bei der Bildung von Produktionsregeln}
 
 % TODO:
 % - Referenzieren von Bildern
