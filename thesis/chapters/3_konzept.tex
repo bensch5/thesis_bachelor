@@ -302,6 +302,8 @@ entfernt, so erhalten wir den sogenannten Klebegraphen \(K\). In diesen können 
 zu erhalten. Das Anwenden einer solchen Produktionsregel ist aber auch in die andere Richtung möglich. Alternativ kann auch zuerst \(R\) aus
 \(H\) ausgeschnitten und dann dort \(L\) eingeklebt werden, um \(G\) zu produzieren. \cite{7_ehrig_et_al}
 
+% TODO: Graphmorphismus formal definieren
+
 \subsubsection{Theorie hinter der Funktionsweise}
 Die später aus der Hierarchie abzuleitenden Produktionsregeln werden so angeordnet, dass sich auf der linken Seite ein komplexerer Graph befindet,
 als auf der rechten Seiten. Wird die Regel von links nach rechts angwendet, so vereinfacht sie \(G\). Dies bezeichnen wir als \textit{destruktiv}.
@@ -350,55 +352,76 @@ einen Boundary String mit zwei positiven Drehungen \(\wedge\) und nicht einer ei
 Dies würde den Bedingungen für die Planarität widersprechen, da die Differenz zwischen den positiven und negativen Drehungen nun 2 und nicht 1 betragen würde.
 Um dieses Problem zu umgehen, wird bei der Kombination zweier \gls{ac:gbs} eine weitere negative Drehung zwischen diesen eingefügt. Nehmen wir an \(A\)
 und \(B\) sind Boundary Strings. Die daraus resultierende Kombination hätte dann die Form \(A \vee B\). Dies ist keine willkürliche Anpassung, die
-unsere vorher aufgestellten Regeln für einen \gls{ac:gbs} umgeht, sondern eine logische Konsequenz aus diesen. In Abbildung TODO REF ist dies noch einmal
+unsere vorher aufgestellten Regeln für einen \gls{ac:gbs} umgeht, sondern eine logische Konsequenz aus diesen. In Abbildung \ref{fig:splicing} ist dies noch einmal
 zusätzlich verdeutlicht.
-
-% TODO: Abbildung zu Splicing
 
 Widmen wir uns nun wieder dem Beispiel in Abbildung \ref{fig:set_of_graphs}. Aufgrund der kreisförmigen Natur eines \gls{ac:gbs} können wir
 \(\partial R_1 = ad\wedge\) auch als \(d\wedge a\) und \(\partial R_2 = bc\wedge\) als \(\wedge bc\) darstellen. Werden diese mit einer zusätzlichen
 negativen Drehung in der Mitte kombiniert, so erhalten wir \(\partial R_1 \vee \partial R_2 = d\wedge a\vee \wedge bc = d\wedge abc = abcd\wedge = \partial L\).
 
-% KURZ nochmal beschreiben, wie beim Aufbauen der Hierarchie nach möglichen Regeln gesucht wird
-% erst einen teil matchen, dann den rest rekursiv, ...
-Nach der Erzeugung eines neuen Graphen \(L\) in der Hierarchie betrachten wir stets alle vorher erzeugten Graphen \(R\) und vergleichen die Boundaries
+Mithilfe dieses Wissens können wir nun systematisch eine Vielzahl von Regeln ableiten:
+Nach der Erzeugung eines jeden neuen Graphen \(L\) in der Hierarchie betrachten wir stets alle vorher erzeugten Graphen \(R\) und vergleichen die Boundaries
 miteinander. Wird dabei eine hunderprozentige Übereinstimmung \(\partial L = \partial R\) gefunden, so kann direkt eine neue Regel abgeleitet werden.
 Alternativ könnte \(\partial R\) auch nur ein Teil von \(\partial L\) sein, was einige Teil-Strings hinterlassen würde. Für diese Teil-Strings wird dann
 rekursiv nach weiteren Übereinstimmungen gesucht, bis sich \(\partial L \) entweder komplett aus den gefunden Teil-Strings zusammensetzen lässt oder
-es keine weiteren Graphen mehr gibt, die noch überprüft werden können. In letzterem Fall kann dann keine Produktionsregel abgeleitet werden. 
+es keine weiteren Graphen mehr gibt, die noch überprüft werden können. In letzterem Fall kann dann keine Produktionsregel abgeleitet werden.
 
-Betrachten wir erneut das Beispiel in Abbildung \ref{fig:set_of_graphs}. Wir haben einen Graphen \(L\) mit der Boundary \(\partial L = abcd\wedge \).
+Betrachten wir erneut das Beispiel in Abbildung \ref{fig:set_of_graphs}. Wir haben einen Graphen \(L\) mit der Boundary \(\partial L = abcd\wedge \) erzeugt.
 Beim Iterieren durch die Hierarchie finden wir nun den Graphen \(R_1\) mit \(\partial R_1 = ad\wedge \). \(\partial R_1\) ist als Teil in \(\partial L \)
 enthalten, wodurch \(R_1\) also einen Teil von \(L\) ersetzen kann. Übrig bleibt der Teil-String \(bc\). Um diesem einen Graphen zuordnen zu können,
 muss zunächst eine positive Drehung \(\wedge \) an diesen angefügt werden. Die zusätzliche Drehung wird dann beim Kombinieren automatisch wieder negiert.
-Ein Graph \(R_2\) mit \(\partial R_2 = bc\wedge \) kann ebenfalls gefunden werden und alle Teile von \(\partial L\) konnten anderen \gls{ac:gbs} zugeordnet
-werden. Somit kann nun eine neue Produktionsregel erstellt und \(L\) aus der Hierarchie entfernt werden, da sich dieser von simpleren Graphen vereinfachen
-lässt.
+Ein Graph \(R_2\) mit \(\partial R_2 = bc\wedge \) kann anschließend ebenfalls gefunden werden, wodurch alle Teile von \(\partial L\) nun komplett sind. Somit kann
+aus den gefundenen eine neue Produktionsregel erstellt und \(L\) aus der Hierarchie entfernt werden, da sich dieser nun nachweislich vereinfachen lässt.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=(\imgWidth*3/4)]{images/splicing.pdf}
+    \caption{Kombinieren des \gls{ac:gbs} zweier Graphen mit zusätzlicher negativer Drehung.}
+    \label{fig:splicing}
+\end{figure}
 
 \subsubsection{Starter-Regeln}
 Eine Starter-Regel ist eine besondere Produktionsregel, welche den leeren Graphen \(\varnothing\) mit einem vollständigen Graphen ersetzen kann. Davon
-kann es beliebig viele Regeln geben, jedoch zumindest immer eine. Ohne eine Starter-Regel können keine Graphen aus der Grammatik abgeleitet werden,
-da der leere Graph keine Kanten besitzt, welche man den Graphen in den anderen Produktionsregeln zuordnen könnte. Eine solche Starter-Regel kann durch
+kann es theoretisch beliebig viele Regeln geben, jedoch zumindest immer eine. Ohne eine Starter-Regel können keine Graphen aus der Grammatik abgeleitet werden,
+da der leere Graph keine Kanten besitzt, auf welche man die Graphen in den anderen Produktionsregeln abbilden könnte. Eine solche Starter-Regel kann durch
 das oben beschriebene Vorgehen niemals abgeleitet werden und stellt einen Sonderfall dar. Dieser tritt ein, sobald wir beim Erstellen der Hierarchie
 einen vollständigen Graphen \(L\) erzeugen. In diesem Fall wird nicht versucht, \(\partial L\) mit den \gls{ac:gbs} der anderen Graphen in der Hierarchie
 abzugleichen. Dies würde ohnehin zu keinem Erfolg führen, da in \(\partial L\) keinerlei Halbkanten enthalten sind. Stattdessen wird \(L\) sofort aus der
-Hierarchie entfernt und eine neue Produktionsregel abgleitet, welche auf der linken Seite den vollständigen Graphen \(L\) und auf der rechten Seite den
+Hierarchie entfernt und eine neue Produktionsregel erstellt, welche auf der linken Seite den vollständigen Graphen \(L\) und auf der rechten Seite den
 leeren Graphen \(\varnothing\) enthält.
 
-\subsection{Eingrenzen des Hierarchie-Wachstums}
+\subsubsection{Eingrenzen des Hierarchie-Wachstums}
 Im Optimalfall lassen sich in den ersten paar Generationen der Hierarchie direkt so viele Produktionsregeln ableiten, dass die Hierarchie dadurch vollständig
 geleert werden kann. Meist wird dies allerdings nicht eintreffen und die Anzahl der Graphen wächst unkontrollierbar in die Höhe. Nachfolgend werden einige
 Optimierungen vorgestellt, um dies etwas weiter einzugrenzen. Leider gibt es selbst dann nach wie vor viele Input-Strukturen, bei denen sich das
 Hierarchie-Wachstum nicht ausreichend einschränken lässt. Das Verfahren wird hierdurch dennoch flexibler als auch effizienter.
 
+Eine dieser Optimierungen beläuft sich darauf, ... TODO
 
 % reducing a graph with its descendants (5.4)
 % stubs (5.5)
-% unvervollständigbare Graphen (5.6)
+% (5.6)
 
 % TODO:
 % - Referenzieren von Bildern
 % - Hinzufügen von Quellen
 
 \section{Erzeugen von Variationen mithilfe der abgeleiteten Regeln}
+\subsection{Ableiten eines neuen Winkelgraphen}
+Haben wir erfolgreich eine Graph-Grammatik abgeleitet, können wir diese nun verwenden, um daraus neue Winkelgraphen abzuleiten. Dazu wird zunächst eine
+Starter-Regel ausgewählt, um eine Grundlage für die weiteren Operationen zu schaffen. Es entsteht ein vollständiger Graph \(G\). Anschließend werden nach
+und nach weitere zufällige Produktionsregeln aus der Grammatik ausgewählt und auf den aktuellen Winkelgraphen angewandt. Dabei ist es egal, in welche
+Richtung die Regel verwendet wird. Wir können diese sowohl konstruktiv als auch destruktiv benutzen. Um eine Regel anzuwenden, muss der
+auszuschneidene Graph \(T\) als Teilgraph in \(G\) enthalten sein. Dies ist der Fall, wenn sich ein Graphmorphismus finden lässt, der von den Knoten und Kanten
+in \(T\) auf einen Teil der Knoten und Kanten in \(G\) abbildet. Das Finden solcher Morphismen zwischen beliebigen Graphen gilt als NP-schweres Problem und
+ist somit äußerst kompliziert. \cite{34_cook} Für das Finden von Morphismen in planaren Graphen gibt es allerdings effiziente Algorithmen, die in linearer
+Zeit zu einem Ergebnis kommen. \cite{8_eppstein} Da wir ausschließlich mit planaren Graphen arbeiten, stellt dies also kein Problem für uns dar. Diesen
+Prozess können wir beliebig oft wiederholen und jederzeit abbrechen. Solang zumindest eine Starter-Regel angewandt wurde, erhalten wir in jedem Fall ein
+valides Ergebnis für diesen Teilschritt.
+
+\subsection{Festsetzen der Knotenpositionen}
 % - Quelle 4 für Nullspace Zeugs
+Jetzt gilt es nur noch den eben erzeugten Winkelgraphen in eine Output-Struktur mit festen Knotenpositionen umzuwandeln und gleichzeitig sicherzustellen,
+dass diese ohne jegliche Überschneidungen von Kanten dargestellt werden kann.
+% erneut sehr kompliziert (np-hard)
+% eventuell kann keine Lösung gefunden werden
