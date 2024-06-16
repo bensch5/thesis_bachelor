@@ -218,7 +218,7 @@ negativen Drehung.
     \label{fig:gluing}
 \end{figure}
 
-\section{Ablauf}
+\section{Finden der Graph-Grammatik}
 \subsection{Anpassen des Inputs}
 % TODO: Anpassen oder Löschen
 Bevor wir mit dem Verfahren beginnen können, muss der Input an bestimmte Anforderungen angepasst werden. Die übergebene Polygonstruktur
@@ -240,7 +240,7 @@ Struktur vorzuweisen hatten. Solche Duplikate sind nicht relevant für die weite
 \subsection{Aufbauen der Graph-Hierarchie}
 Die vorgestellten Klebe-Operationen ermöglichen es uns, die gefundenen Primitive nach und nach zu komplexeren Graphen zusammenzusetzen.
 Diese lassen sich in verschiedene Generationen einer Hierarchie einordnen. In Generation 0 befinden sich alle verschiedenartigen
-Kanten, also alle Kanten mit einem einzigartigen Kantenlabel. In Generation 1 befinden sich alle gefundenen Primitive. Anschließend können
+Kanten, also alle Kanten mit einem einzigartigen Kantenlabel. In Generation 1 befinden sich alle gefundenen Primitive. Anschließend können daraus
 die nachfolgenden Generationen automatisch generiert werden. Dazu wird durch alle Winkelgraphen der zuletzt generierten Generation iteriert
 und alle durchführbaren Klebe-Operationen auf diese angewandt. Gibt es in einem der iterierten Graphen einen noch offenen Kreis, der aber
 durch eine einfach Loop Gluing Operation geschlossen werden kann, so wird diese angwandt. Außerdem werden jeweils alle der gefundenen Primitive
@@ -293,7 +293,7 @@ von Graph-Grammatiken genutzt werden kann. \cite{1_merrell}
 \end{figure}
 
 Die Produktionen im verwendeten \gls{ac:dpo} Ansatz bestehen aus drei Teilen. Einem linken und rechten Graphen (\(L\) und \(R\)), welche jeweils
-den Mutter- und Tochtergraphen darstellen, sowie einem Interface-Graphen \(I\), welcher den Einbettungsmechanismus darstellt.Wie in Abbildung
+den Mutter- und Tochtergraphen darstellen, sowie einem Interface-Graphen \(I\), welcher den Einbettungsmechanismus darstellt. Wie in Abbildung
 \ref{fig:dpo_rule} zu sehen ist, können diese Graphen mithilfe der Graphmorphismen \(\upvarphi L\) und \(\upvarphi R\) untereinander abbilden.
 Ist \(L\) als Teilgraph in einem anderen Graphen \(G\) enthalten, so kann die entsprechende Produktion zum Transformieren von \(G\) verwendet werden.
 Dazu muss \(L\) zunächst aus \(G\) herausgeschnitten werden. Hierfür wird das Interface benötigt. Dieses beschreibt die Gemeinsamkeiten zwischen
@@ -314,10 +314,91 @@ in der Hierarchie zum leeren Graphen reduzieren zu können, indem wir diese dest
 Regeln konstruktiv benutzen, um aus dem leeren Graphen alle anderen Graphen abzuleiten.
 
 \subsubsection{Ableiten einer Produktionsregel}
-% Zuerst eingehen auf Zusammenhang mit dem GBS (Merrell 5.0)
+Kommen wir nun dazu, wie es möglich ist, solche Regeln automatisch ableiten zu können. Dazu schauen wir uns erneut kurz an, wie eine Produktionsregel
+angewandt wird. Wie oben beschrieben, involviert dies zwei Teilschritte. Zunächst wird die eine Seite der Regel aus einem größeren Graphen \(G\)
+ausgeschnitten, wodurch dieser zum Klebegraphen \(K\) wird, in welchem nun einige offene Halbkanten enthalten sind. Um \(K\) wieder in einen vollständigen
+Graphen \(H\) umwandeln zu können,
+müssen all diese Halbkanten anschließend durch Anwenden von entsprechenden Klebeoperationen vervollständig werden. Angenommen, wir haben für den
+vorherigen Schritt den Graphen auf der linken Seite der Regel, also \(L\), aus \(G\) ausgeschnitten. Damit der rechte Graph \(R\) die entstandene
+Lücke in \(K\) schließen kann, muss dieser exakt die gleichen Halbkanten enthalten, wie \(L\). Besitzt \(R\) weniger Halbkanten, so können einige
+der enstandenen Halbkanten in \(K\) nicht vervollständigt werden. Besitzt \(R\) mehr Halbkanten, so würde das Durchführen des Branch Gluings zwischen
+\(K\) und \(R\) weitere offene Halbkanten in \(K\) einfügen. Stimmt die Anzahl der Halbkanten in \(L\) und \(R\) überein, aber die Kantenlabel
+unterscheiden sich, so kann \(K\) ebenfalls nicht vervollständigt werden. Nur bei hundertprozentiger Übereinstimmung der Halbkanten auf beiden Seiten
+der Regel kann diese also problemlos angewandt werden.
 
-\subsubsection{Sonderfälle bei der Bildung von Produktionsregeln}
+Um aus der Hierarchie eine Regel ableiten zu können, müssen wir also jeweils zwei Graphen mit übereinstimmenden Halbkanten finden. Hier können wir uns
+den \gls{ac:gbs} zunutze machen, da dieser alle Halbkantenlabel eines Graphen enthält. Besitzen zwei Graphen einen identischen \gls{ac:gbs}, so besitzen
+sie zwingend auch die gleichen Halbkanten. Zusätzlich wird durch Abgleichen der Boundary sichergestellt, dass sich an der Planarität des enstehenden
+Graphen nach Anwendung einer Produktionsregel nichts ändert. Zwischen den Kanten befinden sich dann nach wie vor die gleichen Drehungen.
+
+Statt einen Graphen \(L\) immer nur mit genau einem anderen Graphen \(R\) zu ersetzen, können wir alternativ auch auf mehrere Graphen \(\{R_1, R_2, \dots\}\)
+auf der rechten Seite abbilden, vorausgesetzt diese befinden sich in der Hierarchie. Lassen sich die \gls{ac:gbs} \(\{\partial R_1, \partial R_2, \dots\}\)
+zu \(\partial L\) zusammensetzen, so sind ebenfalls alle Bedingungen erfüllt, um die Regel problemlos anwenden zu können. Durch dieses Vorgehen lassen sich
+sehr viele weitere Regeln ableiten und das Wachstum der Graph-Hierarchie wird zusätzlich eingeschränkt.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=(\imgWidth*3/4)]{images/set_of_graphs.pdf}
+    \caption{Ersetzen eines Graphen \(L\) mit mehreren Graphen \(\{R_1,R_2\}\).}
+    \label{fig:set_of_graphs}
+\end{figure}
+
+Ein Beispiel für eine solche Produktionsregel ist in Abbildung \ref{fig:set_of_graphs} vereinfacht dargestellt. \(\partial L = abcd\wedge\) lässt sich aus
+einer Kombination von \(\partial R_1 = ad\wedge\) und \(\partial R_2 = bc\wedge\) bilden. Das Kombinieren von zwei Boundary Strings ist jedoch etwas komplizierter
+als das Durchführen einer simplen Konkatenation. Würden wir \(\partial R_1\) und \(\partial R_2\) ohne weitere Anpassungen konkatenieren, so würden wir
+einen Boundary String mit zwei positiven Drehungen \(\wedge\) und nicht einer einzigen negativen Drehung \(\vee\) erhalten (z.B. \(a d \wedge b c \vee\)).
+Dies würde den Bedingungen für die Planarität widersprechen, da die Differenz zwischen den positiven und negativen Drehungen nun 2 und nicht 1 betragen würde.
+Um dieses Problem zu umgehen, wird bei der Kombination zweier \gls{ac:gbs} eine weitere negative Drehung zwischen diesen eingefügt. Nehmen wir an \(A\)
+und \(B\) sind Boundary Strings. Die daraus resultierende Kombination hätte dann die Form \(A \vee B\). Dies ist keine willkürliche Anpassung, die
+unsere vorher aufgestellten Regeln für einen \gls{ac:gbs} umgeht, sondern eine logische Konsequenz aus diesen. In Abbildung TODO REF ist dies noch einmal
+zusätzlich verdeutlicht.
+
+% TODO: Abbildung zu Splicing
+
+Widmen wir uns nun wieder dem Beispiel in Abbildung \ref{fig:set_of_graphs}. Aufgrund der kreisförmigen Natur eines \gls{ac:gbs} können wir
+\(\partial R_1 = ad\wedge\) auch als \(d\wedge a\) und \(\partial R_2 = bc\wedge\) als \(\wedge bc\) darstellen. Werden diese mit einer zusätzlichen
+negativen Drehung in der Mitte kombiniert, so erhalten wir \(\partial R_1 \vee \partial R_2 = d\wedge a\vee \wedge bc = d\wedge abc = abcd\wedge = \partial L\).
+
+% KURZ nochmal beschreiben, wie beim Aufbauen der Hierarchie nach möglichen Regeln gesucht wird
+% erst einen teil matchen, dann den rest rekursiv, ...
+Nach der Erzeugung eines neuen Graphen \(L\) in der Hierarchie betrachten wir stets alle vorher erzeugten Graphen \(R\) und vergleichen die Boundaries
+miteinander. Wird dabei eine hunderprozentige Übereinstimmung \(\partial L = \partial R\) gefunden, so kann direkt eine neue Regel abgeleitet werden.
+Alternativ könnte \(\partial R\) auch nur ein Teil von \(\partial L\) sein, was einige Teil-Strings hinterlassen würde. Für diese Teil-Strings wird dann
+rekursiv nach weiteren Übereinstimmungen gesucht, bis sich \(\partial L \) entweder komplett aus den gefunden Teil-Strings zusammensetzen lässt oder
+es keine weiteren Graphen mehr gibt, die noch überprüft werden können. In letzterem Fall kann dann keine Produktionsregel abgeleitet werden. 
+
+Betrachten wir erneut das Beispiel in Abbildung \ref{fig:set_of_graphs}. Wir haben einen Graphen \(L\) mit der Boundary \(\partial L = abcd\wedge \).
+Beim Iterieren durch die Hierarchie finden wir nun den Graphen \(R_1\) mit \(\partial R_1 = ad\wedge \). \(\partial R_1\) ist als Teil in \(\partial L \)
+enthalten, wodurch \(R_1\) also einen Teil von \(L\) ersetzen kann. Übrig bleibt der Teil-String \(bc\). Um diesem einen Graphen zuordnen zu können,
+muss zunächst eine positive Drehung \(\wedge \) an diesen angefügt werden. Die zusätzliche Drehung wird dann beim Kombinieren automatisch wieder negiert.
+Ein Graph \(R_2\) mit \(\partial R_2 = bc\wedge \) kann ebenfalls gefunden werden und alle Teile von \(\partial L\) konnten anderen \gls{ac:gbs} zugeordnet
+werden. Somit kann nun eine neue Produktionsregel erstellt und \(L\) aus der Hierarchie entfernt werden, da sich dieser von simpleren Graphen vereinfachen
+lässt.
+
+\subsubsection{Starter-Regeln}
+Eine Starter-Regel ist eine besondere Produktionsregel, welche den leeren Graphen \(\varnothing\) mit einem vollständigen Graphen ersetzen kann. Davon
+kann es beliebig viele Regeln geben, jedoch zumindest immer eine. Ohne eine Starter-Regel können keine Graphen aus der Grammatik abgeleitet werden,
+da der leere Graph keine Kanten besitzt, welche man den Graphen in den anderen Produktionsregeln zuordnen könnte. Eine solche Starter-Regel kann durch
+das oben beschriebene Vorgehen niemals abgeleitet werden und stellt einen Sonderfall dar. Dieser tritt ein, sobald wir beim Erstellen der Hierarchie
+einen vollständigen Graphen \(L\) erzeugen. In diesem Fall wird nicht versucht, \(\partial L\) mit den \gls{ac:gbs} der anderen Graphen in der Hierarchie
+abzugleichen. Dies würde ohnehin zu keinem Erfolg führen, da in \(\partial L\) keinerlei Halbkanten enthalten sind. Stattdessen wird \(L\) sofort aus der
+Hierarchie entfernt und eine neue Produktionsregel abgleitet, welche auf der linken Seite den vollständigen Graphen \(L\) und auf der rechten Seite den
+leeren Graphen \(\varnothing\) enthält.
+
+\subsection{Eingrenzen des Hierarchie-Wachstums}
+Im Optimalfall lassen sich in den ersten paar Generationen der Hierarchie direkt so viele Produktionsregeln ableiten, dass die Hierarchie dadurch vollständig
+geleert werden kann. Meist wird dies allerdings nicht eintreffen und die Anzahl der Graphen wächst unkontrollierbar in die Höhe. Nachfolgend werden einige
+Optimierungen vorgestellt, um dies etwas weiter einzugrenzen. Leider gibt es selbst dann nach wie vor viele Input-Strukturen, bei denen sich das
+Hierarchie-Wachstum nicht ausreichend einschränken lässt. Das Verfahren wird hierdurch dennoch flexibler als auch effizienter.
+
+
+% reducing a graph with its descendants (5.4)
+% stubs (5.5)
+% unvervollständigbare Graphen (5.6)
 
 % TODO:
 % - Referenzieren von Bildern
 % - Hinzufügen von Quellen
+
+\section{Erzeugen von Variationen mithilfe der abgeleiteten Regeln}
+% - Quelle 4 für Nullspace Zeugs
