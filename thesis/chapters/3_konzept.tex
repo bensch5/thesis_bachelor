@@ -294,15 +294,20 @@ von Graph-Grammatiken genutzt werden kann. \cite{1_merrell}
 
 Die Produktionen im verwendeten \gls{ac:dpo} Ansatz bestehen aus drei Teilen. Einem linken und rechten Graphen (\(L\) und \(R\)), welche jeweils
 den Mutter- und Tochtergraphen darstellen, sowie einem Interface-Graphen \(I\), welcher den Einbettungsmechanismus darstellt. Wie in Abbildung
-\ref{fig:dpo_rule} zu sehen ist, können diese Graphen mithilfe der Graphmorphismen \(\upvarphi L\) und \(\upvarphi R\) untereinander abbilden.
-Ist \(L\) als Teilgraph in einem anderen Graphen \(G\) enthalten, so kann die entsprechende Produktion zum Transformieren von \(G\) verwendet werden.
-Dazu muss \(L\) zunächst aus \(G\) herausgeschnitten werden. Hierfür wird das Interface benötigt. Dieses beschreibt die Gemeinsamkeiten zwischen
-der linken und der rechten Seite der Produktion und ermöglicht das problemlose Austauschen der beiden Seiten miteinander. Wird \(L\) aus \(G\)
-entfernt, so erhalten wir den sogenannten Klebegraphen \(K\). In diesen können wir nun \(R\) hineinkleben, um den transformierten Graphen \(H\)
-zu erhalten. Das Anwenden einer solchen Produktionsregel ist aber auch in die andere Richtung möglich. Alternativ kann auch zuerst \(R\) aus
-\(H\) ausgeschnitten und dann dort \(L\) eingeklebt werden, um \(G\) zu produzieren. \cite{7_ehrig_et_al}
+\ref{fig:dpo_rule} zu sehen ist, können diese Graphen mithilfe der Homomorphismen \(\upvarphi L\) und \(\upvarphi R\) untereinander abbilden.
 
-% TODO: Graphmorphismus formal definieren
+Ein Homomorphismus von Graph \(A\) (mit der Knotenmenge \(V(A)\) und der Kantenmenge \(E(A)\)) zu Graph \(B\) (mit \(V(B)\) und \(E(B)\)) ist eine
+Abbildung \(h: A \rightarrow B\), welche alle Knoten in \(V(A)\) auf eine (meist echte) Teilmenge von \(V(B)\) abbildet: \(x, y \in V(A)
+\rightarrow h(x), h(y) \in V(B)\). Sind \(x\) und \(y\) in \(A\) adjazent, so müssen \(h(x)\) und \(h(y)\) in \(B\) ebenfalls adjazent sein:
+\((x, y) \in E(A) \rightarrow (h(x), h(y)) \in E(B)\). \cite{35_sabidussi}
+
+Ist \(L\) als Teilgraph in einem anderen Graphen \(G\) enthalten, d.h. gibt es einen Homomorphismus \(\upvarphi m: L \rightarrow G\), so kann die entsprechende
+Produktion zum Transformieren von \(G\) verwendet werden. Dazu muss \(L\) zunächst aus \(G\) herausgeschnitten werden. Hierfür wird das Interface
+benötigt. Dieses beschreibt die Gemeinsamkeiten zwischen der linken und der rechten Seite der Produktion und ermöglicht das problemlose Austauschen
+der beiden Seiten miteinander. Wird \(L\) aus \(G\) entfernt, so erhalten wir den sogenannten Klebegraphen \(K\). In diesen können wir nun \(R\)
+hineinkleben, um den transformierten Graphen \(H\) zu erhalten. Das Anwenden einer solchen Produktionsregel ist aber auch in die andere Richtung
+möglich. Alternativ kann auch zuerst \(R\) aus \(H\) ausgeschnitten und dann dort \(L\) eingeklebt werden, um \(G\) zu produzieren, vorausgesetzt
+es gibt einen Homomorphismus \(\upvarphi n: R \rightarrow H\). \cite{7_ehrig_et_al}
 
 \subsubsection{Theorie hinter der Funktionsweise}
 Die später aus der Hierarchie abzuleitenden Produktionsregeln werden so angeordnet, dass sich auf der linken Seite ein komplexerer Graph befindet,
@@ -412,12 +417,12 @@ Haben wir erfolgreich eine Graph-Grammatik abgeleitet, können wir diese nun ver
 Starter-Regel ausgewählt, um eine Grundlage für die weiteren Operationen zu schaffen. Es entsteht ein vollständiger Graph \(G\). Anschließend werden nach
 und nach weitere zufällige Produktionsregeln aus der Grammatik ausgewählt und auf den aktuellen Winkelgraphen angewandt. Dabei ist es egal, in welche
 Richtung die Regel verwendet wird. Wir können diese sowohl konstruktiv als auch destruktiv benutzen. Um eine Regel anzuwenden, muss der
-auszuschneidene Graph \(T\) als Teilgraph in \(G\) enthalten sein. Dies ist der Fall, wenn sich ein Graphmorphismus finden lässt, der von den Knoten und Kanten
-in \(T\) auf einen Teil der Knoten und Kanten in \(G\) abbildet. Das Finden solcher Morphismen zwischen beliebigen Graphen gilt als NP-schweres Problem und
-ist somit äußerst kompliziert. \cite{34_cook} Für das Finden von Morphismen in planaren Graphen gibt es allerdings effiziente Algorithmen, die in linearer
+auszuschneidene Graph \(T\) als Teilgraph in \(G\) enthalten sein. Dies ist der Fall, wenn sich ein Homomorphismus \(m: T \rightarrow G\) finden lässt.
+Das Finden eines Homomorphismus zwischen beliebigen Graphen gilt als NP-schweres Problem und
+ist somit äußerst kompliziert. \cite{34_cook} Für das Finden von Homomorphismen in planaren Graphen gibt es allerdings effiziente Algorithmen, die in linearer
 Zeit zu einem Ergebnis kommen. \cite{8_eppstein} Da wir ausschließlich mit planaren Graphen arbeiten, stellt dies also kein Problem für uns dar. Diesen
-Prozess können wir beliebig oft wiederholen und jederzeit abbrechen. Solang zumindest eine Starter-Regel angewandt wurde, erhalten wir in jedem Fall ein
-valides Ergebnis für diesen Teilschritt.
+Prozess können wir beliebig oft wiederholen und jederzeit abbrechen. Solang zumindest eine Starter-Regel angewandt wurde, erhalten wir in jedem Fall einen
+vollständigen Winkelgraphen und somit ein valides Ergebnis für diesen Teilschritt.
 
 \subsection{Festsetzen der Knotenpositionen}
 % - Quelle 4 für Nullspace Zeugs
