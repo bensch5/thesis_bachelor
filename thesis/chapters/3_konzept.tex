@@ -425,8 +425,23 @@ Prozess können wir beliebig oft wiederholen und jederzeit abbrechen. Solang zum
 vollständigen Winkelgraphen und somit ein valides Ergebnis für diesen Teilschritt.
 
 \subsection{Festsetzen der Knotenpositionen}
-% - Quelle 4 für Nullspace Zeugs
 Jetzt gilt es nur noch den eben erzeugten Winkelgraphen in eine Output-Struktur mit festen Knotenpositionen umzuwandeln und gleichzeitig sicherzustellen,
-dass diese ohne jegliche Überschneidungen von Kanten dargestellt werden kann.
-% erneut sehr kompliziert (np-hard)
-% eventuell kann keine Lösung gefunden werden
+dass diese ohne jegliche Überschneidungen der Kanten dargestellt werden kann. Dazu verwenden wir einen ähnlichen Ansatz wie Bokeloh et al. \cite{4_bokeloh_et_al}
+und stellen den Graphen als lineares Gleichungssystem dar, für welches wir anschließend eine Lösung finden. Die einzelnen Gleichungen dieses Systems lassen
+sich aus den Kanten des Winkelgraphen ableiten. Die Kanten lassen sich beschreiben durch die Position des Startknotens \(v_0\) und des Endknotens \(v_1\).
+Um zu garantieren, dass dabei der Tangentenwinkel der Kante mit dem entsprechenden Winkel \(\theta\) im Kantenlabel übereinstimmt, fügen wir ebenfalls einen
+Richtungsvektor \(u\) in die Gleichung mit ein. Dieser kann wie folgt berechnet werden: \(u = [cos(\theta), sin(\theta)]\). Hierbei handelt es sich um einen
+Einheitsvektor, der mit einer Kantenlänge \(s\) multipliziert auf die Position von \(v_0\) addiert werden kann, um \(v_1\) zu erhalten. Die gesamte Gleichung
+lautet dann: \(v_0 + su = v_1\) bzw. \(v_0 + su - v_1 = 0\). All diese Kantengleichungen können in eine Matrix-Gleichung der Form \(Ax = 0\) gebracht werden,
+wobei \(x\) alle Knotenpositionen und Kantenlängen und \(A\) alle Koeffizienten dieser Unbekannten enthält. Durch das Berechnen des Kerns der Matrix \(A\)
+lassen sich anschließend mögliche Lösungen für das Gleichungssystem ableiten. Das erstellte Gleichungssystem wird hierbei stets unterbestimmt sein, da es
+mehr Unbekannte als Gleichungen gibt. Daraus ergibt sich wiederum, dass es immer entweder keine oder unendlich viele Lösungen geben wird. Wird eine Lösung
+gefunden, so enthält diese einige freie Variablen. Somit finden wir statt einer konkreten Lösung immer nur einen Raum an möglichen Lösungen. Diesen Raum
+nennen wir Basis des Kerns der Matrix. Durch Festlegen von beliebigen Werten für die freien Variablen können wir daraus nun konkrete Lösungen für das Gleichungssystem
+entnehmen.
+
+Leider bedeutet das Finden einer Lösung für das Gleichungssystem nicht unbedingt, dass wir nun auch eine valide Darstellung für die Output-Struktur
+gefunden haben. Die gefundene Lösung könnte eventuell negative Werte für die Kantenlängen enthalten, welche nicht dargestellt werden können. Um dies zu umgehen,
+müssen wir die vorgeschlagenen Lösungen also stets auf ungültige Werte überprüfen und ggf. eine neue Lösung generieren. Neben dem Überprüfen auf negative
+Kantenlängen könnten wir hier außerdem weitere durch den Endnutzer angegebene Kriterien überprüfen und so z.B. alle Kantenlängen auf einen bestimmten Wertebereich
+beschränken.
