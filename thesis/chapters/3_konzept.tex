@@ -407,10 +407,6 @@ Eine dieser Optimierungen beläuft sich darauf, ... TODO
 % stubs (5.5)
 % (5.6)
 
-% TODO:
-% - Referenzieren von Bildern
-% - Hinzufügen von Quellen
-
 \section{Erzeugen von Variationen mithilfe der abgeleiteten Regeln}
 \subsection{Ableiten eines neuen Winkelgraphen}
 Haben wir erfolgreich eine Graph-Grammatik abgeleitet, können wir diese nun verwenden, um daraus neue Winkelgraphen abzuleiten. Dazu wird zunächst eine
@@ -438,10 +434,16 @@ lassen sich anschließend mögliche Lösungen für das Gleichungssystem ableiten
 mehr Unbekannte als Gleichungen gibt. Daraus ergibt sich wiederum, dass es immer entweder keine oder unendlich viele Lösungen geben wird. Wird eine Lösung
 gefunden, so enthält diese einige freie Variablen. Somit finden wir statt einer konkreten Lösung immer nur einen Raum an möglichen Lösungen. Diesen Raum
 nennen wir Basis des Kerns der Matrix. Durch Festlegen von beliebigen Werten für die freien Variablen können wir daraus nun konkrete Lösungen für das Gleichungssystem
-entnehmen.
+entnehmen. % Abschnitt formaler definieren, Teil zu "Basis des Kerns" überarbeiten
 
 Leider bedeutet das Finden einer Lösung für das Gleichungssystem nicht unbedingt, dass wir nun auch eine valide Darstellung für die Output-Struktur
 gefunden haben. Die gefundene Lösung könnte eventuell negative Werte für die Kantenlängen enthalten, welche nicht dargestellt werden können. Um dies zu umgehen,
 müssen wir die vorgeschlagenen Lösungen also stets auf ungültige Werte überprüfen und ggf. eine neue Lösung generieren. Neben dem Überprüfen auf negative
 Kantenlängen könnten wir hier außerdem weitere durch den Endnutzer angegebene Kriterien überprüfen und so z.B. alle Kantenlängen auf einen bestimmten Wertebereich
 beschränken.
+
+% Eingehen auf Optimierung durch inkrementelles Vorgehen (6.2)
+
+% TODO:
+% - Referenzieren von Bildern
+% - Hinzufügen von Quellen
