@@ -130,8 +130,22 @@ hier das Bilden einer komplexen Struktur und kann technisch recht trivial mittel
 sich häufig in der Natur wiederfinden, so z.B. in Schneeflocken, Küstenlinien, Wolken oder Pflanzen wie Brokkoli und Farnen, welche also algorithmisch
 erzeugt werden können. \cite{19_mandelbrot}
 
-\subsection{L-Systeme}
-% ähnlich zu Fraktalen, ...
+Formal kann die Erzeugung eines solchen Fraktals mithilfe eines Lindenmayer-Systems (kurz: L-System) beschrieben werden. Dieses wurde bereits 1968
+von dem Botaniker Aristid Lindenmayer vorgestellt \cite{38_lindenmayer}, wurde zunächst allerdings nur zum Beschreiben von Wachstumsmustern in Pflanzen
+benutzt und erst später auf das Erstellen von geometrischen Strukturen angepasst. \cite{39_lindenmayer_prusinkiewicz}
+
+Ein L-System ist definiert durch das Tripel \(L = (V,\omega,P)\), wobei \(V\) eine Menge an Symbolen, \(\omega\) das sogennante Startwort, und
+\(P\) eine Menge an Produktionsregeln ist. Die Menge an Symbolen \(V\), oder auch das \textit{Alphabet}, besteht aus Variablen (Symbole, die ersetzt
+werden können) und Konstanten (Symbole, die nicht ersetzt werden können). \(\omega\) ist eine Zeichenkette bestehend aus Symbolen in \(V\), welche
+den Ursprungszustand des L-Systems darstellt. Die Produktionsregeln in \(P\) stellen alle möglichen Ersetzungsoperationen dar und beschreiben, womit
+die verschiedenen Variablen ersetzt werden können. Eine solche Produktionsregel besteht aus zwei Zeichenketten: dem Vorgänger und dem Nachfolger.
+Beim Anwenden dieser Produktion werden dann alle Symbole in der Vorgänger-Zeichenkette mit den Nachfolger-Symbolen ersetzt. Um nun verschiedene
+Zeichenketten aus diesem L-System ableiten zu können, wird zunächst das Startwort \(\omega\) herangezogen, auf welches dann iterativ die vorhandenen
+Produktionen angewandt werden können. In jeder Iteration werden dabei so viele Regeln wie möglich zur gleichen Zeit angewandt, was ein L-System
+ganz klar von formalen Grammatiken unterscheidet. \cite{39_lindenmayer_prusinkiewicz}
+
+Aus den erzeugten Zeichenketten eines L-Systems können nun fraktale geometrische Strukturen erzeugt werden, indem man die verwendeten Symbole z.B.
+als Kommandos einer Turtle-Grafik interpretiert. Ein Beispiel hierfür wäre die Erzeugung der Koch-Kurve. % TODO: Beispiel visualisieren und erklären
 
 \subsection{Perlin Noise}
 % gleiches Ziel wie Fraktal-Algorithmen
@@ -139,10 +153,7 @@ erzeugt werden können. \cite{19_mandelbrot}
 % Definition aus altem Grundlagenkapitel übernehmen und anpassen
 
 \subsection{Zelluläre Automaten}
-
-
-
-% l-systeme und zelluläre Automaten vllt zuerst vorstellen (chronologische Reihenfolge beibehalten)
+% zelluläre Automaten vllt zuerst vorstellen (chronologische Reihenfolge beibehalten)
 
 \section{Inverse Verfahren}
 % bis jetzt vorgestellte Verfahren hatten alles etwas gemeinsam: es wurden aufgrund von vordefinierten Regeln komplett neue Strukturen erzeugt
