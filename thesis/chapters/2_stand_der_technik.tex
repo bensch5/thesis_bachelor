@@ -82,6 +82,9 @@ Definitionen weitesgehend zusammen und sollte für unsere Zwecke ausreichen.
 Schauen wir uns nun an, welche Verfahren über die Jahre hin entwickelt worden sind, um zu verstehen,
 wie wir zum momentanen Stand der Technik gekommen sind.
 
+\subsection{Zelluläre Automaten}
+% TODO
+
 \subsection{PRNG}
 Einer der ersten und simpelsten Ansätze für \gls{ac:pcg} beruht auf der Generation von Pseudozufallszahlen (``pseudo random number
 generation (PRNG)''). \cite{25_hendrikx_et_al} Das ab 1982 entwickelte und 1984 veröffentlichte Weltall-Erkundungsspiel ``Elite''
@@ -113,47 +116,92 @@ welche auf die Erstellung einer anderen Art von prozeduralem ``Content'' abziele
 1982 stellte Benoit Mandelbrot seine Erkenntnisse zum Zusammenhang zwischen dem Aufbau natürlicher Strukturen (wie z.B. Landschaften, Gebirge, \dots)
 und der fraktalen Geometrie vor. \cite{19_mandelbrot}
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=(\imgWidth/2)]{images/sierpinski_triangle.pdf}
-    \caption{Konstruktion eines Sierpinski Dreiecks.}
-    \label{fig:sierpinski_triangle}
-\end{figure}
-
 Ein Fraktal ist ein geometrisches Objekt, das eine selbstähnliche Struktur aufweist. D.h. es sieht auf verschiedenen Skalen ähnlich oder identisch
 aus. Das bedeutet, dass ein Teil des Fraktals eine verkleinerte Kopie des gesamten Fraktals ist. \cite{19_mandelbrot} Ein sehr bekanntes Beispiel
-für eine solche Struktur ist das Sierpinski Dreieck. Dieses kann aus einem gleichseitigen Dreieck konstruiert werden,
+für eine solche Struktur ist das Sierpinski-Dreieck. Dieses kann aus einem gleichseitigen Dreieck konstruiert werden,
 indem man dieses mit drei kleineren gleichseitigen Dreiecken mit der halben Kantenlänge ersetzt, wobei in der Mitte eine Lücke entsteht. Ersetzt man
-die neu enstandenen Dreieck immer wieder bis in's Unendliche nach dem gleichen Vorgehen, so ensteht das Sierpinski Dreieck. Die ersten paar Schritte
-dieses Konstruktionsprozesses sind in Abbildung \ref{fig:sierpinski_triangle} zu erkennen. \cite{37_sierpinski} Eine simple Ersetzungsregel ermöglicht
+die neu enstandenen Dreieck immer wieder bis in's Unendliche nach dem gleichen Vorgehen, so ensteht das Sierpinski-Dreieck. \cite{37_sierpinski}
+Die ersten paar Schritte dieses Konstruktionsprozesses sind in Abbildung \ref{fig:sierpinski_triangle} zu erkennen. Eine simple Ersetzungsregel ermöglicht
 hier das Bilden einer komplexen Struktur und kann technisch recht trivial mittels eines rekursiven Algorithmus umgesetzt werden. Fraktale lassen
 sich häufig in der Natur wiederfinden, so z.B. in Schneeflocken, Küstenlinien, Wolken oder Pflanzen wie Brokkoli und Farnen, welche also algorithmisch
 erzeugt werden können. \cite{19_mandelbrot}
 
-Formal kann die Erzeugung eines solchen Fraktals mithilfe eines Lindenmayer-Systems (kurz: L-System) beschrieben werden. Dieses wurde bereits 1968
-von dem Botaniker Aristid Lindenmayer vorgestellt \cite{38_lindenmayer}, wurde zunächst allerdings nur zum Beschreiben von Wachstumsmustern in Pflanzen
-benutzt und erst später auf das Erstellen von geometrischen Strukturen angepasst. \cite{39_lindenmayer_prusinkiewicz}
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=(\imgWidth/2)]{images/sierpinski_triangle.pdf}
+    \caption{Konstruktion eines Sierpinski-Dreiecks.}
+    \label{fig:sierpinski_triangle}
+\end{figure}
 
-Ein L-System ist definiert durch das Tripel \(L = (V,\omega,P)\), wobei \(V\) eine Menge an Symbolen, \(\omega\) das sogennante Startwort, und
-\(P\) eine Menge an Produktionsregeln ist. Die Menge an Symbolen \(V\), oder auch das \textit{Alphabet}, besteht aus Variablen (Symbole, die ersetzt
-werden können) und Konstanten (Symbole, die nicht ersetzt werden können). \(\omega\) ist eine Zeichenkette bestehend aus Symbolen in \(V\), welche
-den Ursprungszustand des L-Systems darstellt. Die Produktionsregeln in \(P\) stellen alle möglichen Ersetzungsoperationen dar und beschreiben, womit
-die verschiedenen Variablen ersetzt werden können. Eine solche Produktionsregel besteht aus zwei Zeichenketten: dem Vorgänger und dem Nachfolger.
-Beim Anwenden dieser Produktion werden dann alle Symbole in der Vorgänger-Zeichenkette mit den Nachfolger-Symbolen ersetzt. Um nun verschiedene
-Zeichenketten aus diesem L-System ableiten zu können, wird zunächst das Startwort \(\omega\) herangezogen, auf welches dann iterativ die vorhandenen
-Produktionen angewandt werden können. In jeder Iteration werden dabei so viele Regeln wie möglich zur gleichen Zeit angewandt, was ein L-System
-ganz klar von formalen Grammatiken unterscheidet. \cite{39_lindenmayer_prusinkiewicz}
+Formal kann die Erzeugung eines solchen Fraktals mithilfe eines Lindenmayer-Systems (kurz: L-System) beschrieben werden.
+Dieses wurde bereits 1968 von dem Botaniker Aristid Lindenmayer vorgestellt \cite{38_lindenmayer}, wurde zunächst allerdings
+nur zum Beschreiben von Wachstumsmustern in Pflanzen benutzt und erst später auf das Erstellen von geometrischen Strukturen
+angepasst. \cite{39_lindenmayer_prusinkiewicz}
 
-Aus den erzeugten Zeichenketten eines L-Systems können nun fraktale geometrische Strukturen erzeugt werden, indem man die verwendeten Symbole z.B.
-als Kommandos einer Turtle-Grafik interpretiert. Ein Beispiel hierfür wäre die Erzeugung der Koch-Kurve. % TODO: Beispiel visualisieren und erklären
+Ein L-System ist definiert durch das Tripel \(L = (V,\omega,P)\), wobei \(V\) eine Menge an Symbolen, \(\omega\) das
+sogennante Startwort, und \(P\) eine Menge an Produktionsregeln ist. Die Menge an Symbolen \(V\), oder auch das
+\textit{Alphabet}, besteht aus Variablen (Symbole, die ersetzt werden können) und Konstanten (Symbole, die nicht
+ersetzt werden können). \(\omega\) ist eine nicht leere Zeichenkette bestehend aus Symbolen \(\alpha \in V\), welche den
+Ursprungszustand des L-Systems darstellt. Die Produktionsregeln in \(P\) stellen alle möglichen Ersetzungsoperationen
+dar und beschreiben, womit die verschiedenen Variablen ersetzt werden können. Eine solche Produktionsregel besteht
+aus zwei Zeichenketten: dem Vorgänger \(\alpha\) und dem Nachfolger \(\beta\). Beim Anwenden dieser Produktion werden dann
+alle Symbole in der Vorgänger-Zeichenkette mit den Nachfolger-Symbolen ersetzt: \(\alpha \rightarrow \beta\). Um nun verschiedene
+Zeichenketten aus diesem L-System ableiten zu können, wird zunächst das Startwort \(\omega\) herangezogen, auf
+wessen Variablen dann iterativ die vorhandenen Produktionen angewandt werden können. In jeder Iteration werden dabei
+so viele Regeln wie möglich zur gleichen Zeit angewandt, was ein L-System ganz klar von formalen Grammatiken unterscheidet.
+\cite{39_lindenmayer_prusinkiewicz}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\imgWidth]{images/koch_curve.pdf}
+    \caption{Konstruktion einer Koch-Kurve durch ein L-System.}
+    \label{fig:koch_curve}
+\end{figure}
+
+Aus den erzeugten Zeichenketten eines L-Systems können nun fraktale geometrische Strukturen erzeugt werden, indem man die
+verwendeten Symbole z.B. als Kommandos einer Turtle-Grafik \cite{41_papert} interpretiert. Ein Beispiel hierfür ist die Erzeugung
+einer Koch-Kurve \cite{40_koch}. Das entsprechende L-System kann definiert werden durch \(L = (V,\omega,P)\) mit
+\(V = \{F,+,-\}\), \(\omega = F++F++F\), und \(P = \{F \rightarrow F-F++F-F\}\), wobei \(F\) das Zeichnen einer Linie,
+\(+\) das Drehen der Schildkröte um 60° nach rechts, und \(-\) das Drehen der Schildkröte um 60° nach links symbolisieren.
+Das entsprechende L-System und die ersten drei Iterationsschritte bei dessen Anwendung sind in Abbildung \ref{fig:koch_curve}
+dargestellt. \cite{42_mcbride}
 
 \subsection{Perlin Noise}
-% gleiches Ziel wie Fraktal-Algorithmen
-% diese jedoch sehr ineffzient, daher Verbesserung benötigt: Perlin Noise (Quelle 24: 2.2)
-% Definition aus altem Grundlagenkapitel übernehmen und anpassen
+Aufgrund der rekursiven Struktur solcher Fraktale wird deren Berechnung schnell sehr rechenintensiv. Dies ist und war vor allem
+damals für viele Anwendungsfälle ein nicht vernachlässigbares Problem. \cite{24_blatz_korn} Daher war eine nicht rekursive
+Alternative nötig, welche schließlich etwas später in Form von Rauschfunktionen bzw. \textit{Noise} geliefert wurde. Der wohl
+bekannteste Vertreter dieses Konzepts ist das 1985 von Ken Perlin entwickelte \cite{16_perlin} und 2002 verbesserte \cite{18_perlin}
+\textit{Perlin Noise}, welches seit dessen Veröffentlichung nicht mehr aus der Welt der Computergrafik wegzudenken ist. Mithilfe von
+Perlin Noise können eine Reihe von Zufallswerten erzeugt werden. Hierbei sind sich nah beieinander liegende Werte stets sehr ähnlich und
+es gibt keine starken Ausschläge, weshalb der entstehende Verlauf sehr organisch wirkt. Aufgrund von dieser Eigenschaft eignet sich
+Perlin Noise ebenfalls perfekt zum Erzeugen von natürlichen Strukturen. Generell ist der erzeugte Kurvenverlauf vielseitig einsetzbar
+und findet somit in vielen verschiedenen Anwendungen einen Nutzen, darunter auch im Bereich der Animation. \cite{17_lagae_et_al}
 
-\subsection{Zelluläre Automaten}
-% zelluläre Automaten vllt zuerst vorstellen (chronologische Reihenfolge beibehalten)
+Neben der vielseitigen Einsetzbarkeit von Perlin Noise gibt es außerdem den Vorteil, dass dieses Verfahren sehr günstig sowohl in Bezug auf
+die Berechnungszeit als auch in Bezug auf die Speicherverwendung ist. Einzelne Punkte im Verlauf lassen sich unabhängig voneinander berechnen,
+wodurch sich der Berechnungsprozess wunderbar parallelisieren lässt. Dies wird mit der immer weiter voranschreitenden Entwicklung von
+Grafikkarten und Prozessoren auch zu einem immer größeren Vorteil. \cite{17_lagae_et_al}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\imgWidth]{images/perlin_noise.pdf}
+    \caption{Perlin Noise: Gitterzelle und generierte Vektoren.}
+    \label{fig:perlin_noise}
+\end{figure}
+
+Perlin Noise kann für eine beliebige Anzahl an Dimensionen berechnet werden. Dazu wird der n-dimensionale Raum in eine reguläre gitterartige
+Struktur aufgespalten. Die Punkte auf dem Gitter sind dabei all jene, die an ausschließlich ganzzahligen Koordinaten liegen. Im zweidimensionalen
+Raum wäre dies also die Menge an Punkten \(\{(x, y) \ \| \ x, y \in \mathbb{N}\}\). Alle anderen Punkte im Raum befinden sich dann jeweils innerhalb
+einer der von den Gitterpunkten aufgespannten Zellen. Jeder der Gitterpunkte bekommt außerdem einen pseudozufälligen Gradienten (Richtungsvektor
+der Länge 1) zugeordnet. Soll jetzt der Noise-Wert für einen Punkt \(P = (x, y)\) im Raum berechnet werden, werden zunächst die Eckpunkte der
+betroffenen Gitterzelle und deren zugeordnete Gradienten ermittelt. Außerdem werden die Vektoren berechnet, die von den Eckpunkten der Gitterzelle
+in Richtung des gewählten Punktes zeigen. Ein solche Zelle mitsamt der dazugehörigen Vektoren ist in Abbildung \ref{fig:perlin_noise} dargestellt.
+Liegen all diese Werte vor, so kann der Noise-Wert berechnet werden, indem wir den Einfluss der pseudozufälligen Gradienten auf den ausgewählten
+Punkt berechnen und anschließend den gewichteten Mittelwert all dieser Einflüsse ermitteln. Der Einfluss eines einzelnen Gradienten \(g\) kann
+dabei berechnet werden, indem wir das Skalarprodukt zwischen \(g\) und dem Vektor, der vom entsprechenden Eckpunkt zu \(P\) zeigt, berechnen.
+Für den Gradienten \(g(x0,y0)\) würde dies wie folgt aussehen: \(g(x_0,y_0) \cdot ((x,y)-(x_0,y_0))\). Ist dies für jeden der Eckpunkte erfolgt,
+so wird nun der gewichtete Mittelwert daraus berechnet. Dabei erhalten die Eckpunkte, die dem Punkt \(P\) näher sind, eine stärkere Gewichtung.
+Dieser Mittelwert ist der gesuchte Noise-Wert für den Punkt \(P\). \cite{43_zucker}
 
 \section{Inverse Verfahren}
 % bis jetzt vorgestellte Verfahren hatten alles etwas gemeinsam: es wurden aufgrund von vordefinierten Regeln komplett neue Strukturen erzeugt
