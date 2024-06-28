@@ -83,7 +83,7 @@ Schauen wir uns nun an, welche Verfahren über die Jahre hin entwickelt worden s
 wie wir zum momentanen Stand der Technik gekommen sind.
 
 \subsection{Zelluläre Automaten}
-% TODO
+% wahrscheinlich einfach weglassen
 
 \subsection{PRNG}
 Einer der ersten und simpelsten Ansätze für \gls{ac:pcg} beruht auf der Generation von Pseudozufallszahlen (``pseudo random number
@@ -175,7 +175,8 @@ bekannteste Vertreter dieses Konzepts ist das 1985 von Ken Perlin entwickelte \c
 Perlin Noise können eine Reihe von Zufallswerten erzeugt werden. Hierbei sind sich nah beieinander liegende Werte stets sehr ähnlich und
 es gibt keine starken Ausschläge, weshalb der entstehende Verlauf sehr organisch wirkt. Aufgrund von dieser Eigenschaft eignet sich
 Perlin Noise ebenfalls perfekt zum Erzeugen von natürlichen Strukturen. Generell ist der erzeugte Kurvenverlauf vielseitig einsetzbar
-und findet somit in vielen verschiedenen Anwendungen einen Nutzen, darunter auch im Bereich der Animation. \cite{17_lagae_et_al}
+und findet somit in vielen verschiedenen Anwendungen einen Nutzen, darunter bei der Synthese von Texturen oder auch im Bereich der
+Animation. \cite{17_lagae_et_al}
 
 Neben der vielseitigen Einsetzbarkeit von Perlin Noise gibt es außerdem den Vorteil, dass dieses Verfahren sehr günstig sowohl in Bezug auf
 die Berechnungszeit als auch in Bezug auf die Speicherverwendung ist. Einzelne Punkte im Verlauf lassen sich unabhängig voneinander berechnen,
@@ -185,7 +186,7 @@ Grafikkarten und Prozessoren auch zu einem immer größeren Vorteil. \cite{17_la
 \begin{figure}[t]
     \centering
     \includegraphics[width=\imgWidth]{images/perlin_noise.pdf}
-    \caption{Perlin Noise: Gitterzelle und generierte Vektoren.}
+    \caption{Perlin Noise: Gitterzelle und generierte Vektoren (in Anlehnung an \cite{43_zucker}).}
     \label{fig:perlin_noise}
 \end{figure}
 
@@ -204,12 +205,20 @@ so wird nun der gewichtete Mittelwert daraus berechnet. Dabei erhalten die Eckpu
 Dieser Mittelwert ist der gesuchte Noise-Wert für den Punkt \(P\). \cite{43_zucker}
 
 \section{Inverse Verfahren}
-% bis jetzt vorgestellte Verfahren hatten alles etwas gemeinsam: es wurden aufgrund von vordefinierten Regeln komplett neue Strukturen erzeugt
-% -> inverse Ansätze gehen anders vor
+Die bisher vorgestellten Verfahren haben alle eine Gemeinsamkeit: sie erzeugen neue Strukturen aus bereits vordefinierten Regeln. Im Anschluss
+wollen wir einige Verfahren vorstellen, die etwas anders vorgehen und solche Regeln selbst erzeugen. Dabei wird beispiel-basiert gearbeitet,
+d.h. die entsprechenden Verfahren erhalten eine vorgefertigte Beispielstruktur als Input. Diese werden anschließend auf bestimmte Eigenschaften und
+Muster untersucht, um dann per Reverse Engineering einige Regeln ableiten zu können, mithilfe welcher neue Strukturen mit ähnlichen Eigenschaften
+automatisch erzeugt werden können. Aufgrund des umgekehrten Vorgehens hierbei bezeichnen wir solche Verfahren als \textit{invers}.
+
 \subsection{Model Synthesis}
-% Merrell, Quellen 20-22
+% Merrell, Quelle 44
+% Erweiterung von 
+
+\subsection{Wave Function Collapse}
+
 \subsection{Nutzen von partieller Symmetrie}
 % Bokeloh et al., Quelle 3
-\subsection{Wave Function Collapse}
+
 \subsection{Inverses Ableiten einer Graph-Grammatik}
 % Merrell, Quellen 1-2
