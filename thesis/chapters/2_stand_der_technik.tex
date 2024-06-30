@@ -82,11 +82,8 @@ Definitionen weitesgehend zusammen und sollte für unsere Zwecke ausreichen.
 Schauen wir uns nun an, welche Verfahren über die Jahre hin entwickelt worden sind, um zu verstehen,
 wie wir zum momentanen Stand der Technik gekommen sind.
 
-\subsection{Zelluläre Automaten}
-% wahrscheinlich einfach weglassen
-
 \subsection{PRNG}
-Einer der ersten und simpelsten Ansätze für \gls{ac:pcg} beruht auf der Generation von Pseudozufallszahlen (``pseudo random number
+Einer der simpelsten Ansätze für \gls{ac:pcg} beruht auf der Generation von Pseudozufallszahlen (``pseudo random number
 generation (PRNG)''). \cite{25_hendrikx_et_al} Das ab 1982 entwickelte und 1984 veröffentlichte Weltall-Erkundungsspiel ``Elite''
 benutzt einen solchen Ansatz, um Eigenschaften der dort zu erkundenen Planeten automatisch zu generieren. \cite{36_spufford}
 Diese Idee enstand aufgrund der technischen Limitationen zur damaligen Zeit. Die Entwickler, David Braben und Ian Bell, wollten den Spielern
@@ -211,14 +208,48 @@ d.h. die entsprechenden Verfahren erhalten eine vorgefertigte Beispielstruktur a
 Muster untersucht, um dann per Reverse Engineering einige Regeln ableiten zu können, mithilfe welcher neue Strukturen mit ähnlichen Eigenschaften
 automatisch erzeugt werden können. Aufgrund des umgekehrten Vorgehens hierbei bezeichnen wir solche Verfahren als \textit{invers}.
 
-\subsection{Model Synthesis}
-% Merrell, Quelle 44
-% Erweiterung von 
+\subsection{Model Synthesis und Wave Function Collapse}
+Ein recht bekanntes und von vielen Spieleentwicklern genutztes Verfahren trägt den Namen \textit{\gls{ac:wfc}}. Dieses ist ein 2016 von
+Maxim Gumin entwickelter Algorithmus, welcher eine Bitmap als Input entgegen nehmen kann und aus dieser Variationen ableiten kann. Hier wird also
+mit gitterartigen Strukturen gearbeitet, weshalb sich \glossary{ac:wfc} perfekt zum Generieren von Pixel Art Texturen oder dem Erstellen von
+Leveln in Kachel-basierten Videospielen eignet. \cite{45_gumin} Das Konzept hinter der Funktionsweise von \gls{ac:wfc} stammt allerdings
+nicht von Gumin selbst, sondern beruht auf einem von Paul Merrell in 2007 vorgestelltem Verfahren namens \textit{Model Synthesis} \cite{20_merrell}.
+Ein detaillierter Vergleich beider Verfahren wurde durch Paul Merrell selbst in 2021 vorgenommen \cite{46_merrell} und soll hier nicht von weiterer
+Bedeutung sein. Was für uns jedoch wichtig ist, ist, dass Model Synthesis spezifisch auf das Erstellen von Modellen im dreidimensionalen Raum
+abzielt \cite{20_merrell}, während \gls{ac:wfc} in seiner ursprünglichen Form ausschließlich für zweidimensionale Strukturen genutzt werden
+konnte \cite{45_gumin}\cite{46_merrell}. Da diese Arbeit ebenfalls nur auf das Generieren von Strukturen im 2D abzielt, betrachten wir im Folgenden
+also den \gls{ac:wfc}-Algorithmus etwas näher.
 
-\subsection{Wave Function Collapse}
+Grundlegend arbeitet \gls{ac:wfc} Gitter-basiert und mit einer Sammlung von Kacheln. Jede Kachel repräsentiert ein mögliches Muster oder eine mögliche
+Form, die in eine Zelle des Gitters platziert werden kann. Nutzt man den Algorithmus z.B. zum Erstellen von Texturen, so handelt es sich dabei um eine
+simple Farbe des entsprechenden Pixels. Nutzt man ihn zum Erstellen eines Levels in einem Kachel-basierten Videospiel, so kann es sich dabei auch um
+detaillierte Texturen für z.B. Wasserflächen oder Wälder handeln. Um zu bestimmen, welche Kacheln letztendlich in die Zellen platziert werden können,
+werden Constraints genutzt. Bevor eine neue Struktur generiert wird, werden für jede verschiedene Kachel Constraints abgeleitet, die beschreiben, neben
+welchen anderen Kacheln sich diese befinden darf. \cite{45_gumin}
+
+Nun zum Ablauf des eigentlichen Verfahrens: \gls{ac:wfc} beginnt mit einem leeren Gitter, welches ausgefüllt werden soll. Zu Beginn sind alle Positionen
+in diesem Gitter vollständig unbestimmt, d.h. in jede Zelle darf jede Kachel eingetragen werden. Anschließend werden die Zellen Schritt für Schritt mit
+Kacheln gefüllt. Dazu wird in jedem Schritt ein Entropie-Wert für jede Zelle berechnet, welcher beschreibt, wie viele verschiedene Kacheln dort noch
+platziert werden dürfen. Es wird also geschaut, welche Kacheln sich bereits in der Nachbarschaft der ausgewählten Zelle befinden, woraufhin einige der
+verfügbaren Kacheln für diese Position ausgeschlossen werden können. Im Anschluss wird die Zelle mit der niedrigsten Entropie betrachtet und für diese
+zufällig eine der verfügbaren Kacheln ausgewählt und dort platziert. Dieser Vorgang wird als ``Kollabieren'' der Zelle bezeichnet (daher das ``Collapse''
+im Namen des Algorithmus) und führt zu einer Anpassung der Entropie-Werte der umliegenden Zellen. Dieser Vorgang wird nun immer weiter wiederholt, bis
+schließlich alle Zellen nach diesem Prinzip kollabiert werden konnten oder es an irgendeiner Stelle zu einem Widerspruch kommt. Ein Widerspruch liegt
+vor, wenn für eine der noch offene Zellen ein Entropie-Wert von \(0\) berechnet wird und es somit keine Kacheln mehr gibt, die dort platziert werden
+können. Tritt dies auf, so muss der gesamte Vorgang wiederholt werden. Maxim Gumin zufolge tritt dieses Problem in der Praxis allerdings ``überraschend
+selten'' auf. \cite{45_gumin} Einige Beispiele für Strukturen, die nach diesem Vorgehen generiert werden können, lassen sich in Abbildung \ref{fig:wfc}
+finden. Das dritte Beispiel hier könnte z.B. als Layout für einen Dungeon verwendet werden.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\imgWidth]{images/wfc.png}
+    \caption{Wave Function Collapse: Beispielstrukturen und generierte Variationen \cite{45_gumin}.}
+    \label{fig:wfc}
+\end{figure}
 
 \subsection{Nutzen von partieller Symmetrie}
-% Bokeloh et al., Quelle 3
+% wfc kann mit wenig aufwand recht beeindruckende Ergebnisse erzeugen, ist jedoch in seiner Anwendung sehr limitiert (nur gitter-basiert)
+% daher anderer Ansatz: Bokeloh et al., Quelle 3
 
 \subsection{Inverses Ableiten einer Graph-Grammatik}
 % Merrell, Quellen 1-2
