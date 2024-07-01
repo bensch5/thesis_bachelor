@@ -108,6 +108,7 @@ oder Gegenständen konnten generiert werden, indem die generierten Zahlen zum Au
 und Substantiven genutzt wurden. \cite{36_spufford}
 
 \subsection{Fraktale}
+\label{chap:fraktale}
 Etwa im gleichen Zeitraum, in dem ``Elite'' entwickelt wurde, haben sich weitere fundamentale Ansätze im Bereich von \gls{ac:pcg} angebahnt,
 welche auf die Erstellung einer anderen Art von prozeduralem ``Content'' abzielen: dem Erzeugen von natürlich wirkenden, organischen Strukturen.
 1982 stellte Benoit Mandelbrot seine Erkenntnisse zum Zusammenhang zwischen dem Aufbau natürlicher Strukturen (wie z.B. Landschaften, Gebirge, \dots)
@@ -227,6 +228,13 @@ detaillierte Texturen für z.B. Wasserflächen oder Wälder handeln. Um zu besti
 werden Constraints genutzt. Bevor eine neue Struktur generiert wird, werden für jede verschiedene Kachel Constraints abgeleitet, die beschreiben, neben
 welchen anderen Kacheln sich diese befinden darf. \cite{45_gumin}
 
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\imgWidth]{images/wfc.png}
+    \caption{Wave Function Collapse: Beispielstrukturen und generierte Variationen \cite{45_gumin}.}
+    \label{fig:wfc}
+\end{figure}
+
 Nun zum Ablauf des eigentlichen Verfahrens: \gls{ac:wfc} beginnt mit einem leeren Gitter, welches ausgefüllt werden soll. Zu Beginn sind alle Positionen
 in diesem Gitter vollständig unbestimmt, d.h. in jede Zelle darf jede Kachel eingetragen werden. Anschließend werden die Zellen Schritt für Schritt mit
 Kacheln gefüllt. Dazu wird in jedem Schritt ein Entropie-Wert für jede Zelle berechnet, welcher beschreibt, wie viele verschiedene Kacheln dort noch
@@ -240,16 +248,44 @@ können. Tritt dies auf, so muss der gesamte Vorgang wiederholt werden. Maxim Gu
 selten'' auf. \cite{45_gumin} Einige Beispiele für Strukturen, die nach diesem Vorgehen generiert werden können, lassen sich in Abbildung \ref{fig:wfc}
 finden. Das dritte Beispiel hier könnte z.B. als Layout für einen Dungeon verwendet werden.
 
+\subsection{Nutzen von partieller Symmetrie}
+\gls{ac:wfc} kann zwar mit wenig Aufwand recht beeindruckende Ergebnisse erzeugen, ist jedoch stark limitiert in seinen möglichen Anwendungsszenarien,
+da dieser nur Gitter-basiert arbeiten kann. Ein etwas allgemeiner anwendbarer Ansatz wurde 2010 von Bokeloh et al. \cite{3_bokeloh_et_al} vorgestellt.
+Auch hier werden wieder automatisch Regeln abgeleitet, die wir anschließend zum Erzeugen von Variationen des Inputs nutzen können. Die Voraussetzung
+für das Finden solcher Regeln besteht hierbei allerdings darin, dass es in dem gegebenen Input symmetrische Regionen gibt, d.h. einige Teilbereiche des
+Inputs müssen sich an anderen Stellen wiederfinden lassen. Dies klingt zunächst nicht unbedingt nach einem wirklichen Vorteil gegenüber den Limitation
+von \gls{ac:wfc} und Model Synthesis, jedoch besitzen etliche menschengemachte als auch natürlich vorkommende Strukturen einen gewissen Grad an
+Selbstähnlichkeit, wie bereits in \autoref{chap:fraktale} diskutiert wurde. In solchen selbstähnlichen Strukturen lassen sich stets symmetrische
+Regionen finden, was dieses Verfahren für eine Vielzahl an verschiedenen Strukturen einsetzbar macht. \cite{3_bokeloh_et_al} In Abbildung \ref{fig:partial_symmetry}
+befindet sich ein entsprechendes Beispiel für ein Modell mit solchen partiellen Symmetrien, inklusive möglicher zu findender Ersetzungsoperationen.
+
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\imgWidth]{images/wfc.png}
-    \caption{Wave Function Collapse: Beispielstrukturen und generierte Variationen \cite{45_gumin}.}
-    \label{fig:wfc}
+    \includegraphics[width=\imgWidth]{images/partial_symmetry.pdf}
+    \caption{Nutzen von partieller Symmetrie zum Ableiten von Ersetzungsoperationen (in Anlehnung an \cite{3_bokeloh_et_al}).}
+    \label{fig:partial_symmetry}
 \end{figure}
 
-\subsection{Nutzen von partieller Symmetrie}
-% wfc kann mit wenig aufwand recht beeindruckende Ergebnisse erzeugen, ist jedoch in seiner Anwendung sehr limitiert (nur gitter-basiert)
-% daher anderer Ansatz: Bokeloh et al., Quelle 3
+Zum Finden möglicher Ersetzungsoperationen wird der Input auf sogenannte \textit{Andockstellen} untersucht. Eine Andockstelle ist eine Kurve bzw.
+Sammlung von Punkten \(\alpha\) entlang der Oberfläche \(S\) des gegebenen Modells (\(\alpha \subseteq S\)), welche das Modell in zwei vollständig
+abgetrennte Teile unterteilt. Eine Kurve die diese Bedingung nicht erfüllt, lässt sich in Abbildung \ref{fig:partial_symmetry_2}b) finden. Eine solche Andockstelle ist
+nur von Nutzen, wenn sich dazu eine sekundäre Andockstelle finden lässt, die entsteht, wenn wir auf jeden Punkt der primären Andockstelle eine
+bestimmte Transformation \(T\) anwenden. Die transformierten Punkte müssen sich dabei alle ebenfalls auf der Oberfläche finden lassen
+(\(T(\alpha) \subseteq S\)). Außerdem muss die anliegende Topologie aller Punkte \(x \in \alpha\) mit der Topologie der transformierten Punkte
+\(T(x) \in T(\alpha)\) übereinstimmen, d.h. ist \(x\) ein Randpunkt, so muss \(T(x)\) ebenfalls ein Randpunkt sein, oder ist \(x\) ein Punkt
+inmitten von \(S\), so muss \(T(x)\) ebenfalls ein Punkt inmitten von \(S\) sein. An dieser Stelle wird die Bedeutung der partiellen Symmetrie klar:
+ein solches Paar an primären und sekundären Andockstellen kann nur gefunden werden, wenn sich ein Teil des Modells (in diesem Fall alle Punkte in
+\(\alpha\)) an einer anderen Stelle im Modell wiederfinden lässt. Die durch die Andockstellen vom Rest des Modells abgetrennten Bereiche nennen wir
+\textit{Docker}. Diese können an andere Andockstellen mit dem gleichen Kurvenverlauf angedockt, aus dem Modell entfernt, oder durch
+andere Docker ersetzt werden, um Variationen des Modells zu erzeugen \cite{3_bokeloh_et_al}. Beispiele hierfür lassen sich in den Abbildungen
+\ref{fig:partial_symmetry} und \ref{fig:partial_symmetry_2}a) finden.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\imgWidth]{images/partial_symmetry_2.pdf}
+    \caption{\textit{a)} Ersetzungsoperation mit zwei verschiedenen Dockern. \textit{b)} Valide und invalide Andockstellen. (in Anlehnung an \cite{3_bokeloh_et_al}).}
+    \label{fig:partial_symmetry_2}
+\end{figure}
 
 \subsection{Inverses Ableiten einer Graph-Grammatik}
-% Merrell, Quellen 1-2
+% nun da wir uns bla bla bla angeschaut haben kommen wir zum eigentlichen dingens
