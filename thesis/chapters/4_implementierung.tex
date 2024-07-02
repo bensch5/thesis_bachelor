@@ -1,17 +1,83 @@
 % @author Benjamin Schröder
 %
 \chapter{Implementierung}
-Im folgenden Kapitel betrachten wir...
+Im folgenden Kapitel betrachten wir die praktische Implementierung der zuvor vorgestellten Konzepte. Dazu werden zunächst
+einige spezifische Anforderungen an die zu entwickelnde Software aufgelistet. Anschließend wird darauf eingegangen, wie
+diese Anforderungen dann umgesetzt werden sollen, indem die verwendeten Technologien und Entwurfsmuster vorgestellt werden.
 
 \section{Anforderungen an die Software}
 \subsection{Funktionale Anforderungen}
+Die funktionalen Anforderungen beschreiben, \textit{was} umgesetzt werden soll, also welche konkreten Funktionen von der Software
+bereitgestellt werden sollen. Diese lauten wie folgt:
+
+\begin{itemize}
+    \item es sollen beliebige polygonale 2D-Strukturen als Input eingelesen werden können
+    \item es sollen einige Beispielstrukturen als Input zur Verfügung gestellt werden, zwischen denen der Nutzer auswählen kann
+    \item mithilfe einer polygonalen Struktur als Input sollen automatisch ähnliche Strukturen generiert werden können:
+    \begin{itemize}
+        \item aus einer eingelesenen Input-Struktur sollen automatisch Regeln für eine Graph-Grammatik abgeleitet werden können
+        \item aus einer gegebenen Graph-Grammatik sollen verschiedene Graphen abgeleitet werden können
+        \item aus einem solchen Graphen soll dann eine planare Output-Struktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können
+    \end{itemize}
+    \item es soll eine Benutzeroberfläche geben, in welcher der Nutzer Parameter für die Generierung einstellen sowie verschiedene Inputstrukturen auswählen können soll
+    \item sowohl die Input-Strukturen, die daraus erzeugt Grammatik und die generierten Variationen sollen visualisiert werden können
+\end{itemize}
 
 \subsection{Nicht-funktionale Anforderungen}
+Die nicht-funktionalen Anforderungen beschreiben, \textit{wie} die oben aufgelisteten Funktionen umgesetzt werden sollen, also
+welche Qualitätskriterien dabei eingehalten werden sollen. Diese lauten wie folgt:
 
-\section{Architektur}
+\begin{itemize}
+    \item die Anwendung soll auf Windows ausführbar sein
+    \item die Nutzeroberfläche soll einfach und übersichtlich gehalten werden
+    \item die implementierten Algorithmen sollen sich deterministisch verhalten und durch einen Seed reproduzierbar sein
+    \item alle wichtigen Komponenten sollen durch Tests abgedeckt sein
+    \item alle nicht-trivialen Bestandteile des Codes sollen mit Kommentaren versehen werden
+    % TODO: Anforderungen an Input-Größe, Zeitverhalten, und Architektur (Kopplung, etc.)
+\end{itemize}
 
 \section{Verwendete Technologien und Bibliotheken}
+Der gesamte Code ist in Java 16 geschrieben. Die grafische Benutzeroberfläche wird mithilfe des Java GUI-Toolkits Swing umgesetzt,
+welches Bestandteil der Java-Runtime ist und viele Bibliotheken zum Erstellen von simplen Nutzeroberflächen bereitstellt. Die
+entwickelte Software wird hierbei als Teil eines größeren \gls{ac:pcg}-Projekts von Prof. Dr. Philipp Jenke umgesetzt, in welchem
+sich viele weitere Studenten-Projekte, sowie Implementierungen von weiteren Algorithmen und Datenstrukturen im Bereich der prozeduralen
+Generierung befinden. Die grundsätzlichen von uns verwendeten Datenstrukturen und Algorithmen werden jedoch allesamt selbst implementiert
+und wir bedienen uns lediglich einiger Helfer-Funktionen, z.B. für das Einlesen von Dateien oder dem Loggen des Programmablaufs.
+
+\section{Architektur}
+% TODO
 
 \section{Datenstrukturen}
+Grundsätzlich werden drei verschiedene Datenstrukturen implementiert, welche nachfolgend vorgestellt werden.
+
+\subsection{PolygonMesh}
+%\lstinline{code}
+Die \codeword{PolygonMesh}-Klasse repräsentiert die in \autoref{chap:input} vorgestellte polygonale Struktur, die der Algorithmus
+als Input bekommt und als Output erzeugt. Jedes \codeword{PolygonMesh}-Objekt verwaltet eine Liste von Knoten (Klasse \codeword{Vertex}),
+eine Liste von Kanten (Klasse \codeword{Edge}) und eine Liste von Polygonen (Klasse \codeword{Polygon}). Diese werden alle auf der
+obersten Ebene (also in der \codeword{PolygonMesh}-Klasse) verwaltet, um das Vorhandensein von Duplikaten zu verhindern. Da sich
+mehrere Polygone die gleichen Kanten, und mehrere Kanten die gleichen Knoten teilen können, kann es sonst vorkommen, dass diese mehrfach
+in der Datenstruktur gespeichert werden. Durch die Verwaltung aller Instanzen der anderen Klassen in \codeword{PolygonMesh} selbst wird
+dies verhindert.
+
+Ein \codeword{Vertex} besitzt lediglich nur ein einziges Feld: eine zweidimensionale Knotenposition und kann dadurch vollständig
+beschrieben werden. Eine \codeword{Edge} wird durch zwei verschiedene Knoten definiert. Für diese wird jeweils nur ein Index gespeichert,
+über welchen das eigentliche \codeword{Vertex}-Objekt in der Liste in \codeword{PolygonMesh} referenziert werden kann. Die Felder in
+\codeword{Polygon} werden ähnlich umgesetzt: auch hier werden wieder nur Indexe für die untergeordneten Objekte gespeichert. Jedes
+\codeword{Polygon} besitzt dabei eine Liste von Kanten- als auch Knoten-Indexen. Außerdem enthält jedes \codeword{Polygon} ein Feld
+für eine Farbe, welche später genutzt wird, um dieses in der grafischen Darstellung einzufärben.
+
+Neben der Verwaltung der eigentlichen Datenstruktur stellt die \codeword{PolygonMesh}-Klasse außerdem Funktionalität zum Serialisieren
+und Deserialisieren der Objekte bereit. Ein \codeword{PolygonMesh}-Objekt kann in eine \codeword{.mesh}-Datei umgewandelt werden und umgekehrt
+kann ein neues \codeword{PolygonMesh}-Objekt durch das Einlesen einer \codeword{.mesh}-Datei initialisiert werden. So können wir neue
+\codeword{PolygonMesh}-Objekte zur Laufzeit erzeugen. In einer \codeword{.mesh}-Datei werden alle Knotenpositionen, die Knoten-Indexe der einzelnen
+Polygone, sowie die Polygonfarben als Plain-Text abgespeichert. Dies ermöglicht das einfache Erstellen von neuen Polygon-Strukturen, die
+dann dem Nutzer als Input für den Algorithmus bereitgestellt werden.
+
+\subsection{AngleGraph}
+
+\subsection{GraphGrammar}
 
 \section{Algorithmen}
+
+\section{Ablauf}

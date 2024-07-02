@@ -6,10 +6,14 @@
 % - Irreducible Graphs (alle Graphen sind entweder reduzierbar oder unvollständig)
 
 \chapter{Konzept}
-Im Folgenden werden die theoretischen Konzepte hinter dem praktischen Teil der Arbeit betrachtet. Das implementierte Verfahren wird
-Schritt für Schritt vorgestellt und im Detail erläutert. Die vorgestellten Konzepte beruhen auf den Erkenntnissen von Paul Merrell
-in seiner Arbeit aus dem Jahr 2023 \cite{1_merrell}. Alle Paragraphen in diesem Kapitel, die nicht explizit mit einer Referenz versehen
-sind, beziehen sich auf genau diese Quelle.  
+Das Verfahren von Bokeloh et al. \cite{3_bokeloh_et_al} ist zwar vielseitig einsetzbar und kann auf eine Vielzahl von verschiedenartigen
+Modellen angewandt werden, jedoch unterscheiden sich die erzeugten Strukturen in vielen Fällen kaum vom Input. Meist werden lediglich
+vorhandene Teilbereiche des Modells neu angeordnet. Die zugrundeliegenden Muster, die ein bestimmtes Modell ausmachen, werden jedoch
+nicht erkannt \cite{1_merrell}. Genau hier setzt das nachfolgende Kapitel an und stellt ein Verfahren vor, welches versucht solche grundlegenden Muster
+zu erkennen. Zunächst wird ein grober Überblick zum gesamten Ablauf gegeben. Anschließend werden einige grundlegende Konzepte, die für
+das weitere Verständnis wichtig sind, vorgestellt, bevor dann letztendlich alle einzelnen Teilschritte im Detail erläutert werden.
+Die vorgestellten Konzepte beruhen dabei auf den Erkenntnissen von Paul Merrell in seiner Arbeit aus dem Jahr 2023 \cite{1_merrell}.
+Alle Paragraphen in diesem Kapitel, die nicht explizit mit einer Referenz versehen sind, beziehen sich auf genau diese Quelle.
 
 \section{Überblick}
 
@@ -45,6 +49,7 @@ Für einen solchen Graphen müssen dann nur noch konkrete Knotenpositionen und K
 
 \section{Grundlagen}
 \subsection{Input}
+\label{chap:input}
 Der Algorithmus kann mit beliebigen polygonalen Strukturen als Input arbeiten. Dies können einfache Rechtecke oder aber auch komplizierte Gebilde
 aus verschiedenen Häusern oder ähnlichem sein. Wichtig ist lediglich, dass der Input als Sammlung von Polygonen beschrieben werden kann.
 
@@ -433,9 +438,8 @@ lautet dann: \(v_0 + su = v_1\) bzw. \(v_0 + su - v_1 = 0\). All diese Kantengle
 wobei \(x\) alle Knotenpositionen und Kantenlängen und \(A\) alle Koeffizienten dieser Unbekannten enthält. Durch das Berechnen des Kerns der Matrix \(A\)
 lassen sich anschließend mögliche Lösungen für das Gleichungssystem ableiten. Das erstellte Gleichungssystem wird hierbei stets unterbestimmt sein, da es
 mehr Unbekannte als Gleichungen gibt. Daraus ergibt sich wiederum, dass es immer entweder keine oder unendlich viele Lösungen geben wird. Wird eine Lösung
-gefunden, so enthält diese einige freie Variablen. Somit finden wir statt einer konkreten Lösung immer nur einen Raum an möglichen Lösungen. Diesen Raum
-nennen wir Basis des Kerns der Matrix. Durch Festlegen von beliebigen Werten für die freien Variablen können wir daraus nun konkrete Lösungen für das Gleichungssystem
-entnehmen. % Abschnitt formaler definieren, Teil zu "Basis des Kerns" überarbeiten
+gefunden, so enthält diese einige freie Variablen. Somit finden wir statt einer konkreten Lösung immer nur einen Raum an möglichen Lösungen. Durch Festlegen
+von beliebigen Werten für die freien Variablen können wir daraus nun konkrete Lösungen für das Gleichungssystem entnehmen. % Abschnitt formaler definieren
 
 Leider bedeutet das Finden einer Lösung für das Gleichungssystem nicht unbedingt, dass wir nun auch eine valide Darstellung für die Output-Struktur
 gefunden haben. Die gefundene Lösung könnte eventuell negative Werte für die Kantenlängen enthalten, welche nicht dargestellt werden können. Um dies zu umgehen,
