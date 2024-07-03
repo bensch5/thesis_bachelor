@@ -15,8 +15,8 @@ bereitgestellt werden sollen. Diese lauten wie folgt:
     \item es sollen einige Beispielstrukturen als Input zur Verfügung gestellt werden, zwischen denen der Nutzer auswählen kann
     \item mithilfe einer polygonalen Struktur als Input sollen automatisch ähnliche Strukturen generiert werden können:
     \begin{itemize}
-        \item aus einer eingelesenen Input-Struktur sollen automatisch Regeln für eine Graph-Grammatik abgeleitet werden können
-        \item aus einer gegebenen Graph-Grammatik sollen verschiedene Graphen abgeleitet werden können
+        \item aus einer eingelesenen Input-Struktur sollen automatisch Regeln für eine Graphgrammatik abgeleitet werden können
+        \item aus einer gegebenen Graphgrammatik sollen verschiedene Graphen abgeleitet werden können
         \item aus einem solchen Graphen soll dann eine planare Output-Struktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können
     \end{itemize}
     \item es soll eine Benutzeroberfläche geben, in welcher der Nutzer Parameter für die Generierung einstellen sowie verschiedene Inputstrukturen auswählen können soll
@@ -48,36 +48,64 @@ und wir bedienen uns lediglich einiger Helfer-Funktionen, z.B. für das Einlesen
 % TODO
 
 \section{Datenstrukturen}
-Grundsätzlich werden drei verschiedene Datenstrukturen implementiert, welche nachfolgend vorgestellt werden.
+Grundsätzlich werden vier verschiedene Datenstrukturen implementiert, welche nachfolgend vorgestellt werden.
 
 \subsection{PolygonMesh}
 %\lstinline{code}
-Die \codeword{PolygonMesh}-Klasse repräsentiert die in \autoref{chap:input} vorgestellte polygonale Struktur, die der Algorithmus
-als Input bekommt und als Output erzeugt. Jedes \codeword{PolygonMesh}-Objekt verwaltet eine Liste von Knoten (Klasse \codeword{Vertex}),
-eine Liste von Kanten (Klasse \codeword{Edge}) und eine Liste von Polygonen (Klasse \codeword{Polygon}). Diese werden alle auf der
-obersten Ebene (also in der \codeword{PolygonMesh}-Klasse) verwaltet, um das Vorhandensein von Duplikaten zu verhindern. Da sich
+Die \code{PolygonMesh} Klasse repräsentiert die in \autoref{chap:input} vorgestellte polygonale Struktur, die der Algorithmus
+als Input bekommt und als Output erzeugt. Jedes \code{PolygonMesh} Objekt verwaltet eine Liste von Knoten (Klasse \code{Vertex}),
+eine Liste von Kanten (Klasse \code{Edge}) und eine Liste von Polygonen (Klasse \code{Polygon}). Diese werden alle auf der
+obersten Ebene (also in der \code{PolygonMesh} Klasse) verwaltet, um das Erzeugen von Duplikaten zu verhindern. Da sich
 mehrere Polygone die gleichen Kanten, und mehrere Kanten die gleichen Knoten teilen können, kann es sonst vorkommen, dass diese mehrfach
-in der Datenstruktur gespeichert werden. Durch die Verwaltung aller Instanzen der anderen Klassen in \codeword{PolygonMesh} selbst wird
+in der Datenstruktur gespeichert werden. Durch die Verwaltung aller Instanzen der anderen Klassen in \code{PolygonMesh} selbst wird
 dies verhindert.
 
-Ein \codeword{Vertex} besitzt lediglich nur ein einziges Feld: eine zweidimensionale Knotenposition und kann dadurch vollständig
-beschrieben werden. Eine \codeword{Edge} wird durch zwei verschiedene Knoten definiert. Für diese wird jeweils nur ein Index gespeichert,
-über welchen das eigentliche \codeword{Vertex}-Objekt in der Liste in \codeword{PolygonMesh} referenziert werden kann. Die Felder in
-\codeword{Polygon} werden ähnlich umgesetzt: auch hier werden wieder nur Indexe für die untergeordneten Objekte gespeichert. Jedes
-\codeword{Polygon} besitzt dabei eine Liste von Kanten- als auch Knoten-Indexen. Außerdem enthält jedes \codeword{Polygon} ein Feld
+Ein \code{Vertex} besitzt lediglich nur ein einziges Feld: eine zweidimensionale Knotenposition und kann dadurch vollständig
+beschrieben werden. Eine \code{Edge} wird durch zwei verschiedene Knoten definiert. Für diese wird jeweils nur ein Index gespeichert,
+über welchen das eigentliche \code{Vertex} Objekt in der Knotenliste in \code{PolygonMesh} referenziert werden kann. Die Felder in
+\code{Polygon} werden ähnlich umgesetzt: auch hier werden wieder nur Indexe für die untergeordneten Objekte gespeichert. Jedes
+\code{Polygon} besitzt dabei eine Liste von Kanten- als auch Knoten-Indexen. Außerdem enthält jedes \code{Polygon} ein Feld
 für eine Farbe, welche später genutzt wird, um dieses in der grafischen Darstellung einzufärben.
 
-Neben der Verwaltung der eigentlichen Datenstruktur stellt die \codeword{PolygonMesh}-Klasse außerdem Funktionalität zum Serialisieren
-und Deserialisieren der Objekte bereit. Ein \codeword{PolygonMesh}-Objekt kann in eine \codeword{.mesh}-Datei umgewandelt werden und umgekehrt
-kann ein neues \codeword{PolygonMesh}-Objekt durch das Einlesen einer \codeword{.mesh}-Datei initialisiert werden. So können wir neue
-\codeword{PolygonMesh}-Objekte zur Laufzeit erzeugen. In einer \codeword{.mesh}-Datei werden alle Knotenpositionen, die Knoten-Indexe der einzelnen
+Neben der Verwaltung der eigentlichen Datenstruktur stellt die \code{PolygonMesh} Klasse außerdem Funktionalität zum Serialisieren
+und Deserialisieren der Objekte bereit. Ein \code{PolygonMesh} Objekt kann in eine \code{.mesh} Datei umgewandelt werden und umgekehrt
+kann ein neues \code{PolygonMesh} Objekt durch das Einlesen einer \code{.mesh} Datei initialisiert werden. So können wir neue
+\code{PolygonMesh} Objekte zur Laufzeit erzeugen. In einer \code{.mesh} Datei werden alle Knotenpositionen, die Knoten-Indexe der einzelnen
 Polygone, sowie die Polygonfarben als Plain-Text abgespeichert. Dies ermöglicht das einfache Erstellen von neuen Polygon-Strukturen, die
-dann dem Nutzer als Input für den Algorithmus bereitgestellt werden.
+dann dem Nutzer als Input für den Algorithmus bereitgestellt werden können.
 
 \subsection{AngleGraph}
+Die \code{AngleGraph} Datenstruktur implementiert den in \autoref{chap:winkelgraph} vorgestellten Winkelgraphen. Zusätzlich zur
+\code{AngleGraph} Klasse selbst implementieren wir hier die Klassen \code{AngleEdge} und \code{AngleHalfEdge}, die die Kanten
+und Halbkanten repräsentieren, als auch eine innere Klasse \code{GraphBoundary}, die den \gls{ac:gbs} des jeweiligen Graphen
+darstellt. Eine eigene Klasse für die Knoten eines Winkelgraphen gibt es nicht, da diese in einem Winkelgraphen keine Eigenschaften
+besitzen. Stattdessen wird in \code{AngleGraph} nur die Gesamtanzahl \(n\) aller vorhandenen Knoten gespeichert, während die Kanten
+und Halbkanten statt Referenzen auf ein Knoten-Objekt lediglich Knoten-IDs von \(0\) bis \(n - 1\) zugeordnet bekommen.
+\code{AngleEdge} enthält zwei solcher Knoten-IDs, während \code{AngleHalfEdge} nur an einem Knoten anliegt. Beide Kantentypen
+enthalten außerdem einen Tangentenwinkel. Die \code{GraphBoundary} verwaltet eine Liste an Indexen der enhaltenen Halbkanten, sowie
+Referenzen zu den sich daraus ergebenden positiven und negativen Drehungen, welche durch festgelegte Zahlenwerte repräsentiert werden.
+
+Außerdem wird auch hier einiges an Funktionalität bereitgestellt. Der \gls{ac:gbs} kann automatisch aus den vorhandenen Halbkanten
+abgeleitet werden. Es gibt einige Konstruktoren für verschiedene Anwendungsfälle, darunter einen, der ein \code{PolygonMesh} in
+einen Winkelgraphen umwandeln kann. Außerdem wird ein ausgeklügelter Objektvergleich implementiert, welcher in die Tiefe geht und
+die Struktur der einzelnen Winkelgraphen miteinander vergleicht. Dies erleichtert das Finden von Duplikaten beim Erstellen der
+Graph-Hierarchie immens. Für die \code{GraphBoundary} wird Funktionalität bereitgestellt, die diesen in eine einheitliche auf den
+Kantenwinkeln basierende Darstellung umwandeln kann, was das Ableiten von Regeln für die Graphgrammatik ermöglicht.
+
+\subsection{GraphHierarchy}
+Die Graph-Hierarchie ist eine vergleichsweise simple Datenstruktur und ist vollständig in der Klasse \code{GraphHierarchy} implementiert.
+Diese enthält eine Liste für die verschiedenen Generationen, welche sich jeweils aus einer Reihe an \code{AngleGraph} Objekten
+zusammensetzen. Außerdem existieren Felder für die aktuelle Größe und die Maximalgröße der Hierarchie. Die Größe der Hierarchie
+beschreibt die Anzahl der enthaltenen Winkelgraphen.
 
 \subsection{GraphGrammar}
+Die finale Datenstruktur implementiert die Graphgrammatik. Diese ist ebenfalls in einer einzigen Klasse \code{GraphGrammar} implementiert.
+Hier werden zwei Listen verwaltet: eine für die Starter-Regeln und eine für alle anderen Regeln. Starter-Regeln bestehen ausschließlich
+aus einem \code{AngleGraph}, da die andere Seite einer solchen Regel den leeren Graphen enthält, welcher nicht explizit repräsentiert
+werden muss. Alle anderen Regeln werden durch ein Paar von Winkelgraphen gebildet, welche jeweils die linke und die rechte Seite der
+Regel repräsentieren. 
 
 \section{Algorithmen}
+
 
 \section{Ablauf}

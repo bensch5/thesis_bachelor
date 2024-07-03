@@ -18,9 +18,7 @@
 \usepackage{hyperref}
 \usepackage{xcolor}
 % inline code highlighting
-\NewDocumentCommand{\codeword}{v}{
-  \texttt{\textcolor{red}{#1}}
-}
+\newcommand{\code}[1]{\texttt{#1}}
 
 \makeglossaries           % create all glossary entries (remember: run makeglossaries manually)
 \loadglsentries{thesisglossaries.tex}  % load acronym, symbol and glossary entries

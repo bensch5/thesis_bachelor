@@ -37,13 +37,13 @@ zusammengeklebt, was zum Entstehen einer Hierarchie an immer komplexer werdenden
 \ref{fig:overview}-III).
 
 Beim Aufbau der Hierarchie werden die neu entstehenden Graphen auf bestimmte
-Eigenschaften überprüft, die es uns erlauben, daraus Regeln für eine Graph-Grammatik abzuleiten (siehe Abbildung \ref{fig:overview}-IV).
+Eigenschaften überprüft, die es uns erlauben, daraus Regeln für eine Graphgrammatik abzuleiten (siehe Abbildung \ref{fig:overview}-IV).
 Das einfachste Beispiel hierfür sind
 vollständige Graphen, also Graphen, die nur noch aus in sich geschlossenen Kreisen bestehen und keine Halbkanten mehr besitzen. Aus diesen lässt
 sich eine sogennante Startregel ableiten, welche den leeren Graphen mit dem gefundenen vollständigen Graphen ersetzt. Das Finden von weiteren
 Regeln ist deutlich komplizierter und wird später im Detail erläutert.
 
-Sobald nun eine Menge von Regeln für die Graph-Grammatik gefunden wurde, kann man diese verwenden, um verschiedenste zum Inputgraphen
+Sobald nun eine Menge von Regeln für die Graphgrammatik gefunden wurde, kann man diese verwenden, um verschiedenste zum Inputgraphen
 ähnliche Graphen abzuleiten. Dazu werden die gefundenen nach und nach zufällig angewendet, was man in Abbildung \ref{fig:overview}-V sehen kann.
 Für einen solchen Graphen müssen dann nur noch konkrete Knotenpositionen und Kantenlängen bestimmt werden. (siehe Abbildung \ref{fig:overview}-VI).
 
@@ -98,6 +98,7 @@ egal ist. So können die betrachteten Strukturen beliebig skaliert werden und tr
 Kantenwinkel dabei beibehalten werden.
 
 \subsection{Der Winkelgraph}
+\label{chap:winkelgraph}
 Zur Verarbeitung des Inputs wird dieser in einen sogenannten Winkelgraphen umgewandelt, in welchem die spezifischen Positionen der Knoten
 keine Rolle spielen. Stattdessen wird nur abgebildet, welche Knoten es überhaupt gibt, welche der Knoten durch Kanten miteinander verbunden
 sind, und in welchem Winkel diese Kanten verlaufen.
@@ -224,7 +225,7 @@ negativen Drehung.
     \label{fig:gluing}
 \end{figure}
 
-\section{Finden der Graph-Grammatik}
+\section{Finden der Graphgrammatik}
 \subsection{Anpassen des Inputs}
 % TODO: Anpassen oder Löschen
 Bevor wir mit dem Verfahren beginnen können, muss der Input an bestimmte Anforderungen angepasst werden. Die übergebene Polygonstruktur
@@ -262,34 +263,34 @@ aus der Hierarchie entnehmen, um jeden validen Output des Verfahrens erzeugen zu
 umsetzbar, da uns weder unendlich viele Ressourcen noch Zeit zur Verfügung stehen. Um diesen Ansatz also praktisch zu machen, müssen einige
 Anpassungen gemacht werden.
 
-\subsection{Ableiten der Graph-Grammatik}
+\subsection{Ableiten der Graphgrammatik}
 Statt zuerst eine ``vollständige'' Hierarchie zu erzeugen und aus
 dieser dann weitere Schritte abzuleiten, wird die Hierarchie inkrementell erzeugt. Jedes Mal, wenn ein neuer Graph erstellt wird, überprüfen
-wir diesen auf bestimmte Eigenschaften, die es uns erlauben daraus Regeln für eine Graph-Grammatik abzuleiten. Ein solche Regel ermöglicht es
+wir diesen auf bestimmte Eigenschaften, die es uns erlauben daraus Regeln für eine Graphgrammatik abzuleiten. Ein solche Regel ermöglicht es
 uns bereits erzeugte Winkelgraphen zu reduzieren, was wiederum bedeutet, dass wir diese nicht mehr benötigen und aus der Hierarchie entfernen
 können. Ein detaillierter Einblick zu der Theorie dahinter wird erst in den folgenden Unterkapiteln gegeben, jedoch ist es genau diese Eigenschaft,
 die es uns ermöglicht, das Wachstum der Hierarchie einzugrenzen. Optimalerweise erreichen wir irgendwann einen Punkt, an dem alle bereits erzeugten
 Graphen durch eine der Regeln reduziert werden konnten. In diesem Fall können wir garantieren, dass sich aus den Regeln alle vollständigen
 und zum Inputgraphen lokal ähnlichen Winkelgraphen aus der erzeugten Grammatik ableiten lassen. Meistens werden wir allerdings auf
 Szenarien stoßen, in denen die Anzahl der neuen Graphen schneller wächst, als wir andere Graphen entfernen können. Kommt dies vor, so muss das
-Erstellen der Hierarchie irgendwann frühzeitig abgebrochen werden und die Graph-Grammatik ist eventuell nicht in der Lage, alle lokal ähnlichen
+Erstellen der Hierarchie irgendwann frühzeitig abgebrochen werden und die Graphgrammatik ist eventuell nicht in der Lage, alle lokal ähnlichen
 Graphen zu erzeugen. Trotzdem kann die Grammatik dann zum Ableiten einer Vielzahl von lokal ähnlichen Winkelgraphen genutzt werden.
 
-\subsubsection{Graph-Grammatiken}
-Bevor wir die Erzeugung dieser Datenstruktur genauer betrachten, soll erst einmal der Begriff der Graph-Grammatik klar definiert werden.
-Eine Graph-Grammatik ist ein formales System, welches spezifisch auf die Erstellung und Manipulation von Graphen in einem mathematisch
+\subsubsection{Graphgrammatiken}
+Bevor wir die Erzeugung dieser Datenstruktur genauer betrachten, soll erst einmal der Begriff der Graphgrammatik klar definiert werden.
+Eine Graphgrammatik ist ein formales System, welches spezifisch auf die Erstellung und Manipulation von Graphen in einem mathematisch
 präzisen Weg abzielt. Dazu wird eine Menge an Produktionsregeln definiert, welche verschiedene Operationen zum Ersetzen von Teilen
 eines Graphen beschreiben. Eine solche Produktion besteht üblicherweise aus drei Bestandteilen: zwei Graphen \(M\) und \(T\) (``Mutter'' und
 ``Tochter''), sowie einem Einbettungsmechanismus \(E\). Diese Produktion kann nun auf jeden Graphen \(G\) angewandt werden, welcher \(M\)
 als Teilgraphen enthält. Um die Produktion anzuwenden, wird \(M\) aus \(G\) entfernt und mit \(T\) ersetzt. Dabei wird \(E\) genutzt, um zu
 definieren, wie genau \(T\) in \(G\) eingebettet werden kann. \cite{31_engelfriet_rozenberg}
 
-Das Konzept der Graph-Grammatiken existiert bereits seit den frühen 70er Jahren und wurde mit dem Paper von Ehrig et al. \cite{7_ehrig_et_al}
+Das Konzept der Graphgrammatiken existiert bereits seit den frühen 70er Jahren und wurde mit dem Paper von Ehrig et al. \cite{7_ehrig_et_al}
 zum ersten Mal formal definiert. Seitdem haben sich sehr viele verschiedene Herangehensweisen in diesem Kontext etabliert, was zu viel Verwirrung
 führen kann. \cite{30_könig_et_al} Wir beschränken uns hier auf den ursprünglich präsentierten algebraischen bzw. Gluing-Ansatz von Ehrig 
 et al. \cite{7_ehrig_et_al}. Innerhalb dieses Ansatzes haben sich zwei verschiedene Vorgehensweisen etabliert: der Single Pushout Ansatz und der
 \gls{ac:dpo} Ansatz, wovon wir den letzteren verwenden. Der Begriff ``Pushout'' stammt aus der Kategorientheorie, welche ebenfalls zum Beschreiben
-von Graph-Grammatiken genutzt werden kann. \cite{1_merrell}
+von Graphgrammatiken genutzt werden kann. \cite{1_merrell}
 
 \begin{figure}[t]
     \centering
@@ -415,7 +416,7 @@ Eine dieser Optimierungen beläuft sich darauf, ... TODO
 
 \section{Erzeugen von Variationen mithilfe der abgeleiteten Regeln}
 \subsection{Ableiten eines neuen Winkelgraphen}
-Haben wir erfolgreich eine Graph-Grammatik abgeleitet, können wir diese nun verwenden, um daraus neue Winkelgraphen abzuleiten. Dazu wird zunächst eine
+Haben wir erfolgreich eine Graphgrammatik abgeleitet, können wir diese nun verwenden, um daraus neue Winkelgraphen abzuleiten. Dazu wird zunächst eine
 Starter-Regel ausgewählt, um eine Grundlage für die weiteren Operationen zu schaffen. Es entsteht ein vollständiger Graph \(G\). Anschließend werden nach
 und nach weitere zufällige Produktionsregeln aus der Grammatik ausgewählt und auf den aktuellen Winkelgraphen angewandt. Dabei ist es egal, in welche
 Richtung die Regel verwendet wird. Wir können diese sowohl konstruktiv als auch destruktiv benutzen. Um eine Regel anzuwenden, muss der
