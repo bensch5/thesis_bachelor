@@ -51,7 +51,6 @@ und wir bedienen uns lediglich einiger Helfer-Funktionen, z.B. für das Einlesen
 Grundsätzlich werden vier verschiedene Datenstrukturen implementiert, welche nachfolgend vorgestellt werden.
 
 \subsection{PolygonMesh}
-%\lstinline{code}
 Die \code{PolygonMesh} Klasse repräsentiert die in \autoref{chap:input} vorgestellte polygonale Struktur, die der Algorithmus
 als Input bekommt und als Output erzeugt. Jedes \code{PolygonMesh} Objekt verwaltet eine Liste von Knoten (Klasse \code{Vertex}),
 eine Liste von Kanten (Klasse \code{Edge}) und eine Liste von Polygonen (Klasse \code{Polygon}). Diese werden alle auf der
@@ -106,6 +105,55 @@ werden muss. Alle anderen Regeln werden durch ein Paar von Winkelgraphen gebilde
 Regel repräsentieren. 
 
 \section{Algorithmen}
+Die implementierten Algorithmen werden in drei Klassen unterteilt, welche in diesem Unterkapitel vorgestellt werden. Alle Funktionen,
+bei denen die Generierung von Zufallszahlen relevant ist, erhalten ihre Zufallswerte von einem globalen Zufallsgenerator, dessen
+generierten Ergebnisse durch einen Nutzer-bestimmten Seed gesteuert werden können. Dadurch verhalten sich alle Algorithmen voll
+und ganz deterministisch.
 
+\subsection{GrammarBuilder}
+Die \code{GrammarBuilder} Klasse enthält alle Algorithmen rund um das Ableiten der Graph-Grammatik. Es wird Funktionalität zum
+Ableiten aller verschiedenartiger Kanten als auch aller Primitive aus einem \code{PolygonMesh} bereitgestellt, welche für die ersten beiden
+Generationen der Graph-Hierarchie genutzt werden. Außerdem werden hier die verschiedenen Klebe-Operationen definiert, die dann genutzt
+werden, um Schritt für Schritt die Graph-Hierarchie aufzubauen. Das Aufbauen der Hierarchie ist dabei das Herzstück des Verfahrens.
+Das Generieren von neuen Graphen wird dabei solange fortgeführt, bis eine durch
+den Nutzer bestimmte Maximalanzahl an Graphen erstellt wurde. Falls es an irgendeinem Punkt möglich wird, die Hierarchie komplett zu leeren,
+bricht der Algorithmus vorzeitig ab. Jedes Mal, wenn ein neuer Graph erstellt wird, wird dieser mit den \gls{ac:gbs} aller vorher erzeugten
+Graphen abgeglichen um ggf. eine neue Regel ableiten zu können. Dazu wird ein Teile-und-herrsche-Algorithmus implementiert, welcher
+nach teilweisen Übereinstimmungen der \gls{ac:gbs} sucht und sich dann selbst rekursiv mit den übrig gebliebenen Teil-Strings erneut
+aufruft, bis ein finales Ergebnis gefunden wird oder es keine Übereinstimmungen mehr gibt. Neben dem Abgleich der Graph Boundaries
+wird außerdem in jedem Schritt überprüft, ob ein vollständiger Graph generiert wurde, welcher dann zum Ableiten einer Starter-Regel
+verwendet wird. Konnte durch eine dieser beiden Überprüfungen eine Regel abgeleitet werden, so wird diese in die Grammatik eingefügt
+und anschließend der entsprechende Graph aus der Hierarchie entfernt. Bei erfolgreichem Durchlauf aller Algorithmen in dieser Klasse
+können wir ein \code{PolygonMesh} in eine nutzbare \code{GraphGrammar} umwandeln. Falls durch den Nutzer eine zu kleine Maximalanzahl
+an zu generierenden Graphen festgelegt wird, kann es jedoch sein, dass die Grammatik sehr wenige Regeln enthält. Dann kann es außerdem
+passieren, dass keine einzige Starter-Regel gefunden wird, wodurch in den Folgeschritten keine neuen Graphen daraus abgeleitet werden
+könnten. Um dieses Problem zu vermeiden und später zumindest noch einige Variationen generieren zu können, fügen wir der Grammatik
+direkt eine Starter-Regel hinzu, welche den leeren Graphen mit dem ursprünglichen Input-Graphen ersetzt.
+
+\subsection{GraphBuilder}
+In der \code{GraphBuilder} Klasse befindet sich alles an Funktionalität zum Ableiten von neuen Winkelgraphen aus einer gegebenen
+Graph-Grammatik. Zunächst wird zufällig eine der vorhandenen Starter-Regeln ausgewählt, um eine Grundlage für alle weiteren Operationen
+zu schaffen. Wir erhalten einen vollständigen Graphen \(G\). Anschließend wird für eine durch den Nutzer festgelegte Anzahl an
+Iterationen immer wieder eine neue zufällige Regel ausgewählt und versucht, diese auf \(G\) anzuwenden. Dabei gibt es keine Garantien
+dafür, dass die gewählten Regeln überhaupt angewandt werden können und es kann passieren, dass sich \(G\) in einigen der Iterationen
+nicht verändert. Zum Anwenden einer Regel muss eine der beiden in der Regel enthaltenen Graphen als Subgraph in \(G\) vorhanden sein,
+d.h. wir müssen einen Homomorphismus finden, der von dem Graphen in der Regel auf \(G\) abbildet. Dafür gibt es effiziente Algorithmen,
+jedoch wird von uns aufgrund von Zeitgründen lediglich ein Brute-Force Ansatz verwendet, der zufällige Abbildungen zwischen den Knoten
+der beiden Graphen generiert und anschließend für jede generierte Abbildung prüft, ob diese einen validen Homomorphismus darstellt.
+Dies stellt bei kleineren Graphen kein Problem dar, wird aber mit zunehmender Anzahl an Knoten sehr schnell äußerst zeitaufwändig und
+soll in einer zukünftigen Version behoben werden.
+
+\subsection{MeshSolver}
+Abschließend betrachten wir noch die \(MeshSolver\) Klasse. Diese enthält Funktionalität zum Umwandeln eines Winkelgraphen in eine
+feste geometrische Darstellung in Form eines \code{PolygonMesh} Objektes. Im ersten Schritt wird hier durch die Kanten des
+Winkelgraphen iteriert und aus diesen die Matrix-Darstellung des Graphen abgeleitet. Diese Matrix wird dann per Gauß-Jordan-Algorithmus
+in reduzierte Zeilenstufenform umgewandelt. Für jede Spalte in dieser Matrix, die kein Pivot-Element enthält, werden zufällige
+Werte für die entsprechenden freien Variablen generiert. Der Kern der Matrix kann direkt aus der reduzierten Zeilenstufenform
+abgeleitet werden, weshalb wir diesen nicht noch einmal explizit berechnen. Stattdessen setzen wir die bereits generierten Zufallszahlen
+direkt für die freien Variablen ein und berechnen daraus alle weiteren Knotenpositionen und Kantenlängen. Anschließend überprüfen wir
+diese Positionen auf eventuell auftretende negative Kantenlängen und generieren die Zufallszahlen ggf. neu. Dies wiederholen wir solange,
+bis entweder eine gültige Lösung gefunden werden konnte oder wir einen nutzerdefinierte Maximalanzahl an Versuchen erreicht haben.
+Anschließend werden die Knotenpositionen des generierten \code{PolygonMesh} Objektes normalisiert, sodass sich die gesamte Struktur
+bei der Darstellung auch vollständig im Viewport der Anwendung befindet.
 
 \section{Ablauf}
