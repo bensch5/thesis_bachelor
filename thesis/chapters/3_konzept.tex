@@ -408,7 +408,7 @@ geleert werden kann. Meist wird dies allerdings nicht eintreffen und die Anzahl 
 Optimierungen vorgestellt, um dies etwas weiter einzugrenzen. Leider gibt es selbst dann nach wie vor viele Input-Strukturen, bei denen sich das
 Hierarchie-Wachstum nicht ausreichend einschränken lässt. Das Verfahren wird hierdurch dennoch flexibler als auch effizienter.
 
-Eine dieser Optimierungen beläuft sich darauf, ... TODO
+Eine dieser Optimierungen beläuft sich darauf, ... % TODO, vielleicht nur in Auswertungskapitel kurz erwähnen, dass dies noch hätte gemacht werden können
 
 % reducing a graph with its descendants (5.4)
 % stubs (5.5)
@@ -416,7 +416,7 @@ Eine dieser Optimierungen beläuft sich darauf, ... TODO
 
 \section{Erzeugen von Variationen mithilfe der abgeleiteten Regeln}
 \subsection{Ableiten eines neuen Winkelgraphen}
-Haben wir erfolgreich eine Graphgrammatik abgeleitet, können wir diese nun verwenden, um daraus neue Winkelgraphen abzuleiten. Dazu wird zunächst eine
+Haben wir erfolgreich eine Graphgrammatik abgeleitet, können wir diese nun verwenden, um daraus neue Winkelgraphen zu erzeugen. Dazu wird zunächst eine
 Starter-Regel ausgewählt, um eine Grundlage für die weiteren Operationen zu schaffen. Es entsteht ein vollständiger Graph \(G\). Anschließend werden nach
 und nach weitere zufällige Produktionsregeln aus der Grammatik ausgewählt und auf den aktuellen Winkelgraphen angewandt. Dabei ist es egal, in welche
 Richtung die Regel verwendet wird. Wir können diese sowohl konstruktiv als auch destruktiv benutzen. Um eine Regel anzuwenden, muss der
@@ -431,25 +431,98 @@ vollständigen Winkelgraphen und somit ein valides Ergebnis für diesen Teilschr
 Jetzt gilt es nur noch den eben erzeugten Winkelgraphen in eine Output-Struktur mit festen Knotenpositionen umzuwandeln und gleichzeitig sicherzustellen,
 dass diese ohne jegliche Überschneidungen der Kanten dargestellt werden kann. Dazu verwenden wir einen ähnlichen Ansatz wie Bokeloh et al. \cite{4_bokeloh_et_al}
 und stellen den Graphen als lineares Gleichungssystem dar, für welches wir anschließend eine Lösung finden. Die einzelnen Gleichungen dieses Systems lassen
-sich aus den Kanten des Winkelgraphen ableiten. Die Kanten lassen sich beschreiben durch die Position des Startknotens \(v_0\) und des Endknotens \(v_1\).
-Um zu garantieren, dass dabei der Tangentenwinkel der Kante mit dem entsprechenden Winkel \(\theta\) im Kantenlabel übereinstimmt, fügen wir ebenfalls einen
-Richtungsvektor \(u\) in die Gleichung mit ein. Dieser kann wie folgt berechnet werden: \(u = [cos(\theta), sin(\theta)]\). Hierbei handelt es sich um einen
-Einheitsvektor, der mit einer Kantenlänge \(s\) multipliziert auf die Position von \(v_0\) addiert werden kann, um \(v_1\) zu erhalten. Die gesamte Gleichung
-lautet dann: \(v_0 + su = v_1\) bzw. \(v_0 + su - v_1 = 0\). All diese Kantengleichungen können in eine Matrix-Gleichung der Form \(Ax = 0\) gebracht werden,
-wobei \(x\) alle Knotenpositionen und Kantenlängen und \(A\) alle Koeffizienten dieser Unbekannten enthält. Durch das Berechnen des Kerns der Matrix \(A\)
-lassen sich anschließend mögliche Lösungen für das Gleichungssystem ableiten. Das erstellte Gleichungssystem wird hierbei stets unterbestimmt sein, da es
-mehr Unbekannte als Gleichungen gibt. Daraus ergibt sich wiederum, dass es immer entweder keine oder unendlich viele Lösungen geben wird. Wird eine Lösung
-gefunden, so enthält diese einige freie Variablen. Somit finden wir statt einer konkreten Lösung immer nur einen Raum an möglichen Lösungen. Durch Festlegen
-von beliebigen Werten für die freien Variablen können wir daraus nun konkrete Lösungen für das Gleichungssystem entnehmen. % Abschnitt formaler definieren
+sich jeweils aus den Kanten des Winkelgraphen ableiten. Dazu betrachten wir die Positionen des Startknotens \(v_0\) und des Endknotens \(v_1\), sowie den
+Tangentenwinkel \(\theta\). Dieser kann wie folgt als zweidimensionaler Richtungsvektor dargestellt werden: \(u = [cos(\theta), sin(\theta)]\). Es handelt
+sich hierbei um einen Einheitsvektor, der mit einer Kantenlänge \(s\) multipliziert auf die Position von \(v_0\) addiert werden kann, um \(v_1\) zu erhalten.
+Die gesamte Gleichung zum Beschreiben einer Kante lautet dann: \(v_0 + su = v_1\) bzw. \(v_0 + su - v_1 = 0\) \cite{1_merrell}. All diese Kantengleichungen können in eine
+Matrix-Gleichung der Form \(Ax = 0\) gebracht werden, wobei \(x\) alle Unbekannten (Knotenpositionen und Kantenlängen) und \(A\) alle Koeffizienten dieser
+Unbekannten enthält. \(0\) stellt den Nullvektor des entsprechenden Vektorraums dar. Für jede Kantengleichung werden zwei neue Zeilen in die Matrix-Gleichung
+eingefügt, da wir mit zweidimensionalen Vektoren arbeiten. Eine Zeile beschreibt die x-Koordinaten, die andere Zeile die y-Koordinaten der Vektoren.
+Das Gleichungssystem, das durch dieses Vorgehen entsteht, ist stets
+unterbestimmt, d.h. es gibt mehr Unbekannte als Gleichungen im System. Die Konsequenz daraus ist, dass sich keine eindeutige Lösung finden lässt.
+Stattdessen können wir nur einen Raum an möglichen Lösungen finden, aus welchem wir dann stichprobenartig einzelne Lösungen auswählen können. Der Raum an
+möglichen Lösungen lässt sich durch das Berechnen des Kerns der Matrix \(A\) finden. Der Kern einer Matrix \(M\) ist die Menge aller Vektoren \(x\), für die gilt:
+\(Mx = 0\) \cite{48_studysmarter}. Um nun den Kern von \(A\) zu finden, bringen wir \(A\) zunächst in die reduzierte Zeilenstufenform. Die reduzierte
+Zeilenstufenform einer Matrix ist stets eindeutig und erfüllt die folgenden Eigenschaften \cite{47_meyer}:
 
-Leider bedeutet das Finden einer Lösung für das Gleichungssystem nicht unbedingt, dass wir nun auch eine valide Darstellung für die Output-Struktur
-gefunden haben. Die gefundene Lösung könnte eventuell negative Werte für die Kantenlängen enthalten, welche nicht dargestellt werden können. Um dies zu umgehen,
-müssen wir die vorgeschlagenen Lösungen also stets auf ungültige Werte überprüfen und ggf. eine neue Lösung generieren. Neben dem Überprüfen auf negative
-Kantenlängen könnten wir hier außerdem weitere durch den Endnutzer angegebene Kriterien überprüfen und so z.B. alle Kantenlängen auf einen bestimmten Wertebereich
-beschränken.
+\begin{itemize}
+    \item alle Zeilen, die ledglich aus Nullen bestehen, befinden sich ganz unten
+    \item jede Zeile beginnt mit einer Folge von Nullen (ggf. mit Länge 0), gefolgt vom sogenannten \textit{Pivot-Element}
+    \item das Pivot-Element einer Zeile befindet sich stets rechts von den Pivot-Elementen aller darüberliegender Zeilen
+    \item das Pivot-Element ist stets 1
+    \item jede Spalte mit einem Pivot-Element enthält außer dem Pivot-Element nur Nullen
+\end{itemize}
 
-% Eingehen auf Optimierung durch inkrementelles Vorgehen (6.2)
+Zum Umwandeln einer Matrix in diese Form verwenden wir den Gauß-Jordan-Algorithmus. Dieser ist bereits in vielen anderen Quellen, wie z.B. \cite{47_meyer},
+detailliert behandelt worden und soll von uns nicht näher betrachtet werden. Wichtig ist das Ergebnis, welches wir durch dessen Anwendung erhalten. Aus
+diesem können wir nun den Kern der Matrix berechnen. Dies wird nachfolgend an einem Beispiel demonstriert:
+
+\[
+A =
+\begin{bmatrix}
+    1 & 2 & -1 & 1 & -4 \\
+    2 & 3 & -1 & 1 & -11 \\
+    -2 & 0 & -3 & 1 & 22 
+\end{bmatrix}
+\longrightarrow rref(A) =
+\begin{bmatrix}
+    1 & 0 & 0 & -2 & -8 \\
+    0 & 1 & 0 & 2 & 1 \\
+    0 & 0 & 1 & 1 & -2 
+\end{bmatrix}
+\]
+
+Die reduzierte Zeilenstufenform wird hier abgekürzt durch ``rref'' (reduced row echelon form). Der Kern von \(A\) kann nun berechnet werden, indem die folgende
+Gleichung gelöst wird:
+
+\[
+\begin{bmatrix}
+    1 & 0 & 0 & -2 & -8 \\
+    0 & 1 & 0 & 2 & 1 \\
+    0 & 0 & 1 & 1 & -2 
+\end{bmatrix}
+\begin{bmatrix}
+    x_1 \\ x_2 \\ x_3 \\ x_4 \\ x_5
+\end{bmatrix}
+=
+\begin{bmatrix}
+    0 \\ 0 \\ 0
+\end{bmatrix}
+\]
+
+Durch die Umwandlung in die reduzierte Zeilenstufenform kann die Lösung aus dieser Darstellung mehr oder weniger abgelesen werden. Jede Spalte ohne ein Pivot-Element
+repräsentiert eine freie Variable, was aufgrund der Unterbestimmung des Gleichungssystems zustande kommt. Wählen wir als freie Variablen \(x_4 = t\) und
+\(x_5 = s\), so ergibt sich für die weiteren Variablen: \(x_1 = 8s + 2t, \ x_2 = -s - 2t, \ x_3 = 2s - t\). Der Kern von A lautet dann:
+
+\[
+Kern(A) =
+\begin{bmatrix}
+    8s + 2t \\
+    -s - 2t \\
+    2s - t \\
+    t \\
+    s
+\end{bmatrix}
+=
+\begin{bmatrix}
+    2 \\ -2 \\ -1 \\ 1 \\ 0
+\end{bmatrix}
+t +
+\begin{bmatrix}
+    8 \\ -1 \\ 2 \\ 0 \\ 1
+\end{bmatrix}
+s
+\]
+
+Nun können wir beliebige Werte für \(s\) und \(t\) einsetzen, um eine konkrete Lösung für das Gleichungssystem zu erhalten. Leider bedeutet das Finden einer solchen
+Lösung nicht unbedingt, dass wir nun auch eine valide Darstellung für die Output-Struktur gefunden haben. Die gefundene Lösung könnte eventuell negative Werte für
+die Kantenlängen enthalten, welche nicht dargestellt werden können. Um dies zu umgehen, müssen wir die vorgeschlagenen Lösungen also stets auf ungültige Werte überprüfen
+und ggf. eine neue Lösung generieren. Neben dem Überprüfen auf negative Kantenlängen könnten wir hier außerdem weitere durch den Endnutzer angegebene Kriterien überprüfen
+und so z.B. alle Kantenlängen auf einen bestimmten Wertebereich beschränken.
+
+\subsubsection{Optimierung durch inkrementelles Vorgehen}
+% TODO: Merrell 6.2
+% vllt erst in Implementierungskapitel darauf eingehen
 
 % TODO:
-% - Referenzieren von Bildern
-% - Hinzufügen von Quellen
+% - Hinzufügen von weiteren Quellen (?)
