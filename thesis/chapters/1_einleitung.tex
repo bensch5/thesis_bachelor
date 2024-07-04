@@ -11,19 +11,20 @@ Die Erstellung von fiktiven Welten spielt eine große Rolle in vielen Videospiel
 und weiteren Bereichen der Simulation. Hierfür wird eine Vielzahl an verschiedenen Objekten und Strukturen benötigt, um
 ein nicht-repetitives und immersives Erlebnis für den Endnutzer zu schaffen. All dies manuell anzufertigen, stellt vor
 allem kleinere Indie-Entwicklerstudios vor eine große Herausforderung und kann die Entwicklungszeit signifikant in die
-Länge ziehen. Selbst in größeren Teams mit einer Vielzahl von Designern nimmt die Erstellung von realistischen Welten zumindest
-einige Monate in Anspruch. \cite{10_freiknecht} Hier kann an vielen Stellen nachgeholfen werden, indem man das Erstellen
-von Inhalten automatisiert. Entsprechende Prozesse lassen sich dem Bereich der prozeduralen Generierung zuordnen.
+Länge ziehen. Aber auch in größeren Teams mit einer Vielzahl von Designern nimmt die Erstellung von realistischen Welten einen
+Großteil der Entwicklungszeit in Anspruch und kann viele Monate dauern. \cite{10_freiknecht} Hier kann an einigen Stellen
+nachgeholfen werden, indem man das Erstellen von Inhalten automatisiert. Entsprechende Prozesse lassen sich dem Bereich
+der prozeduralen Generierung zuordnen.
 
 Mithilfe von verschiedensten Verfahren können so z.B. einzelne Dungeons oder sogar ganze Welten und darin enthaltene Gebilde
-automatisch erzeugt werden. Diese bilden eine Grundstruktur für ein komplexeres Design, bei dem die Entwickler dann nur noch
-kleinere Details per Hand abändern oder hinzufügen müssen. \cite{10_freiknecht}
-
-Andererseits existieren auch viele Videospiele, wie z.B. Minecraft\footnote{https://www.minecraft.net/} oder
-Terraria\footnote{https://terraria.org/}, die auf prozeduraler Generierung aufbauen, um ihr Spielkonzept umzusetzen.
-Konkret wird einem neuen Spieler hier eine komplett neue und einzigartige, aber dennoch logisch
-zusammenhängende Welt generiert. Somit macht jeder Spieler eine andere Erfahrung und kann das Spiel außerdem gewissermaßen
-unbegrenzt oft durchspielen, ohne dass es repetitiv wirkt. So etwas wäre ohne Automatisierung gar nicht erst umsetzbar.
+automatisch erzeugt werden. Diese können eine Grundstruktur für ein komplexeres Design bilden, bei dem die Entwickler dann nur noch
+kleinere Details per Hand abändern oder hinzufügen müssen. \cite{10_freiknecht} Andererseits existieren auch viele Videospiele,
+wie z.B. Minecraft\footnote{\url{https://www.minecraft.net/} [Letzter Zugriff am 01.07.2024]} oder Terraria\footnote{
+\url{https://terraria.org/} [Letzter Zugriff am 01.07.2024]}, die auf prozeduraler
+Generierung aufbauen, um ihr Spielkonzept umzusetzen. Konkret wird einem neuen Spieler hier eine komplett neue und einzigartige,
+aber dennoch logisch zusammenhängende Welt generiert; dies vollautomatisch und ohne zusätzlichen Aufwand für die Entwickler. Jeder
+Spieler bekommt so eine einzigartie Erfahrung geboten und kann das Spiel außerdem gewissermaßen unbegrenzt oft durchspielen, ohne
+dass es zu repetitiv wird. So etwas wäre ohne Automatisierung gar nicht erst umsetzbar.
 
 \section{Problemstellung}
 % Hier wird dann darauf aufmerksam gemacht, dass es bei diesen Verfahren viele Limitationen gibt. Bei vielen Verfahren
@@ -42,18 +43,19 @@ unbegrenzt oft durchspielen, ohne dass es repetitiv wirkt. So etwas wäre ohne A
 % muss voll automatisiert sein. \cite{14_carli_et_al} Hier setzt diese Arbeit an und untersucht Möglichkeiten zur vollständigen Automatisierung
 % solcher Verfahren.
 
-Es gibt viele bekannte Verfahren, welche solche Ergebnisse unter der Verwendung von u.a. zellulären Automaten, generativen
-Grammatiken oder Constraint-basierten Graphen erzielen können. \cite{5_van_der_linden_et_al} Ein Großteil dieser Verfahren erfordert
-menschliches Eingreifen in einige der Teilschritte. Es gibt allerdings Szenarien, in denen dies problematisch wird. Hängt die Generierung von
+Es gibt viele bekannte Verfahren, welche solche Ergebnisse unter der Verwendung von u.a. generativen
+Grammatiken oder Constraint-basierten Graphen erzielen können. \cite{5_van_der_linden_et_al} Ein Großteil dieser Verfahren erfordert jedoch
+menschliches Eingreifen in einige der Teilschritte, was in einigen Szenarien zu einem Problem werden kann. Hängt die Generierung von
 Inhalten eines Produkts z.B. von Entscheidungen des Endnutzers ab (z.B. in Spielen, in denen der Spieler dynamisch mit
 dem Terrain und anderen Strukturen interagiert), so kann der Entwickler keinen direkten Einfluss auf den Generierungsprozess
 nehmen und alles muss voll automatisiert sein. \cite{14_carli_et_al} Auch in Projekten, in denen dies nicht der Fall ist und der gesamte Inhalt
 im Voraus erstellt wird, kann das Voraussetzen von menschlicher Intervenierung als Teil des Prozesses zu einem Problem werden.
-Ein Beispiel hierfür wären Verfahren, die eine generative Grammatik nutzen und voraussetzen, dass dafür zunächst eine Menge an Produktionsregeln
-durch einen Menschen vorgegeben werden (bspw. \cite{33_adams}), bevor die automatische Generierung überhaupt beginnen kann. Das Erstellen solcher
-Regeln ist mit viel Arbeit und Trial-and-Error verbunden und kann ohne ein ausgeprägtes Verständnis des angewandten Verfahrens sehr schwierig werden.
-Dadurch wird der Einsatz eines solchen Verfahrens für viele Designer letztendlich nicht in Frage kommen.
-Hier setzt diese Arbeit an und untersucht Möglichkeiten zur Automatisierung des Erstellens solcher Regeln.
+Ein Beispiel hierfür wären Verfahren, die eine generative Grammatik nutzen und voraussetzen, dass dafür zunächst eine Menge an Regeln
+durch einen Menschen vorgegeben wird, bevor die automatische Generierung überhaupt beginnen kann (z.B. \cite{33_adams}\footnote{
+\url{https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=25020f8d955aee07b7dd49a3ec23b1f2a8cf1d06} [Letzter Zugriff am 01.07.2024]}).
+Das Erstellen solcher Regeln ist mit viel Arbeit verbunden und kann ohne ein ausgeprägtes Verständnis des angewandten Verfahrens sehr
+schwierig werden, wodurch der Einsatz eines solchen Verfahrens für viele Designer letztendlich doch nicht in Frage kommen wird. Hier
+setzt diese Arbeit an und untersucht Möglichkeiten zur Automatisierung des Erstellens solcher Regeln.
 
 \section{Ziele und Vorgehen}
 % Aus den aufgezeigten Problemen ergibt sich nun der Sinn dieser Arbeit. Inverse Verfahren beheben die oben genannten Probleme
@@ -61,19 +63,18 @@ Hier setzt diese Arbeit an und untersucht Möglichkeiten zur Automatisierung des
 % Anschließend wird ein entsprechendes und vielversprechendes Verfahren im Detail untersucht, theoretisch erläutert und
 % dann prototypisch implementiert.
 Spezifisch soll versucht werden, Muster in Beispielstrukturen zu identifizieren. Aus diesen Mustern sollen dann Regeln zum Zusammensetzen
-von Strukturen mit ähnlichen Eigenschaften abgeleitet werden. Gelingt dies, so muss ein Designer lediglich ein einziges Beispielmodell erstellen,
-um damit seine kreative Vision abzubilden. Alle weiteren Schritte zum Ableiten von Variationen dieses Inputs laufen anschließend automatisch ab.
+von Strukturen mit ähnlichen Eigenschaften abgeleitet werden. Gelingt dies, so muss ein Designer lediglich ein einziges Beispielmodell erstellen und
+kann damit eine kreative Vision vorgeben. Alle weiteren Schritte zum Ableiten von Variationen dieses Inputs laufen anschließend automatisch ab.
 Dies nennen wir \textit{inverse} prozedurale Generierung,
-da der Prozess mit einem soweit fertigen Modell beginnt und daraus dann die Regeln ableitet, statt wie in den klassischeren Verfahren zuerst mit
+da der Prozess mit einem soweit fertigen Modell beginnt und daraus dann die Regeln ableitet, statt wie in den klassischen Verfahren zuerst mit
 der Erstellung der Regeln zu beginnen. Die Erstellung eines Beispielmodells erfordert zwar nach wie vor die Arbeit eines Designers, anschließend
 ist aber kein menschliches Eingreifen mehr nötig und das eigentliche Verfahren läuft vollautomatisch ab.
 
 Es gibt bereits verschiedene Verfahren, die einen solchen Ansatz verfolgen. Diese sind u.a. der Gitter-basierte Wave Function
-Collapse Algorithmus von Maxim Gumin \cite{45_gumin}, die nach Symmetrien suchende inverse prozedurale Modellierung von Bokeloh
-et al. \cite{3_bokeloh_et_al}, oder das Polygon-basierte Verfahren von Paul Merrell. \cite{1_merrell}
-% TODO: Überarbeiten
+Collapse Algorithmus von Maxim Gumin \cite{45_gumin} oder die nach Symmetrien suchende inverse prozedurale Modellierung von Bokeloh
+et al. \cite{3_bokeloh_et_al}.
 
-Im Rahmen dieser Arbeit werden jene Verfahren grob analysiert und anschließend das vielversprechendste davon praktisch umgesetzt. Das Endergebnis
-der Arbeit soll dann sein, dass die Funktionsweise eines ausgewählten Konzepts ausführlich und verständlich dargestellt, und nach eigener
-Interpretation konkret implementiert wird. Wir begrenzen uns dabei auf die Generierung von Strukturen im zweidimensionalen Raum. Die genauen
-Anforderungen an das darzustellende Konzept sowie an die umgesetzte Software werden in den dazugehörigen Kapiteln näher erläutert.
+Im Rahmen dieser Arbeit werden entsprechende Verfahren grob analysiert, deren Probleme aufgezeigt und anschließend ein neuer Ansatz vorgestellt,
+welcher die vorhandenen Probleme minimieren soll. Das Endergebnis der Arbeit soll dann sein, dass die Funktionsweise des neuen Konzepts
+ausführlich und verständlich dargestellt, und dieses anschließend prototypisch implementiert wird. Wir begrenzen uns dabei auf die Generierung von
+Strukturen im zweidimensionalen Raum.
