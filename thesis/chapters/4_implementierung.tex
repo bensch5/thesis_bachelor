@@ -38,9 +38,10 @@ welche Qualitätskriterien dabei eingehalten werden sollen. Diese lauten wie fol
 
 \section{Verwendete Technologien und Bibliotheken}
 Der gesamte Code ist in Java 16 geschrieben. Die grafische Benutzeroberfläche wird mithilfe des Java GUI-Toolkits Swing umgesetzt,
-welches Bestandteil der Java-Runtime ist und viele Bibliotheken zum Erstellen von simplen Nutzeroberflächen bereitstellt. Die
-entwickelte Software wird hierbei als Teil eines größeren \gls{ac:pcg}-Projekts von Prof. Dr. Philipp Jenke umgesetzt, in welchem
-sich viele weitere Studenten-Projekte, sowie Implementierungen von weiteren Algorithmen und Datenstrukturen im Bereich der prozeduralen
+welches Bestandteil der Java-Runtime ist und viele Bibliotheken zum Erstellen von simplen Nutzeroberflächen bereitstellt. Zum Rendern
+der erzeugten Strukturen wird die \code{Graphics} Komponente des Abstract Window Toolkits (AWT) verwendet, welches ebenfalls ein
+Teil der Java-Runtime ist. Die entwickelte Software wird hierbei als Teil eines größeren \gls{ac:pcg}-Projekts von Prof. Dr. Philipp Jenke umgesetzt,
+in welchem sich viele weitere Studenten-Projekte, sowie Implementierungen von weiteren Algorithmen und Datenstrukturen im Bereich der prozeduralen
 Generierung befinden. Die grundsätzlichen von uns verwendeten Datenstrukturen und Algorithmen werden jedoch allesamt selbst implementiert
 und wir bedienen uns lediglich einiger Helfer-Funktionen, z.B. für das Einlesen von Dateien oder dem Loggen des Programmablaufs.
 
@@ -156,4 +157,31 @@ bis entweder eine gültige Lösung gefunden werden konnte oder wir einen nutzerd
 Anschließend werden die Knotenpositionen des generierten \code{PolygonMesh} Objektes normalisiert, sodass sich die gesamte Struktur
 bei der Darstellung auch vollständig im Viewport der Anwendung befindet.
 
+\section{Benutzeroberfläche}
+Die Benutzeroberfläche der Anwendung wird mithilfe des Java GUI-Toolkits Swing implementiert. Spezifisch wird die von Prof. Dr.
+Philipp Jenke bereitgestellte \code{CG2DApplication} erweitert, welche selbst die Swing-Komponente \code{JFrame} erweitert und
+Funktionalität zum einfachen Hinzufügen verschiedener Szenen bereitstellt. Wir implementieren drei verschiedene Szenen-Typen,
+die dieser Anwendung hinzugefügt werden.
+
+\subsection{InputScene}
+Die \code{InputScene} wird zum Rendern der verschiedenen Input-Strukturen genutzt. Der Nutzer kann zwischen
+einer Reihe an bereitgestellten Strukturen auswählen, welcher dann in dieser Szene visualisiert werden. Außerdem kann hier ein
+Seed für den Zufallsgenerator festgelegt werden.
+
+\subsection{GrammarScene}
+Die \code{GrammarScene} wird genutzt, um die aus dem Input erzeugte Graph-Grammatik darzustellen. Da die in den
+Produktionsregeln enthaltenen Winkelgraphen neben den Kantenwinkeln keine festen Geometrie-Eigenschaften besitzen, können diese nur
+angenähert dargestellt werden. Die einzelnen Kanten werden mit zufällig festgelegten Kantenlängen dargestellt und es wird versucht, die
+Winkel der Kanten weitesgehend zu respektieren. Soll jedoch eine Kante gezeichnet werden, die zwei bereits gezeichnete Knoten verbindet,
+so kann dies nicht eingehalten werden und der Kantenwinkel wird beim Zeichnen ignoriert. Trotzdem sind die entstehenden Darstellungen
+nützlich, um einen Einblick in die Funktionsweise hinter der Graph-Grammatik zu bekommen. Zum Steuern der Ableitung dieser Grammatik
+kann der Nutzer hier außerdem die Maximalanzahl an Graphen bei der Erstellung der Graph-Hierarchie angeben.
+
+\subsection{OutputScene}
+In der \code{OutputScene} werden die final erzeugten Ergebnisse visualisiert. Der Nutzer kann hier zum einen die Anzahl an Iterationen für die
+Ableitung eines neuen Winkelgraphen beim Anwenden der Graph-Grammatik festlegen. Zum anderen kann der Nutzer eine Maximalanzahl an Versuchen
+für das Generieren von Werten für die freien Variablen beim Festsetzen der Knotenpositionen angeben. Mithilfe dieser Angaben wird nun ein
+neues \code{PolygonMesh} erzeugt und in dieser Szene visuell dargestellt.
+
 \section{Ablauf}
+% TODO
