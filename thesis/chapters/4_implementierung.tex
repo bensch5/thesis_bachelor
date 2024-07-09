@@ -3,7 +3,7 @@
 \chapter{Implementierung}
 Im folgenden Kapitel betrachten wir die praktische Implementierung der zuvor vorgestellten Konzepte. Dazu werden zunächst
 einige spezifische Anforderungen an die zu entwickelnde Software aufgelistet. Anschließend wird darauf eingegangen, wie
-diese Anforderungen dann umgesetzt werden sollen, indem die verwendeten Technologien und Entwurfsmuster vorgestellt werden.
+diese Anforderungen dann umgesetzt werden, indem die verwendeten Technologien und Entwurfsmuster vorgestellt werden.
 
 \section{Anforderungen an die Software}
 \subsection{Funktionale Anforderungen}
@@ -53,15 +53,36 @@ und wir bedienen uns lediglich einiger Helfer-Funktionen, z.B. für das Einlesen
     \label{fig:architecture}
 \end{figure}
 
-% TODO: Architektur beschreiben (auf MVC eingehen)
+Um ein solches Softwareprojekt übersichtlich zu halten und in eine logische Struktur zu bringen, ist das Verwenden bestimmter Entwurfsmuster nötig.
+Wie in Abbildung \ref{fig:architecture} zu sehen ist, bedienen wir uns hierfür dem bewährten Muster \textit{\gls{ac:mvc}}.
 
-\section{Backend}
-Im folgenden Kapitel betrachten wir nun das Backend der Software etwas genauer.
+Das \gls{ac:mvc} Entwurfsmuster beschreibt drei separate logische Einheiten bzw. Komponenten. Das \textit{Datenmodell (model)} verwaltet alle für
+die Anwendung wichtigen Daten und steht somit im Mittelpunkt. Das Datenmodell ist von den anderen Komponenten unabhängig und speichert die Daten einheitlich
+ab. Die anderen Komponenten können beliebig ausgetauscht werden, ohne dass das Datenmodell auf diese angepasst werden muss. Die \textit{Ansicht (view)}
+ist für die Darstellung der Daten des Datenmodells zuständig und realisiert die Interaktion mit dem Endnutzer durch Bereitstellen einer Benutzeroberfläche.
+Die entsprechenden Daten werden von dieser Komponente nur dargestellt, nicht aber anderweitig verarbeitet. Für die Verarbeitung der Daten ist die
+\textit{Steuerung (controller)} verantwortlich. Die Ansicht ist von der Steuerung unabhängig, da diese alle darzustellenden Daten ausschließlich aus
+dem Datenmodell bezieht. Die Steuerung wird von der Ansicht über Anfragen des Endnutzers informiert, verarbeitet diese und aktualisiert anschließend das
+Datenmodell. Die Ansicht wird daraufhin vom Datenmodell über die Änderung der Daten informiert und aktualisiert die Darstellung. \cite{48_bucanek}
 
-\subsection{Datenstrukturen}
-Grundsätzlich werden vier verschiedene Datenstrukturen implementiert, welche nachfolgend vorgestellt werden.
+In unserem Fall werden diese Komponenten wie folgt umgesetzt: Die Ansicht wird durch die Frontend-Komponenten realisiert, das Datenmodell wird in der
+Klasse \code{InversePcgModel} umgesetzt und die Steuerung setzt sich zusammen aus den Klassen \code{InversePcgController}, \code{GrammarBuilder},
+\code{GraphBuilder}, und \code{MeshSolver}. Im Datenmodell sind neben den zu visualisierenden Datenstrukturen ebenfalls Parameter gespeichert,
+welche von der Steuerung zum Verarbeiten der Daten benutzt werden. Diese Parameter können in der Benutzeroberfläche angepasst werden, woraufhin die
+Ansicht die Parameterwerte im Datenmodell direkt anpasst. Die Steuerung bietet Schnittstellen an, welche von der Ansicht genutzt werden, um
+die Befehle des Benutzers auszuführen. Nach der Ausführung dieser Befehle nimmt die Steuerung Änderungen am Datenmodell vor, was von der Ansicht bemerkt
+wird, da die dort enthaltenen Szenen das Beobachter-Muster (Observer-Pattern) nutzen, um auf Änderungen im Datenmodell zu lauschen. Wird das Datenmodell
+geändert, so werden alle Beobachter darüber informiert. Anschließend wird die Darstellung der visualisierten Datenstrukturen in der Ansicht angepasst.
 
-\subsubsection{PolygonMesh}
+Dies sollte einen groben Überblick über den Aufbau der entwickelten Software geschafft haben. In den folgenden Kapiteln werden nun weitere Details
+zur Implementierung der einzelnen Komponenten vorgestellt.
+
+\section{Datenstrukturen}
+Schauen wir uns zunächst die implementierten Datenstrukturen etwas genauer an. Diese stellen unseren Input und Output dar, werden von den implementierten
+Algorithmen verarbeitet und durch die Benutzeroberfläche visualisiert. Grundsätzlich werden dabei vier verschiedene Datenstrukturen implementiert, die nun
+betrachtet werden.
+
+\subsection{PolygonMesh}
 Die \code{PolygonMesh} Klasse repräsentiert die in \autoref{chap:input} vorgestellte polygonale Struktur, die der Algorithmus
 als Input bekommt und als Output erzeugt. Jedes \code{PolygonMesh} Objekt verwaltet eine Liste von Knoten (Klasse \code{Vertex}),
 eine Liste von Kanten (Klasse \code{Edge}) und eine Liste von Polygonen (Klasse \code{Polygon}). Diese werden alle auf der
@@ -84,44 +105,69 @@ kann ein neues \code{PolygonMesh} Objekt durch das Einlesen einer \code{.mesh} D
 Polygone, sowie die Polygonfarben als Plain-Text abgespeichert. Dies ermöglicht das einfache Erstellen von neuen Polygon-Strukturen, die
 dann dem Nutzer als Input für den Algorithmus bereitgestellt werden können.
 
-\subsubsection{AngleGraph}
+\subsection{AngleGraph}
 Die \code{AngleGraph} Datenstruktur implementiert den in \autoref{chap:winkelgraph} vorgestellten Winkelgraphen. Zusätzlich zur
-\code{AngleGraph} Klasse selbst implementieren wir hier die Klassen \code{AngleEdge} und \code{AngleHalfEdge}, die die Kanten
+\code{AngleGraph} Klasse selbst, implementieren wir hier die Klassen \code{AngleEdge} und \code{AngleHalfEdge}, die die Kanten
 und Halbkanten repräsentieren, als auch eine innere Klasse \code{GraphBoundary}, die den \gls{ac:gbs} des jeweiligen Graphen
 darstellt. Eine eigene Klasse für die Knoten eines Winkelgraphen gibt es nicht, da diese in einem Winkelgraphen keine Eigenschaften
 besitzen. Stattdessen wird in \code{AngleGraph} nur die Gesamtanzahl \(n\) aller vorhandenen Knoten gespeichert, während die Kanten
 und Halbkanten statt Referenzen auf ein Knoten-Objekt lediglich Knoten-IDs von \(0\) bis \(n - 1\) zugeordnet bekommen.
-\code{AngleEdge} enthält zwei solcher Knoten-IDs, während \code{AngleHalfEdge} nur an einem Knoten anliegt. Beide Kantentypen
+Eine \code{AngleEdge} enthält zwei solcher Knoten-IDs, während die \code{AngleHalfEdge} nur an einem Knoten anliegt. Beide Kantentypen
 enthalten außerdem einen Tangentenwinkel. Die \code{GraphBoundary} verwaltet eine Liste an Indexen der enhaltenen Halbkanten, sowie
 Referenzen zu den sich daraus ergebenden positiven und negativen Drehungen, welche durch festgelegte Zahlenwerte repräsentiert werden.
 
 Außerdem wird auch hier einiges an Funktionalität bereitgestellt. Der \gls{ac:gbs} kann automatisch aus den vorhandenen Halbkanten
 abgeleitet werden. Es gibt einige Konstruktoren für verschiedene Anwendungsfälle, darunter einen, der ein \code{PolygonMesh} in
-einen Winkelgraphen umwandeln kann. Außerdem wird ein ausgeklügelter Objektvergleich implementiert, welcher in die Tiefe geht und
-die Struktur der einzelnen Winkelgraphen miteinander vergleicht. Dies erleichtert das Finden von Duplikaten beim Erstellen der
-Graph-Hierarchie immens. Für die \code{GraphBoundary} wird Funktionalität bereitgestellt, die diesen in eine einheitliche auf den
-Kantenwinkeln basierende Darstellung umwandeln kann, was das Ableiten von Regeln für die Graphgrammatik ermöglicht.
+einen Winkelgraphen umwandeln kann. Außerdem wird ein tiefgehender Objektvergleich implementiert, welcher die zugrundeliegende Struktur
+der einzelnen Winkelgraphen miteinander vergleicht. Dies erleichtert das Finden von Duplikaten beim Erstellen der
+Graph-Hierarchie immens. Für die \code{GraphBoundary} wird Funktionalität bereitgestellt, die diesen in eine auf den
+Kantenwinkeln basierende Darstellung umwandeln kann, welche zwischen allen Winkelgraphen einheitlich verglichen werden kann und somit
+das Ableiten von Regeln für die Graphgrammatik ermöglicht.
 
-\subsubsection{GraphHierarchy}
+\subsection{GraphHierarchy}
 Die Graph-Hierarchie ist eine vergleichsweise simple Datenstruktur und ist vollständig in der Klasse \code{GraphHierarchy} implementiert.
 Diese enthält eine Liste für die verschiedenen Generationen, welche sich jeweils aus einer Reihe an \code{AngleGraph} Objekten
-zusammensetzen. Außerdem existieren Felder für die aktuelle Größe und die Maximalgröße der Hierarchie. Die Größe der Hierarchie
-beschreibt die Anzahl der enthaltenen Winkelgraphen.
+zusammensetzen. Außerdem existiert ein Feld für die aktuelle Größe der Hierarchie, welche die aktuelle Anzahl an darin enthaltenen
+Winkelgraphen darstellt.
 
-\subsubsection{GraphGrammar}
+\subsection{GraphGrammar}
 Die finale Datenstruktur implementiert die Graphgrammatik. Diese ist ebenfalls in einer einzigen Klasse \code{GraphGrammar} implementiert.
 Hier werden zwei Listen verwaltet: eine für die Starter-Regeln und eine für alle anderen Regeln. Starter-Regeln bestehen ausschließlich
 aus einem \code{AngleGraph}, da die andere Seite einer solchen Regel den leeren Graphen enthält, welcher nicht explizit repräsentiert
 werden muss. Alle anderen Regeln werden durch ein Paar von Winkelgraphen gebildet, welche jeweils die linke und die rechte Seite der
-Regel repräsentieren. 
+Regel repräsentieren.
 
-\subsection{Algorithmen}
-Die implementierten Algorithmen werden in drei Klassen unterteilt, welche in diesem Unterkapitel vorgestellt werden. Alle Funktionen,
-bei denen die Generierung von Zufallszahlen relevant ist, erhalten ihre Zufallswerte von einem globalen Zufallsgenerator, dessen
-generierten Ergebnisse durch einen Nutzer-bestimmten Seed gesteuert werden können. Dadurch verhalten sich alle Algorithmen voll
-und ganz deterministisch.
+\section{Datenmodell}
+Betrachten wir nun das Datenmodell. Dieses wird in der Klasse \code{InversePcgModel} realisiert. Dieses enthält Felder für die polygonale
+Inputstruktur, die daraus erzeugte Grammatik, sowie für die letztendlich erzeugte polygonale Outputstruktur. Außerdem werden hier alle
+für die Steuerung relevanten Parameter verwaltet, welche zunächst im Konstruktor mit vorgebenen Standardwerten initialisiert werden und
+anschließend vom Benutzer beliebig angepasst werden können. Die Liste an vorhandenen Parametern lautet wie folgt:
 
-\subsubsection{GrammarBuilder}
+\begin{itemize}
+    \item \code{seed}: der Seed für die von den Algorithmen verwendeten Zufallsgeneratoren
+    \item \code{maxGeneration}: die Maximalanzahl an Generationen in der Graph-Hierarchie beim Erstellen der Graphgrammatik
+    \item \code{iterations}: die Anzahl an Iterationen beim Ableiten von neuen Winkelgraphen aus der Graphgrammatik
+    \item \code{maxTries}: die maximale Anzahl an Versuchen für das Erzeugen einer validen Zeichnung für einen erzeugten Graphen
+    \item \code{minRandVal}: der kleinstmögliche Zufallswert für die freien Variablen beim Erzeugen einer Graph-Zeichnung
+    \item \code{maxRandVal}: der größtmögliche Zufallswert für die freien Variablen beim Erzeugen einer Graph-Zeichnung
+    \item \code{waitTime}: die Wartezeit zwischen den einzelnen Iterationen beim Erzeugen des Outputs
+\end{itemize}
+
+Zum Umsetzen des Beobachter-Musters erweitert \code{InversePcgModel} die Klasse \code{Observable}, welche erneut von Prof. Dr. Philipp Jenke
+bereitgestellt wird. Diese erlaubt das Hinzufügen von \code{Observer} Objekten, die dann durch die ebenfalls gegebene Methode
+\code{notifyAllObservers} über Änderungen am Datenmodell informiert werden können.
+
+\section{Steuerung}
+Zum Verarbeiten der Daten im Datenmodell wird in der Klasse \code{InversePcgController} die Steuerungskomponente realisiert. Diese
+verwaltet die implementierten Algorithmen und bietet der Ansicht verschiedene Schnittstellen für die einzelnen Teilschritte des
+Verfahrens. Alle Funktionen, bei denen die Generierung von Zufallszahlen relevant ist, erhalten ihre Zufallswerte
+von einem in dieser Komponente verwalteten Zufallsgenerator, dessen generierten Ergebnisse durch den \code{seed} Parameter im Datenmodell
+gesteuert werden. Dadurch verhalten sich alle Algorithmen voll und ganz deterministisch.
+
+Schauen wir uns nun die von der Steuerung verwalteten Algorithmen genauer an. Diese werden in drei Klassen unterteilt:
+
+\subsection{GrammarBuilder}
+% TODO: überarbeiten
 Die \code{GrammarBuilder} Klasse enthält alle Algorithmen rund um das Ableiten der Graph-Grammatik. Es wird Funktionalität zum
 Ableiten aller verschiedenartiger Kanten als auch aller Primitive aus einem \code{PolygonMesh} bereitgestellt, welche für die ersten beiden
 Generationen der Graph-Hierarchie genutzt werden. Außerdem werden hier die verschiedenen Klebe-Operationen definiert, die dann genutzt
@@ -141,7 +187,7 @@ passieren, dass keine einzige Starter-Regel gefunden wird, wodurch in den Folges
 könnten. Um dieses Problem zu vermeiden und später zumindest noch einige Variationen generieren zu können, fügen wir der Grammatik
 direkt eine Starter-Regel hinzu, welche den leeren Graphen mit dem ursprünglichen Input-Graphen ersetzt.
 
-\subsubsection{GraphBuilder}
+\subsection{GraphBuilder}
 In der \code{GraphBuilder} Klasse befindet sich alles an Funktionalität zum Ableiten von neuen Winkelgraphen aus einer gegebenen
 Graph-Grammatik. Zunächst wird zufällig eine der vorhandenen Starter-Regeln ausgewählt, um eine Grundlage für alle weiteren Operationen
 zu schaffen. Wir erhalten einen vollständigen Graphen \(G\). Anschließend wird für eine durch den Nutzer festgelegte Anzahl an
@@ -154,7 +200,7 @@ der beiden Graphen generiert und anschließend für jede generierte Abbildung pr
 Dies stellt bei kleineren Graphen kein Problem dar, wird aber mit zunehmender Anzahl an Knoten sehr schnell äußerst zeitaufwändig und
 soll in einer zukünftigen Version behoben werden.
 
-\subsubsection{MeshSolver}
+\subsection{MeshSolver}
 Abschließend betrachten wir noch die \(MeshSolver\) Klasse. Diese enthält Funktionalität zum Umwandeln eines Winkelgraphen in eine
 feste geometrische Darstellung in Form eines \code{PolygonMesh} Objektes. Im ersten Schritt wird hier durch die Kanten des
 Winkelgraphen iteriert und aus diesen die Matrix-Darstellung des Graphen abgeleitet. Diese Matrix wird dann per Gauß-Jordan-Algorithmus
@@ -167,26 +213,22 @@ bis entweder eine gültige Lösung gefunden werden konnte oder wir einen nutzerd
 Anschließend werden die Knotenpositionen des generierten \code{PolygonMesh} Objektes normalisiert, sodass sich die gesamte Struktur
 bei der Darstellung auch vollständig im Viewport der Anwendung befindet.
 
-\subsection{Modell}
-% TODO
-
-\section{Frontend}
-Folgend betrachten wir das implementierte Frontend genauer.
-
-\subsection{Benutzeroberfläche}
+\section{Ansicht}
+Die Ansicht realisiert die Interaktion mit dem Benutzer und stellt dafür eine Benutzeroberfläche bereit.
 Die Benutzeroberfläche der Anwendung wird mithilfe des Java GUI-Toolkits Swing implementiert. Dies geschieht in der Klasse
 \code{InversePcgApplication}, welche die gesamte Anwendung darstellt. Diese basiert auf der von Prof. Dr. Philipp Jenke bereitgestellten
-\code{CG2DApplication}, welche selbst die Swing-Komponente \code{JFrame} erweitert und
+Klasse \code{CG2DApplication}, welche selbst die Swing-Komponente \code{JFrame} erweitert und
 Funktionalität zum einfachen Hinzufügen verschiedener Szenen bereitstellt. Wir implementieren drei verschiedene Szenen-Typen,
 die dieser Anwendung hinzugefügt werden. Die implementierten Szenen erweitern jeweils die Klasse \code{Scene2D}, welche ebenfalls
 von Prof. Dr. Philipp Jenke bereitgestellt wird. In dieser wird Funktionalität zum Zeichnen von Linien, Polygonen, etc. implementiert.
 
-\subsection{Input-Szene}
+% TODO: Szenen überarbeiten
+\subsection{InputScene}
 Die \code{InputScene} wird zum Rendern der verschiedenen Input-Strukturen genutzt. Der Nutzer kann zwischen
 einer Reihe an bereitgestellten Strukturen auswählen, welcher dann in dieser Szene visualisiert werden. Außerdem kann hier ein
 Seed für den Zufallsgenerator festgelegt werden.
 
-\subsection{Grammatik-Szene}
+\subsection{GrammarScene}
 Die \code{GrammarScene} wird genutzt, um die aus dem Input erzeugte Graph-Grammatik darzustellen. Da die in den
 Produktionsregeln enthaltenen Winkelgraphen neben den Kantenwinkeln keine festen Geometrie-Eigenschaften besitzen, können diese nur
 angenähert dargestellt werden. Die einzelnen Kanten werden mit zufällig festgelegten Kantenlängen dargestellt und es wird versucht, die
@@ -195,11 +237,8 @@ so kann dies nicht eingehalten werden und der Kantenwinkel wird beim Zeichnen ig
 nützlich, um einen Einblick in die Funktionsweise hinter der Graph-Grammatik zu bekommen. Zum Steuern der Ableitung dieser Grammatik
 kann der Nutzer hier außerdem die Maximalanzahl an Graphen bei der Erstellung der Graph-Hierarchie angeben.
 
-\subsection{Output-Szene}
+\subsection{OutputScene}
 In der \code{OutputScene} werden die final erzeugten Ergebnisse visualisiert. Der Nutzer kann hier zum einen die Anzahl an Iterationen für die
 Ableitung eines neuen Winkelgraphen beim Anwenden der Graph-Grammatik festlegen. Zum anderen kann der Nutzer eine Maximalanzahl an Versuchen
 für das Generieren von Werten für die freien Variablen beim Festsetzen der Knotenpositionen angeben. Mithilfe dieser Angaben wird nun ein
-neues \code{PolygonMesh} erzeugt und in dieser Szene visuell dargestellt.
-
-\section{Ablauf}
-% TODO
+neues \code{PolygonMesh} erzeugt und in dieser Szene visuell dargestellt. % TODO: auf neue Einstellungsmöglichkeiten eingehen
