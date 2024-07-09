@@ -15,12 +15,12 @@ bereitgestellt werden sollen. Diese lauten wie folgt:
     \item es sollen einige Beispielstrukturen als Input zur Verfügung gestellt werden, zwischen denen der Nutzer auswählen kann
     \item mithilfe einer polygonalen Struktur als Input sollen automatisch ähnliche Strukturen generiert werden können:
     \begin{itemize}
-        \item aus einer eingelesenen Input-Struktur sollen automatisch Regeln für eine Graphgrammatik abgeleitet werden können
+        \item aus einer eingelesenen Inputstruktur sollen automatisch Regeln für eine Graphgrammatik abgeleitet werden können
         \item aus einer gegebenen Graphgrammatik sollen verschiedene Graphen abgeleitet werden können
-        \item aus einem solchen Graphen soll dann eine planare Output-Struktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können
+        \item aus einem solchen Graphen soll dann eine planare Outputstruktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können
     \end{itemize}
     \item es soll eine Benutzeroberfläche geben, in welcher der Nutzer Parameter für die Generierung einstellen sowie verschiedene Inputstrukturen auswählen können soll
-    \item sowohl die Input-Strukturen, die daraus erzeugt Grammatik und die generierten Variationen sollen visualisiert werden können
+    \item sowohl die Inputstrukturen, die daraus erzeugt Grammatik und die generierten Variationen sollen visualisiert werden können
 \end{itemize}
 
 \subsection{Nicht-funktionale Anforderungen}
@@ -167,17 +167,39 @@ gesteuert werden. Dadurch verhalten sich alle Algorithmen voll und ganz determin
 Schauen wir uns nun die von der Steuerung verwalteten Algorithmen genauer an. Diese werden in drei Klassen unterteilt:
 
 \subsection{GrammarBuilder}
-% TODO: überarbeiten
-Die \code{GrammarBuilder} Klasse enthält alle Algorithmen rund um das Ableiten der Graph-Grammatik. Es wird Funktionalität zum
-Ableiten aller verschiedenartiger Kanten als auch aller Primitive aus einem \code{PolygonMesh} bereitgestellt, welche für die ersten beiden
-Generationen der Graph-Hierarchie genutzt werden. Außerdem werden hier die verschiedenen Klebe-Operationen definiert, die dann genutzt
-werden, um Schritt für Schritt die Graph-Hierarchie aufzubauen. Das Aufbauen der Hierarchie ist dabei das Herzstück des Verfahrens.
-Das Generieren von neuen Graphen wird dabei solange fortgeführt, bis eine durch
-den Nutzer bestimmte Maximalanzahl an Graphen erstellt wurde. Falls es an irgendeinem Punkt möglich wird, die Hierarchie komplett zu leeren,
-bricht der Algorithmus vorzeitig ab. Jedes Mal, wenn ein neuer Graph erstellt wird, wird dieser mit den \gls{ac:gbs} aller vorher erzeugten
-Graphen abgeglichen um ggf. eine neue Regel ableiten zu können. Dazu wird ein Teile-und-herrsche-Algorithmus implementiert, welcher
-nach teilweisen Übereinstimmungen der \gls{ac:gbs} sucht und sich dann selbst rekursiv mit den übrig gebliebenen Teil-Strings erneut
-aufruft, bis ein finales Ergebnis gefunden wird oder es keine Übereinstimmungen mehr gibt. Neben dem Abgleich der Graph Boundaries
+% Die \code{GrammarBuilder} Klasse enthält alle Algorithmen rund um das Ableiten der Graph-Grammatik. Es wird Funktionalität zum
+% Ableiten aller verschiedenartiger Kanten als auch aller Primitive aus einem \code{PolygonMesh} bereitgestellt, welche für die ersten beiden
+% Generationen der Graph-Hierarchie genutzt werden. Außerdem werden hier die verschiedenen Klebe-Operationen definiert, die dann genutzt
+% werden, um Schritt für Schritt die Graph-Hierarchie aufzubauen. Das Aufbauen der Hierarchie ist dabei das Herzstück des Verfahrens.
+% Das Generieren von neuen Graphen wird dabei solange fortgeführt, bis eine durch
+% den Nutzer bestimmte Maximalanzahl an Graphen erstellt wurde. Falls es an irgendeinem Punkt möglich wird, die Hierarchie komplett zu leeren,
+% bricht der Algorithmus vorzeitig ab. Jedes Mal, wenn ein neuer Graph erstellt wird, wird dieser mit den \gls{ac:gbs} aller vorher erzeugten
+% Graphen abgeglichen um ggf. eine neue Regel ableiten zu können. Dazu wird ein Teile-und-herrsche-Algorithmus implementiert, welcher
+% nach teilweisen Übereinstimmungen der \gls{ac:gbs} sucht und sich dann selbst rekursiv mit den übrig gebliebenen Teil-Strings erneut
+% aufruft, bis ein finales Ergebnis gefunden wird oder es keine Übereinstimmungen mehr gibt. Neben dem Abgleich der Graph Boundaries
+% wird außerdem in jedem Schritt überprüft, ob ein vollständiger Graph generiert wurde, welcher dann zum Ableiten einer Starter-Regel
+% verwendet wird. Konnte durch eine dieser beiden Überprüfungen eine Regel abgeleitet werden, so wird diese in die Grammatik eingefügt
+% und anschließend der entsprechende Graph aus der Hierarchie entfernt. Bei erfolgreichem Durchlauf aller Algorithmen in dieser Klasse
+% können wir ein \code{PolygonMesh} in eine nutzbare \code{GraphGrammar} umwandeln. Falls durch den Nutzer eine zu kleine Maximalanzahl
+% an zu generierenden Graphen festgelegt wird, kann es jedoch sein, dass die Grammatik sehr wenige Regeln enthält. Dann kann es außerdem
+% passieren, dass keine einzige Starter-Regel gefunden wird, wodurch in den Folgeschritten keine neuen Graphen daraus abgeleitet werden
+% könnten. Um dieses Problem zu vermeiden und später zumindest noch einige Variationen generieren zu können, fügen wir der Grammatik
+% direkt eine Starter-Regel hinzu, welche den leeren Graphen mit dem ursprünglichen Input-Graphen ersetzt.
+
+Die \code{GrammarBuilder} Klasse enthält alle Algorithmen rund um das Ableiten der Graph-Grammatik. Es wird ein \code{PolygonMesh} als
+Input entgegengenommen und eine \code{GraphGrammar} als Endergebnis erzeugt. Das Herzstück hierbei ist das inkrementelle Aufbauen einer
+Graph-Hierarchie. Um die erste Generation dieser Hierarchie zu bilden, gibt es Funktionalität, welche alle verschiedenartigen
+Kanten im ursprünglichen \code{PolygonMesh} Objekt in einen entsprechenden Winkelgraphen umwandelt. Die Tangentenwinkel der Kanten
+können dabei aus den Positionen der Start- und Endknoten berechnet werden. Die abgeleiteten Winkelgraphen in der ersten Generation der
+Hierarchie bestehen dann jeweils aus einer Halbkante \(a\) und einer weiteren Halbkante \(\overline{a}\) mit dem zu \(a\) entgegengesetzten
+Kantenwinkel. Die zweite Generation kann ebenfalls direkt aus dem \code{PolygonMesh}-Input erzeugt werden. Dazu wird für jeden Knoten \(K\)
+in der Polygon-Struktur ein neuer Winkelgraph \(G\) erzeugt. Für jede Kante, die mit \(K\) verbunden ist, wird anschließend eine neue
+Halbkante in \(G\) eingefügt. Ist dies für alle Knoten geschehen, so wird anschließend noch der \gls{ac:gbs} für alle erzeugten
+Winkelgraphen bestimmt. Somit haben wir nun auch alle Primitive für den entsprechenden Input gefunden. Anschließend werden alle weiteren
+Generationen der Graph-Hierarchie durch Anwenden von Klebeoperationen erzeugt, welche ebenfalls in dieser Klasse implementiert werden.
+Das Erzeugen von neuen Generationen geschieht solange, bis die durch \code{maxGeneration} spezifierte Maximalanzahl an Generationen erreicht
+wurde. Jedes Mal, wenn ein neuer Graph erstellt wird, wird dieser mit den \gls{ac:gbs} aller vorher erzeugten Graphen abgeglichen um ggf.
+eine neue Regel ableiten zu können. Neben dem Abgleich der Graph Boundaries
 wird außerdem in jedem Schritt überprüft, ob ein vollständiger Graph generiert wurde, welcher dann zum Ableiten einer Starter-Regel
 verwendet wird. Konnte durch eine dieser beiden Überprüfungen eine Regel abgeleitet werden, so wird diese in die Grammatik eingefügt
 und anschließend der entsprechende Graph aus der Hierarchie entfernt. Bei erfolgreichem Durchlauf aller Algorithmen in dieser Klasse
@@ -190,55 +212,61 @@ direkt eine Starter-Regel hinzu, welche den leeren Graphen mit dem ursprünglich
 \subsection{GraphBuilder}
 In der \code{GraphBuilder} Klasse befindet sich alles an Funktionalität zum Ableiten von neuen Winkelgraphen aus einer gegebenen
 Graph-Grammatik. Zunächst wird zufällig eine der vorhandenen Starter-Regeln ausgewählt, um eine Grundlage für alle weiteren Operationen
-zu schaffen. Wir erhalten einen vollständigen Graphen \(G\). Anschließend wird für eine durch den Nutzer festgelegte Anzahl an
-Iterationen immer wieder eine neue zufällige Regel ausgewählt und versucht, diese auf \(G\) anzuwenden. Dabei gibt es keine Garantien
+zu schaffen. Wir erhalten einen vollständigen Graphen \(G\). Anschließend wird für die im Datenmodell festgelegte Anzahl an Iterationen
+(\code{iterations}) immer wieder eine neue zufällige Regel ausgewählt und versucht, diese auf \(G\) anzuwenden. Dabei gibt es keine Garantien
 dafür, dass die gewählten Regeln überhaupt angewandt werden können und es kann passieren, dass sich \(G\) in einigen der Iterationen
 nicht verändert. Zum Anwenden einer Regel muss eine der beiden in der Regel enthaltenen Graphen als Subgraph in \(G\) vorhanden sein,
 d.h. wir müssen einen Homomorphismus finden, der von dem Graphen in der Regel auf \(G\) abbildet. Dafür gibt es effiziente Algorithmen,
 jedoch wird von uns aufgrund von Zeitgründen lediglich ein Brute-Force Ansatz verwendet, der zufällige Abbildungen zwischen den Knoten
 der beiden Graphen generiert und anschließend für jede generierte Abbildung prüft, ob diese einen validen Homomorphismus darstellt.
 Dies stellt bei kleineren Graphen kein Problem dar, wird aber mit zunehmender Anzahl an Knoten sehr schnell äußerst zeitaufwändig und
-soll in einer zukünftigen Version behoben werden.
+sollte in einer zukünftigen Version behoben werden.
 
 \subsection{MeshSolver}
-Abschließend betrachten wir noch die \(MeshSolver\) Klasse. Diese enthält Funktionalität zum Umwandeln eines Winkelgraphen in eine
+Abschließend betrachten wir noch die Klasse \code{MeshSolver}. Diese enthält Funktionalität zum Umwandeln eines Winkelgraphen in eine
 feste geometrische Darstellung in Form eines \code{PolygonMesh} Objektes. Im ersten Schritt wird hier durch die Kanten des
-Winkelgraphen iteriert und aus diesen die Matrix-Darstellung des Graphen abgeleitet. Diese Matrix wird dann per Gauß-Jordan-Algorithmus
+Winkelgraphen iteriert und aus diesen die Matrix-Darstellung des Graphen abgeleitet. Diese Matrix wird dann per Gauß-Jordan-Algorithmus \cite{47_meyer}
 in reduzierte Zeilenstufenform umgewandelt. Für jede Spalte in dieser Matrix, die kein Pivot-Element enthält, werden zufällige
 Werte für die entsprechenden freien Variablen generiert. Der Kern der Matrix kann direkt aus der reduzierten Zeilenstufenform
 abgeleitet werden, weshalb wir diesen nicht noch einmal explizit berechnen. Stattdessen setzen wir die bereits generierten Zufallszahlen
 direkt für die freien Variablen ein und berechnen daraus alle weiteren Knotenpositionen und Kantenlängen. Anschließend überprüfen wir
 diese Positionen auf eventuell auftretende negative Kantenlängen und generieren die Zufallszahlen ggf. neu. Dies wiederholen wir solange,
-bis entweder eine gültige Lösung gefunden werden konnte oder wir einen nutzerdefinierte Maximalanzahl an Versuchen erreicht haben.
+bis entweder eine gültige Lösung gefunden werden konnte oder wir die vorgebenene Maximalanzahl an Versuchen (\code{maxTries}) erreicht haben.
 Anschließend werden die Knotenpositionen des generierten \code{PolygonMesh} Objektes normalisiert, sodass sich die gesamte Struktur
 bei der Darstellung auch vollständig im Viewport der Anwendung befindet.
 
 \section{Ansicht}
-Die Ansicht realisiert die Interaktion mit dem Benutzer und stellt dafür eine Benutzeroberfläche bereit.
-Die Benutzeroberfläche der Anwendung wird mithilfe des Java GUI-Toolkits Swing implementiert. Dies geschieht in der Klasse
-\code{InversePcgApplication}, welche die gesamte Anwendung darstellt. Diese basiert auf der von Prof. Dr. Philipp Jenke bereitgestellten
-Klasse \code{CG2DApplication}, welche selbst die Swing-Komponente \code{JFrame} erweitert und
+Als letzte grundlegende Komponente der Anwendung betrachten wir die Ansicht, welche die Interaktion mit dem Benutzer realisiert und
+dafür eine Benutzeroberfläche bereitstellt. Diese Benutzeroberfläche wird mithilfe des Java GUI-Toolkits Swing implementiert. Dies geschieht
+in der Klasse \code{InversePcgApplication}, welche die gesamte Anwendung darstellt. Diese basiert auf der von Prof. Dr. Philipp Jenke
+bereitgestellten Klasse \code{CG2DApplication}, welche selbst die Swing-Komponente \code{JFrame} erweitert und
 Funktionalität zum einfachen Hinzufügen verschiedener Szenen bereitstellt. Wir implementieren drei verschiedene Szenen-Typen,
 die dieser Anwendung hinzugefügt werden. Die implementierten Szenen erweitern jeweils die Klasse \code{Scene2D}, welche ebenfalls
 von Prof. Dr. Philipp Jenke bereitgestellt wird. In dieser wird Funktionalität zum Zeichnen von Linien, Polygonen, etc. implementiert.
 
-% TODO: Szenen überarbeiten
 \subsection{InputScene}
-Die \code{InputScene} wird zum Rendern der verschiedenen Input-Strukturen genutzt. Der Nutzer kann zwischen
-einer Reihe an bereitgestellten Strukturen auswählen, welcher dann in dieser Szene visualisiert werden. Außerdem kann hier ein
-Seed für den Zufallsgenerator festgelegt werden.
+Die \code{InputScene} wird zum Rendern der verschiedenen Inputstrukturen genutzt. Der Nutzer kann zwischen
+einer Reihe an bereitgestellten Strukturen auswählen, welcher dann in dieser Szene visualisiert werden. Diese Strukturen werden
+in Form von \code{.mesh}-Dateien gespeichert, zwischen welchen der Nutzer in einer \code{JComboBox} auswählen kann. Um aus den
+Dateien die eigentliche Datenstruktur zu erstellen, wird der ausgewählte Dateiname an die Steuerungskomponente weitergegeben.
+Sobald diese das entsprechende \code{PolygonMesh} erstellt hat, wird dieses im Datenmodell gespeichert. Die \code{InputScene}
+wird folglich über diese Änderung informiert und kann nun die ausgewählte Inputstruktur visualisieren.
+Außerdem kann in dieser Szene der \code{seed} für den Zufallsgenerator festgelegt werden.
 
 \subsection{GrammarScene}
-Die \code{GrammarScene} wird genutzt, um die aus dem Input erzeugte Graph-Grammatik darzustellen. Da die in den
+Die \code{GrammarScene} wird genutzt, um die aus dem Input erzeugte Graph-Grammatik darzustellen. Um die Grammatik zu erhalten, wird
+zunächst erneut die Steuerungskomponente dazu beauftragt, diese aus dem momentan in der \code{InputScene} ausgewählten Input abzuleiten.
+Anschließend kann die Graphgrammatik aus dem Datenmodell entnommen und visuell dargestellt werden. Zum Steuern der Ableitung dieser
+Grammatik kann der Nutzer hier den Parameter \code{maxGeneration} anpassen. Da die in den
 Produktionsregeln enthaltenen Winkelgraphen neben den Kantenwinkeln keine festen Geometrie-Eigenschaften besitzen, können diese nur
 angenähert dargestellt werden. Die einzelnen Kanten werden mit zufällig festgelegten Kantenlängen dargestellt und es wird versucht, die
 Winkel der Kanten weitesgehend zu respektieren. Soll jedoch eine Kante gezeichnet werden, die zwei bereits gezeichnete Knoten verbindet,
-so kann dies nicht eingehalten werden und der Kantenwinkel wird beim Zeichnen ignoriert. Trotzdem sind die entstehenden Darstellungen
-nützlich, um einen Einblick in die Funktionsweise hinter der Graph-Grammatik zu bekommen. Zum Steuern der Ableitung dieser Grammatik
-kann der Nutzer hier außerdem die Maximalanzahl an Graphen bei der Erstellung der Graph-Hierarchie angeben.
+so kann der Kantenwinkel nicht respektiert werden und die gezeichnete Kante verläuft in dem Winkel, der durch die beiden zu verbindenen
+Knoten vorgegeben wird. Trotzdem sind die entstehenden Darstellungen nützlich, um einen Einblick in die Funktionsweise hinter der
+Graphgrammatik zu bekommen.
 
 \subsection{OutputScene}
-In der \code{OutputScene} werden die final erzeugten Ergebnisse visualisiert. Der Nutzer kann hier zum einen die Anzahl an Iterationen für die
-Ableitung eines neuen Winkelgraphen beim Anwenden der Graph-Grammatik festlegen. Zum anderen kann der Nutzer eine Maximalanzahl an Versuchen
-für das Generieren von Werten für die freien Variablen beim Festsetzen der Knotenpositionen angeben. Mithilfe dieser Angaben wird nun ein
-neues \code{PolygonMesh} erzeugt und in dieser Szene visuell dargestellt. % TODO: auf neue Einstellungsmöglichkeiten eingehen
+In der \code{OutputScene} werden die final erzeugten Ergebnisse visualisiert. Dazu stehen dem Benutzer hier die Einstellungsmöglichkeiten
+für alle noch fehlenden Parameter (\code{iterations}, \code{maxTries}, \code{minRandVal}, \code{maxRandVal} und \code{waitTime}) zur
+Verfügung. Mithilfe dieser Angaben kann die Steuerungskomponente einen neuen Output erzeugen, der zunächst wieder in das Datenmodell
+eingetragen wird, bevor dieser dann in der \code{OutputScene} visualisiert werden kann.
