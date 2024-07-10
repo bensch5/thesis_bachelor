@@ -6,5 +6,48 @@ anschließend einen Ausblick auf mögliche Verbesserungen und Erweiterungsmögli
 seiner Umsetzung.
 
 \section{Zusammenfassung}
+Im Rahmen dieser Arbeit wurde die inverse prozedurale Generierung von Strukturen für virtuelle Welten untersucht, dies spezifisch
+für den zweidimensionalen Raum. Es wurden einige bereits entwickelte Ansätze im Bereich der ``normalen'' prozeduralen Generierung
+vorgestellt und das vorhandene Kernproblem solcher Verfahren aufgezeigt. Es wurde klargestellt, wie hier durch das inverse Vorgehen
+Abhilfe geschaffen werden kann, woraufhin einige der bereits existierenden inversen Verfahren erläutert wurden. Hier wurden
+erneut die vorhandenen Probleme aufgezeigt und anschließend ein neues Verfahren präsentiert, welches versucht, auch diese Probleme
+weitesgehend aus dem Weg zu räumen. Dieses Verfahren wurde detailliert vorgestellt und es wurde Schritt für Schritt erläutert,
+wie wir es schaffen, Muster in einer vorgegebenen Struktur zu erkennen, diese in Form einer Grammatik abzubilden und abschließend
+daraus beliebig viele Variationen abzuleiten, die dann für verschiedenste Zwecke genutzt werden können. Anhand einer prototypischen
+Implementierung haben wir dann gezeigt, dass dieses Verfahren auch in der Praxis funktioniert, auch wenn darin noch einige Probleme
+vorhanden sind.
 
 \section{Verbesserungsansätze und Erweiterungsmöglichkeiten}
+Das implementierte Verfahren sollte ausreichend demonstriert haben, was mithilfe des vorgestellten Ansatzes möglich ist. Dennoch gibt
+es hier natürlich einige Verbesserungsansätze und Möglichkeiten zur Erweiterung der betrachteten Konzepte, welche wir gern abschließend
+erwähnen möchten.
+
+\subsection{Eingrenzen des Hierarchie-Wachstums}
+In der momentanen Umsetzung ist es in den meisten Fällen nicht möglich, die Hierarchie wirklich zu leeren und diese wächst immer weiter
+bis in die Unendlichkeit. Es ist uns nur möglich mit diesem Vorgehen zu einem Ende zu kommen, da wir das Erzeugen der Hierarchie
+frühzeitig abbrechen, indem wir diese nur bis zu einer bestimmten Größe erweitern. Dadurch können wir zwar eine Vielzahl an Regeln finden,
+nicht aber kann garantiert werden, dass wir mit der erzeugten Graphgrammatik dann alle zum Input lokal Ähnlichen Polygonstrukturen
+erzeugen können. An dieser Stelle müsste das Verfahren um weitere Überprüfungen der erstellten Graphen erweitert werden, welche es uns
+erlauben, diese frühzeitig auch ohne das Finden von Regeln aus der Hierarchie zu entfernen. Einige solcher Ansätze werden im Paper von
+Merrell \cite{1_merrell} diskutiert, jedoch kann selbst durch diese nicht immer garantiert werden, dass die Hierarchie wirklich geleert
+werden kann. \cite{1_merrell}
+
+\subsection{Inkrementelles Festsetzen der Knotenpositionen}
+Ein weiteres Problem mit dem hier vorgestellten Verfahren liegt darin, wie wir die aus der Graphgrammatik abgeleiteten Graphen in
+eine feste geometrische Repräsentation bringen. Wie in \autoref{chap:auswertung} festgestellt wurde, läuft dies in unserer Implementierung
+in vielen Fällen schief und es wird ein Output mit ungültigen Kantenlängen erzeugt. Auch bei vielen wiederholten Versuchen kann dieses
+Problem meist nicht umgangen werden und letztendlich wird ein Output erzeugt, in welchem sich einige der Kanten überschneiden und teilweise
+einen falschen Kantenwinkel besitzen. Ein Lösungsansatz hierfür wäre es, beim Festsetzen der Knotenpositionen inkrementell vorzugehen.
+Aktuell erzeugen wir nur die Winkelgraphen selbst nach einem solchen Vorgehen, indem wir in jeder Iterationen nur eine neue Regel auf
+den bereits erzeugten Graphen anwenden. Jedes Mal, wenn dann jedoch die Knotenpositionen für diesen Winkelgraphen bestimmt werden sollen,
+fangen wir damit komplett von Neuem an und bestimmen alle Knotenpositionen auf einmal. Wenn dabei dann etwas schiefläuft, generieren wir
+erneut alles von vorn. Würden wir stattdessen auch beim Bestimmen der Knotenpositionen inkrementell vorgehen und in jedem Schritt nur die
+Positionen der in der aktuellen Iteration neu hinzugefügten Knoten berechnen, so würde das Verfahren deutlich seltener Probleme beim
+Erzeugen des Outputs haben. Auch dies wird im Paper von Merrell diskutiert. \cite{1_merrell}
+
+\subsection{Erweiterung in die dritte Dimension}
+Die letzte der zu erwähnenden Verbesserungen ist die Erweiterung dieses Verfahrens in den dreidimensionalen Raum. Diese Arbeit hat sich
+lediglich mit dem zweidimensionalen Raum befasst, da dies die Komplexität des Ganzen etwas verringert. Die grundlegenden vorgestellten
+Konzepte können allerdings auch im 3D angewandt werden, sind dann nur etwas komplexer in der Umsetzung. Hierdurch würde das Verfahren
+für viele weitere Anwendungsfälle in Frage kommen, die mit der aktuellen Umsetzung nicht abgedeckt werden können. Auch hierzu gibt es
+weitere Informationen im Paper von Merrell. \cite{1_merrell}

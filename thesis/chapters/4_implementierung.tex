@@ -190,7 +190,7 @@ Schauen wir uns nun die von der Steuerung verwalteten Algorithmen genauer an. Di
 % könnten. Um dieses Problem zu vermeiden und später zumindest noch einige Variationen generieren zu können, fügen wir der Grammatik
 % direkt eine Starter-Regel hinzu, welche den leeren Graphen mit dem ursprünglichen Input-Graphen ersetzt.
 
-Die \code{GrammarBuilder} Klasse enthält alle Algorithmen rund um das Ableiten der Graph-Grammatik. Es wird ein \code{PolygonMesh} als
+Die \code{GrammarBuilder} Klasse enthält alle Algorithmen rund um das Ableiten der Graphgrammatik. Es wird ein \code{PolygonMesh} als
 Input entgegengenommen und eine \code{GraphGrammar} als Endergebnis erzeugt. Das Herzstück hierbei ist das inkrementelle Aufbauen einer
 Graph-Hierarchie. Um die erste Generation dieser Hierarchie zu bilden, gibt es Funktionalität, welche alle verschiedenartigen
 Kanten im ursprünglichen \code{PolygonMesh} Objekt in einen entsprechenden Winkelgraphen umwandelt. Die Tangentenwinkel der Kanten
@@ -215,7 +215,7 @@ direkt eine Starter-Regel hinzu, welche den leeren Graphen mit dem ursprünglich
 
 \subsection{GraphBuilder}
 In der \code{GraphBuilder} Klasse befindet sich alles an Funktionalität zum Ableiten von neuen Winkelgraphen aus einer gegebenen
-Graph-Grammatik. Zunächst wird zufällig eine der vorhandenen Starter-Regeln ausgewählt, um eine Grundlage für alle weiteren Operationen
+Graphgrammatik. Zunächst wird zufällig eine der vorhandenen Starter-Regeln ausgewählt, um eine Grundlage für alle weiteren Operationen
 zu schaffen. Wir erhalten einen vollständigen Graphen \(G\). Anschließend wird für die im Datenmodell festgelegte Anzahl an Iterationen
 (\code{iterations}) immer wieder eine neue zufällige Regel ausgewählt und versucht, diese auf \(G\) anzuwenden. Dabei gibt es keine Garantien
 dafür, dass die gewählten Regeln überhaupt angewandt werden können und es kann passieren, dass sich \(G\) in einigen der Iterationen
@@ -266,7 +266,7 @@ wird folglich über diese Änderung informiert und kann nun die ausgewählte Inp
 Außerdem kann in dieser Szene der \code{seed} für den Zufallsgenerator festgelegt werden.
 
 \subsection{GrammarScene}
-Die \code{GrammarScene} wird genutzt, um die aus dem Input erzeugte Graph-Grammatik darzustellen. Um die Grammatik zu erhalten, wird
+Die \code{GrammarScene} wird genutzt, um die aus dem Input erzeugte Graphgrammatik darzustellen. Um die Grammatik zu erhalten, wird
 zunächst erneut die Steuerungskomponente dazu beauftragt, diese aus dem momentan in der \code{InputScene} ausgewählten Input abzuleiten.
 Anschließend kann die Graphgrammatik aus dem Datenmodell entnommen und visuell dargestellt werden. Zum Steuern der Ableitung dieser
 Grammatik kann der Endnutzer hier den Parameter \code{maxGeneration} anpassen. Da die in den

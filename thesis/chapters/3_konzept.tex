@@ -35,18 +35,19 @@ Im nächsten Schritt wird der erstellte Graph nun in seine kleinstmöglichen Ein
 aufgeteilt. Das Ergebnis sind viele Teilgraphen, welche jeweils nur noch aus einem Knoten und einigen Halbkanten bestehen.
 Einen solchen Teilgraphen nennen wir \textit{Primitiv}. Diese Primitive werden dann Schritt für Schritt in allen möglichen Kombinationen
 zusammengeklebt, was zum Entstehen einer Hierarchie an immer komplexer werdenden Graphen führt (siehe Abbildungen \ref{fig:overview}-II und
-\ref{fig:overview}-III).
+\ref{fig:overview}-III). \cite{1_merrell}
 
 Beim Aufbau der Hierarchie werden die neu entstehenden Graphen auf bestimmte
 Eigenschaften überprüft, die es uns erlauben, daraus Regeln für eine Graphgrammatik abzuleiten (siehe Abbildung \ref{fig:overview}-IV).
 Das einfachste Beispiel hierfür sind
 vollständige Graphen, also Graphen, die nur noch aus in sich geschlossenen Kreisen bestehen und keine Halbkanten mehr besitzen. Aus diesen lässt
 sich eine sogennante Startregel ableiten, welche den leeren Graphen mit dem gefundenen vollständigen Graphen ersetzt. Das Finden von weiteren
-Regeln ist deutlich komplizierter und wird später im Detail erläutert.
+Regeln ist deutlich komplizierter und wird später im Detail erläutert. \cite{1_merrell}
 
 Sobald nun eine Menge von Regeln für die Graphgrammatik gefunden wurde, kann man diese verwenden, um verschiedenste zum Inputgraphen
 ähnliche Graphen abzuleiten. Dazu werden die gefundenen nach und nach zufällig angewendet, was man in Abbildung \ref{fig:overview}-V sehen kann.
-Für einen solchen Graphen müssen dann nur noch konkrete Knotenpositionen und Kantenlängen bestimmt werden. (siehe Abbildung \ref{fig:overview}-VI).
+Für einen solchen Graphen müssen dann nur noch konkrete Knotenpositionen und Kantenlängen bestimmt werden (siehe Abbildung \ref{fig:overview}-VI).
+\cite{1_merrell}
 
 \section{Grundlagen}
 \subsection{Input}
@@ -75,7 +76,7 @@ Die einzelnen Polygone können außerdem mit Farben versehen werden, um verschie
 % erfolgreich, wenn die letztendlich erzeugten Output-Strukturen eine solche lokale Ähnlichkeit zum Input vorweisen können.
 
 Das Ziel, das durch dieses Verfahren erreicht werden soll, ist es, Variationen des Inputs zu erzeugen. Die erzeugten
-Output-Strukturen sollen dabei \textit{lokal ähnlich} zum gegebenen Input sein. Das Konzept der \textit{lokalen Ähnlichkeit} wird im Folgenden
+Outputstrukturen sollen dabei \textit{lokal ähnlich} zum gegebenen Input sein. \cite{1_merrell} Das Konzept der \textit{lokalen Ähnlichkeit} wird im Folgenden
 vorgestellt. Das Verfahren gilt nur als erfolgreich, wenn diese zwischen Input und Output nachgewiesen werden kann.
 
 Zwei Polygonstrukturen sind sich lokal ähnlich, wenn sich jeder Teil der einen Struktur zu einem Teil der anderen Struktur zuordnen lässt. Es
@@ -96,7 +97,7 @@ dieses Kreises (r-Nachbarschaft des Punktes) genauso in der anderen Struktur wie
 Die von uns verwendete lokale Ähnlichkeit funktioniert nach dem gleichen Konzept, mit der Ausnahme, dass der Radius so klein wie möglich gehalten
 wird. Wir schauen uns also lediglich an, welche Kanten und Polygone direkt an einem Punkt anliegen, während uns die restliche Nachbarschaft
 egal ist. So können die betrachteten Strukturen beliebig skaliert werden und trotzdem ihre lokale Ähnlichkeit zueinander bewahren, solang alle
-Kantenwinkel dabei beibehalten werden.
+Kantenwinkel dabei beibehalten werden. \cite{1_merrell}
 
 \subsection{Der Winkelgraph}
 \label{chap:winkelgraph}
@@ -111,7 +112,7 @@ Nach der Umwandlung des Inputs in einen Winkelgraphen ist dieser zunächst \text
 geschlossenen Kreisen. In späteren Verarbeitungsschritten wird dieser allerdings in unvollständige Teilgraphen zerlegt, welche dann außerdem
 \textit{Halbkanten} enthalten können. Im Gegensatz zu den vorher erwähnten Kanten sind diese gerichtet, können aber trotzdem durch ein
 gleichartiges Kantenlabel beschrieben werden. In späteren Abschnitten wird noch etwas genauer auf die Relevanz von Halbkanten und deren
-spezifische Notation eingegangen.
+spezifische Notation eingegangen. \cite{1_merrell}
 
 \subsubsection{Komplexität von Winkelgraphen}
 Später müssen einige der erstellten Winkelgraphen miteinander verglichen werden. Dabei muss bestimmt werden können, welcher
@@ -119,12 +120,12 @@ von zwei Graphen komplexer bzw. simpler ist. Dies ist nicht schwierig, sollte je
 Kriterium hierbei ist die Anzahl der Halbkanten der verglichenen Graphen. Ein Graph mit weniger
 Halbkanten gilt direkt als simpler als ein Graph mit einer größeren Anzahl an Halbkanten. In vielen Fällen werden die verglichenen Graphen jedoch die gleiche Anzahl
 an Halbkanten vorzuweisen haben. Hier wird die Graph-Hierarchie wichtig. Wurde ein Graph früher in die Hierarchie eingefügt, so gilt dieser als
-simpler. Dies kann immer eindeutig bestimmt werden und es kommt zu keinen weiteren Konflikten.
+simpler. Dies kann immer eindeutig bestimmt werden und es kommt zu keinen weiteren Konflikten. \cite{1_merrell}
 
 \subsection{Planarität und der Graph Boundary String}
 Damit die erzeugten Winkelgraphen später auch ohne Überschneidungen der Kanten dargestellt werden können, muss deren Planarität sichergestellt
 werden. Die endgültig erzeugten vollständigen Winkelgraphen bestehen nur noch aus geschlossenen Kreisen. Diese können dann als Polygone
-dargestellt werden, vorausgesetzt der jeweilige Kreis war planar.
+dargestellt werden, vorausgesetzt der jeweilige Kreis war planar. \cite{1_merrell}
 
 Ein geschlossener Kreis ist planar, wenn wir uns beim Traversieren seiner Kanten exakt einmal um 360° gedreht haben. Wenn wir also iterativ
 alle Kanten eines solchen Kreises gegen den Uhrzeigersinn betrachten, jeweils die Differenz der Winkel berechnen und diese Differenzen
@@ -132,6 +133,7 @@ aufsummieren, so erhalten wir einen Gesamtwinkel von 360°. Es kann allerdings a
 einen geschlossenen Kreis herum einen Gesamtwinkel von mehr als 360° erhalten, so z.B. 720°. Ist dies der Fall, so muss sich der Pfad zwingend
 selbst gekreuzt haben. Analog würde es bei der Darstellung der Kanten des entsprechenden Kreises mindestens eine unvermeidliche Überschneidung
 geben. Somit wäre der Winkelgraph, der diesen Kreis enthalten hat nicht mehr planar, was in Abbildung \ref{fig:planarity} visuell verdeutlicht wird.
+\cite{1_merrell}
 
 \begin{figure}[t]
     \centering
@@ -146,7 +148,7 @@ Winkelgraphen herum und enthält alle vorhandenen Halbkanten, sowie Informatione
 Der Pfad verläuft gegen den Uhrzeigersinn und hat keinen festen Startpunkt. Wichtig ist lediglich die relative Anordnung der enthaltenen
 Elemente. Um dies abbilden zu können, muss sich der \gls{ac:gbs} nicht als Liste mit festem Start- und Endpunkt vorgestellt werden,
 sondern als Kreis mit einer zusätzlichen Verbindung zwischen Anfang und Ende. Angenommen \(abc\wedge\) ist ein \gls{ac:gbs}, dann gilt
-\(abc\wedge = bc\wedge a = c\wedge ab = \wedge abc\).
+\(abc\wedge = bc\wedge a = c\wedge ab = \wedge abc\). \cite{1_merrell}
 
 Um den aktuellen Drehwinkel in Relation zum Startpunkt des Pfades zu ermitteln, können wir uns jeweils die Kantenlabel der traversierten
 Kanten anschauen und dort den Tangentenwinkel entnehmen. Dies wird allerdings problematisch, sobald sich der Pfad um mehr als
@@ -154,18 +156,18 @@ Kanten anschauen und dort den Tangentenwinkel entnehmen. Dies wird allerdings pr
 dieser Tangentenwinkel, so können wir nie eine Differenz von über 360° erhalten. Haben wir uns vom Startpunkt aus z.B. tatsächlich um 400°
 gedreht, so würde die hier berechnete Differenz lediglich \(400\degree - 360\degree = 40\degree\) betragen. Wir wissen also nie, ob wir uns
 aktuell um den Winkel \(\theta\), \(\theta + 360\degree\), \(\theta + 720\degree\) oder noch mehr gedreht haben.
-Dieses Problem lässt sich durch Einführung des Konzepts der \textit{positiven und negativen Drehungen} umgehen.
+Dieses Problem lässt sich durch Einführung des Konzepts der \textit{positiven und negativen Drehungen} umgehen. \cite{1_merrell}
 
 \textit{Positive Drehung \(\wedge\).} Dreht sich der Pfad aktuell gegen den Uhrzeigersinn wird der Winkel mit jeder gefundenen Kante größer. Stoßen wir
 dabei allerdings auf den Schwellwert von 180°, so bricht der Winkel auf einmal in den negativen Bereich um. Diesen Umbruch bezeichnen wir als
 positive Drehung. Folgen wir beim Entlanglaufen des Pfades dem Verlauf einer positiven Kanten und wechseln dann auf eine negativ verlaufende Kante, so
 werden wir dabei in einigen Fällen diesen Schwellwert überschreiten. Falls dies geschieht, so fügen wir eine
 positive Drehung in Form des Symbols \(\wedge\) in den \gls{ac:gbs} ein. Die Boundary eines planaren Winkelgraphen muss zwingend eine
-solche positive Drehung enthalten.
+solche positive Drehung enthalten. \cite{1_merrell}
 
 \textit{Negative Drehung \(\vee\).} Die negative Drehung stellt das Gegenteil zur positiven Drehung dar. Dreht sich der Pfad aktuell im
 Uhrzeigersinn, so nähern sich die gefunden Winkel nach und nach dem Schwellwert von -180°. Anschließend bricht der Winkel in den positiven Bereich
-um, was wir als negative Drehung bezeichnen und mit dem Symbol \(\vee\) im \gls{ac:gbs} notieren.
+um, was wir als negative Drehung bezeichnen und mit dem Symbol \(\vee\) im \gls{ac:gbs} notieren. \cite{1_merrell}
 
 \begin{figure}[t]
     \centering
@@ -180,7 +182,7 @@ nebeneinander im \gls{ac:gbs}, so können diese entfernt werden. Ebenfalls kann 
 für alle planaren Winkelgraphen ergibt ist, dass sich darin immer genau eine positive Drehung mehr befinden muss, als es negative Drehungen gibt.
 Dies liegt daran, dass sich der Pfad um einen planaren Graphen insgesamt exakt um 360° dreht und der Drehwinkel somit zumindest einmal irgendwo
 den Schwellwert überschreiten muss. Da wir die Graph Boundary entgegen des Uhrzeigersinns ablaufen,
-handelt es sich dabei um eine positive Drehung \(\wedge\).
+handelt es sich dabei um eine positive Drehung \(\wedge\). \cite{1_merrell}
 
 \subsection{Teil-Operation}
 Eine Kante \(\tilde{k}\) kann in zwei Halbkanten \(k\) und \(\overline{k}\) zerteilt werden. Im Gegensatz zu \(\tilde{k}\)
@@ -188,14 +190,14 @@ sind diese beiden Halbkanten gerichtet und zeigen in entgegengesetze Richtungen.
 positiven Tangentenwinkel \(\theta \in [0\degree,180\degree) \), während \(\overline{k}\) immer in negative Richtung zeigt und einen negativen
 Tangentenwinkel \(\theta \in [-180\degree,0\degree) \) besitzt. Ein Tangentenwinkel von 0° zählt hier als positiv. Der entgegengesetze Winkel
 von 180\degree\ gilt als negativ, da dieser ebenfalls als -180\degree\ interpretiert werden kann. Die Teil-Operation ermöglicht das Zerlegen vom
-Input in seine Primitive.
+Input in seine Primitive. \cite{1_merrell}
 
 \subsection{Klebe-Operation}
 Zwei entgegengesetze Halbkanten \(k\) und \(\overline{k}\) können wieder zu einer vollständigen und ungerichteten Kante
 \(\tilde{k}\) zusammengeklebt werden. Dies ermöglicht das Schließen von Kreisen innerhalb eines Graphen oder die Kombination von mehreren
 kleineren Graphen, vorausgesetzt diese besitzen passende Halbkanten. Hier ist erneut der \gls{ac:gbs} von Relevanz, da aus diesem alle
 möglichen Klebe-Operationen abgeleitet werden können, welche die Planarität der entstehenden Graphen bewahren. Grundlegend gibt es zwei
-verschiedene Arten von Klebe-Operationen: Loop Gluing und Branch Gluing.
+verschiedene Arten von Klebe-Operationen: Loop Gluing und Branch Gluing. \cite{1_merrell}
 
 \textit{Loop Gluing} beschreibt das Zusammenkleben zweier Kanten innerhalb eines einzigen Graphen. Das Anwenden einer solchen Operation
 führt zum Schließen eines Kreises innerhalb des Graphen. Ob ein Loop Gluing auf einen Graphen angewandt werden kann, lässt sich durch das
@@ -217,7 +219,7 @@ durchgeführt werden. Hierbei gibt es wieder zwei Optionen:
 
 Die Großbuchstaben G und H stehen hier jeweils für den Rest des \gls{ac:gbs} der beiden Graphen. Der \gls{ac:gbs} des neu enstandenen Graphen
 stellt die Kombination der beiden kleineren \gls{ac:gbs} dar, allerdings ohne die zusammengeklebten Halbkanten und mit einer zusätzlichen
-negativen Drehung.
+negativen Drehung. \cite{1_merrell}
 
 \begin{figure}[t]
     \centering
@@ -235,7 +237,7 @@ Informationen zu den Kantenwinkeln vor, welche ausschlaggebend für die weiteren
 Kanten aus dem Input übernommen. Anschließend werden die Knotenpositionen genutzt, um den Verlauf der Kanten in Form eines Tangentenwinkels zu
 ermitteln. Sobald dies geschehen ist, können die Knotenpositionen dann ignoriert werden, da lediglich die Ausrichtung der Kanten eine Rolle
 für die weiteren Schritte spielt. Die restlichen Informationen zur Geometrie werden nicht benötigt und erst beim Erzeugen des finalen Outputs
-wieder festgelegt.
+wieder festgelegt. \cite{1_merrell}
 
 \subsection{Finden der Primitive}
 Ist nun der Winkelgraph ermittelt worden, können wir daraus die Primitive ableiten. Diese sind die fundamentalen Grundbausteine für das
@@ -243,7 +245,7 @@ gesamte Verfahren. Aus ihnen werden alle weiteren Strukturen abgeleitet, weshalb
 ermitteln. Glücklicherweise wird dies durch die vorgestellte Teil-Operation recht trivial. Wenden wir diese auf jede Kante des gegebenen
 Winkelgraphen an, so bleiben nur Teilgraphen übrig, welche nur aus einem einzelnen Knoten, sowie einigen Halbkanten bestehen. Diese Teilgraphen
 sind dann auch schon die gesuchten Primitive. Hier können allerdings einige identische Teilgraphen entstehen, falls Teile des Input eine ähnliche
-Struktur vorzuweisen hatten. Solche Duplikate sind nicht relevant für die weiteren Schritte und werden ignoriert.
+Struktur vorzuweisen hatten. Solche Duplikate sind nicht relevant für die weiteren Schritte und werden ignoriert. \cite{1_merrell}
 
 \subsection{Aufbauen der Graph-Hierarchie}
 Die vorgestellten Klebe-Operationen ermöglichen es uns, die gefundenen Primitive nach und nach zu komplexeren Graphen zusammenzusetzen.
@@ -256,13 +258,13 @@ betrachtet und ein Branch Gluing mit diesen ausgeführt, vorausgesetzt deren \gl
 Wird durch eine dieser Operationen ein neuer Graph erzeugt, so gilt dieser als Kind des anderen Graphen. Jeder Graph wird
 also neben der Einordnung in eine Generation außerdem in eine Eltern-Kind-Beziehung gebracht. Die Struktur der Hierarchie selbst ähnelt somit
 fast der eines Baumes, allerdings kann ein und derselbe Kindsgraph durch verschiedene Elterngraphen erzeugt werden, wodurch wiederum Kreise
-innerhalb der Hierarchie entstehen.
+innerhalb der Hierarchie entstehen. \cite{1_merrell}
 
 In der Theorie können alle Kombinationen an Primitiven erzeugt werden, wenn wir dieses Vorgehen bis in die Unendlichkeit weiterführen. Somit
 würden garantiert alle zum Input lokal ähnlichen Winkelgraphen erzeugt werden und man könnte einfach jeden beliebigen vollständigen Graphen
 aus der Hierarchie entnehmen, um jeden validen Output des Verfahrens erzeugen zu können. Praktisch gesehen ist dies natürlich leider nicht
 umsetzbar, da uns weder unendlich viele Ressourcen noch Zeit zur Verfügung stehen. Um diesen Ansatz also praktisch zu machen, müssen einige
-Anpassungen gemacht werden.
+Anpassungen gemacht werden. \cite{1_merrell}
 
 \subsection{Ableiten der Graphgrammatik}
 Statt zuerst eine ``vollständige'' Hierarchie zu erzeugen und aus
@@ -275,7 +277,7 @@ Graphen durch eine der Regeln reduziert werden konnten. In diesem Fall können w
 und zum Inputgraphen lokal ähnlichen Winkelgraphen aus der erzeugten Grammatik ableiten lassen. Meistens werden wir allerdings auf
 Szenarien stoßen, in denen die Anzahl der neuen Graphen schneller wächst, als wir andere Graphen entfernen können. Kommt dies vor, so muss das
 Erstellen der Hierarchie irgendwann frühzeitig abgebrochen werden und die Graphgrammatik ist eventuell nicht in der Lage, alle lokal ähnlichen
-Graphen zu erzeugen. Trotzdem kann die Grammatik dann zum Ableiten einer Vielzahl von lokal ähnlichen Winkelgraphen genutzt werden.
+Graphen zu erzeugen. Trotzdem kann die Grammatik dann zum Ableiten einer Vielzahl von lokal ähnlichen Winkelgraphen genutzt werden. \cite{1_merrell}
 
 \subsubsection{Graphgrammatiken}
 Bevor wir die Erzeugung dieser Datenstruktur genauer betrachten, soll erst einmal der Begriff der Graphgrammatik klar definiert werden.
@@ -302,7 +304,7 @@ von Graphgrammatiken genutzt werden kann. \cite{1_merrell}
 
 Die Produktionen im verwendeten \gls{ac:dpo} Ansatz bestehen aus drei Teilen. Einem linken und rechten Graphen (\(L\) und \(R\)), welche jeweils
 den Mutter- und Tochtergraphen darstellen, sowie einem Interface-Graphen \(I\), welcher den Einbettungsmechanismus darstellt. Wie in Abbildung
-\ref{fig:dpo_rule} zu sehen ist, können diese Graphen mithilfe der Homomorphismen \(\upvarphi L\) und \(\upvarphi R\) untereinander abbilden.
+\ref{fig:dpo_rule} zu sehen ist, können diese Graphen mithilfe der Homomorphismen \(\upvarphi L\) und \(\upvarphi R\) untereinander abbilden. \cite{1_merrell}
 
 Ein Homomorphismus von Graph \(A\) (mit der Knotenmenge \(V(A)\) und der Kantenmenge \(E(A)\)) zu Graph \(B\) (mit \(V(B)\) und \(E(B)\)) ist eine
 Abbildung \(h: A \rightarrow B\), welche alle Knoten in \(V(A)\) auf eine (meist echte) Teilmenge von \(V(B)\) abbildet: \(x, y \in V(A)
@@ -320,13 +322,13 @@ es gibt einen Homomorphismus \(\upvarphi n: R \rightarrow H\). \cite{7_ehrig_et_
 \subsubsection{Theorie hinter der Funktionsweise}
 Die später aus der Hierarchie abzuleitenden Produktionsregeln werden so angeordnet, dass sich auf der linken Seite ein komplexerer Graph befindet,
 als auf der rechten Seiten. Wird die Regel von links nach rechts angwendet, so vereinfacht sie \(G\). Dies bezeichnen wir als \textit{destruktiv}.
-Wird sie von rechts nach links angewendet, so macht sie \(H\) komplexer, was wir wiederum als \textit{konstruktiv} berzeichnen.
+Wird sie von rechts nach links angewendet, so macht sie \(H\) komplexer, was wir wiederum als \textit{konstruktiv} berzeichnen. \cite{1_merrell}
 
 Wie bereits erwähnt, versuchen wir nach dem Erstellen der einzelnen Graphen Regeln zu finden, die bereits erzeugte Graphen in der Hierarchie
 vereinfachen können und entfernen diese dann ggf. aus der Hierarchie. Hier werden die Regeln stets nur destruktiv genutzt, was zunächst unlogisch
 erscheint. An diesem Punkt können wir uns die Invertierbarkeit der Produktionen zunutze machen. Wenn wir genug Regeln finden können, um alle Graphen
 in der Hierarchie zum leeren Graphen reduzieren zu können, indem wir diese destruktiv verwenden, so können wir im Umkehrschluss genau die gleichen
-Regeln konstruktiv benutzen, um aus dem leeren Graphen alle anderen Graphen abzuleiten.
+Regeln konstruktiv benutzen, um aus dem leeren Graphen alle anderen Graphen abzuleiten. \cite{1_merrell}
 
 \subsubsection{Ableiten einer Produktionsregel}
 Kommen wir nun dazu, wie es möglich ist, solche Regeln automatisch ableiten zu können. Dazu schauen wir uns erneut kurz an, wie eine Produktionsregel
@@ -339,17 +341,17 @@ Lücke in \(K\) schließen kann, muss dieser exakt die gleichen Halbkanten entha
 der enstandenen Halbkanten in \(K\) nicht vervollständigt werden. Besitzt \(R\) mehr Halbkanten, so würde das Durchführen des Branch Gluings zwischen
 \(K\) und \(R\) weitere offene Halbkanten in \(K\) einfügen. Stimmt die Anzahl der Halbkanten in \(L\) und \(R\) überein, aber die Kantenlabel
 unterscheiden sich, so kann \(K\) ebenfalls nicht vervollständigt werden. Nur bei hundertprozentiger Übereinstimmung der Halbkanten auf beiden Seiten
-der Regel kann diese also problemlos angewandt werden.
+der Regel kann diese also problemlos angewandt werden. \cite{1_merrell}
 
 Um aus der Hierarchie eine Regel ableiten zu können, müssen wir also jeweils zwei Graphen mit übereinstimmenden Halbkanten finden. Hier können wir uns
 den \gls{ac:gbs} zunutze machen, da dieser alle Halbkantenlabel eines Graphen enthält. Besitzen zwei Graphen einen identischen \gls{ac:gbs}, so besitzen
 sie zwingend auch die gleichen Halbkanten. Zusätzlich wird durch Abgleichen der Boundary sichergestellt, dass sich an der Planarität des enstehenden
-Graphen nach Anwendung einer Produktionsregel nichts ändert. Zwischen den Kanten befinden sich dann nach wie vor die gleichen Drehungen.
+Graphen nach Anwendung einer Produktionsregel nichts ändert. Zwischen den Kanten befinden sich dann nach wie vor die gleichen Drehungen. \cite{1_merrell}
 
 Statt einen Graphen \(L\) immer nur mit genau einem anderen Graphen \(R\) zu ersetzen, können wir alternativ auch auf mehrere Graphen \(\{R_1, R_2, \dots\}\)
 auf der rechten Seite abbilden, vorausgesetzt diese befinden sich in der Hierarchie. Lassen sich die \gls{ac:gbs} \(\{\partial R_1, \partial R_2, \dots\}\)
 zu \(\partial L\) zusammensetzen, so sind ebenfalls alle Bedingungen erfüllt, um die Regel problemlos anwenden zu können. Durch dieses Vorgehen lassen sich
-sehr viele weitere Regeln ableiten und das Wachstum der Graph-Hierarchie wird zusätzlich eingeschränkt.
+sehr viele weitere Regeln ableiten und das Wachstum der Graph-Hierarchie wird zusätzlich eingeschränkt. \cite{1_merrell}
 
 \begin{figure}[t]
     \centering
@@ -366,7 +368,7 @@ Dies würde den Bedingungen für die Planarität widersprechen, da die Differenz
 Um dieses Problem zu umgehen, wird bei der Kombination zweier \gls{ac:gbs} eine weitere negative Drehung zwischen diesen eingefügt. Nehmen wir an \(A\)
 und \(B\) sind Boundary Strings. Die daraus resultierende Kombination hätte dann die Form \(A \vee B\). Dies ist keine willkürliche Anpassung, die
 unsere vorher aufgestellten Regeln für einen \gls{ac:gbs} umgeht, sondern eine logische Konsequenz aus diesen. In Abbildung \ref{fig:splicing} ist dies noch einmal
-zusätzlich verdeutlicht.
+zusätzlich verdeutlicht. \cite{1_merrell}
 
 Widmen wir uns nun wieder dem Beispiel in Abbildung \ref{fig:set_of_graphs}. Aufgrund der kreisförmigen Natur eines \gls{ac:gbs} können wir
 \(\partial R_1 = ad\wedge\) auch als \(d\wedge a\) und \(\partial R_2 = bc\wedge\) als \(\wedge bc\) darstellen. Werden diese mit einer zusätzlichen
@@ -377,14 +379,14 @@ Nach der Erzeugung eines jeden neuen Graphen \(L\) in der Hierarchie betrachten 
 miteinander. Wird dabei eine hunderprozentige Übereinstimmung \(\partial L = \partial R\) gefunden, so kann direkt eine neue Regel abgeleitet werden.
 Alternativ könnte \(\partial R\) auch nur ein Teil von \(\partial L\) sein, was einige Teil-Strings hinterlassen würde. Für diese Teil-Strings wird dann
 rekursiv nach weiteren Übereinstimmungen gesucht, bis sich \(\partial L \) entweder komplett aus den gefunden Teil-Strings zusammensetzen lässt oder
-es keine weiteren Graphen mehr gibt, die noch überprüft werden können. In letzterem Fall kann dann keine Produktionsregel abgeleitet werden.
+es keine weiteren Graphen mehr gibt, die noch überprüft werden können. In letzterem Fall kann dann keine Produktionsregel abgeleitet werden. \cite{1_merrell}
 
 Betrachten wir erneut das Beispiel in Abbildung \ref{fig:set_of_graphs}. Wir haben einen Graphen \(L\) mit der Boundary \(\partial L = abcd\wedge \) erzeugt.
 Beim Iterieren durch die Hierarchie finden wir nun den Graphen \(R_1\) mit \(\partial R_1 = ad\wedge \). \(\partial R_1\) ist als Teil in \(\partial L \)
 enthalten, wodurch \(R_1\) also einen Teil von \(L\) ersetzen kann. Übrig bleibt der Teil-String \(bc\). Um diesem einen Graphen zuordnen zu können,
 muss zunächst eine positive Drehung \(\wedge \) an diesen angefügt werden. Die zusätzliche Drehung wird dann beim Kombinieren automatisch wieder negiert.
 Ein Graph \(R_2\) mit \(\partial R_2 = bc\wedge \) kann anschließend ebenfalls gefunden werden, wodurch alle Teile von \(\partial L\) nun komplett sind. Somit kann
-aus den gefundenen eine neue Produktionsregel erstellt und \(L\) aus der Hierarchie entfernt werden, da sich dieser nun nachweislich vereinfachen lässt.
+aus den gefundenen eine neue Produktionsregel erstellt und \(L\) aus der Hierarchie entfernt werden, da sich dieser nun nachweislich vereinfachen lässt. \cite{1_merrell}
 
 \begin{figure}[t]
     \centering
@@ -401,19 +403,7 @@ das oben beschriebene Vorgehen niemals abgeleitet werden und stellt einen Sonder
 einen vollständigen Graphen \(L\) erzeugen. In diesem Fall wird nicht versucht, \(\partial L\) mit den \gls{ac:gbs} der anderen Graphen in der Hierarchie
 abzugleichen. Dies würde ohnehin zu keinem Erfolg führen, da in \(\partial L\) keinerlei Halbkanten enthalten sind. Stattdessen wird \(L\) sofort aus der
 Hierarchie entfernt und eine neue Produktionsregel erstellt, welche auf der linken Seite den vollständigen Graphen \(L\) und auf der rechten Seite den
-leeren Graphen \(\varnothing\) enthält.
-
-% \subsubsection{Eingrenzen des Hierarchie-Wachstums}
-% Im Optimalfall lassen sich in den ersten paar Generationen der Hierarchie direkt so viele Produktionsregeln ableiten, dass die Hierarchie dadurch vollständig
-% geleert werden kann. Meist wird dies allerdings nicht eintreffen und die Anzahl der Graphen wächst unkontrollierbar in die Höhe. Nachfolgend werden einige
-% Optimierungen vorgestellt, um dies etwas weiter einzugrenzen. Leider gibt es selbst dann nach wie vor viele Input-Strukturen, bei denen sich das
-% Hierarchie-Wachstum nicht ausreichend einschränken lässt. Das Verfahren wird hierdurch dennoch flexibler als auch effizienter.
-
-% Eine dieser Optimierungen beläuft sich darauf, ... TODO, vielleicht nur in Auswertungskapitel kurz erwähnen, dass dies noch hätte gemacht werden können
-
-% reducing a graph with its descendants (5.4)
-% stubs (5.5)
-% (5.6)
+leeren Graphen \(\varnothing\) enthält. \cite{1_merrell}
 
 \section{Erzeugen von Variationen mithilfe der abgeleiteten Regeln}
 \subsection{Ableiten eines neuen Winkelgraphen}
@@ -429,13 +419,13 @@ Prozess können wir beliebig oft wiederholen und jederzeit abbrechen. Solang zum
 vollständigen Winkelgraphen und somit ein valides Ergebnis für diesen Teilschritt.
 
 \subsection{Festsetzen der Knotenpositionen}
-Jetzt gilt es nur noch den eben erzeugten Winkelgraphen in eine Output-Struktur mit festen Knotenpositionen umzuwandeln und gleichzeitig sicherzustellen,
+Jetzt gilt es nur noch den eben erzeugten Winkelgraphen in eine Outputstruktur mit festen Knotenpositionen umzuwandeln und gleichzeitig sicherzustellen,
 dass diese ohne jegliche Überschneidungen der Kanten dargestellt werden kann. Dazu verwenden wir einen ähnlichen Ansatz wie Bokeloh et al. \cite{4_bokeloh_et_al}
 und stellen den Graphen als lineares Gleichungssystem dar, für welches wir anschließend eine Lösung finden. Die einzelnen Gleichungen dieses Systems lassen
 sich jeweils aus den Kanten des Winkelgraphen ableiten. Dazu betrachten wir die Positionen des Startknotens \(v_0\) und des Endknotens \(v_1\), sowie den
 Tangentenwinkel \(\theta\). Dieser kann wie folgt als zweidimensionaler Richtungsvektor dargestellt werden: \(u = [cos(\theta), sin(\theta)]\). Es handelt
 sich hierbei um einen Einheitsvektor, der mit einer Kantenlänge \(s\) multipliziert auf die Position von \(v_0\) addiert werden kann, um \(v_1\) zu erhalten.
-Die gesamte Gleichung zum Beschreiben einer Kante lautet dann: \(v_0 + su = v_1\) bzw. \(v_0 + su - v_1 = 0\) \cite{1_merrell}. All diese Kantengleichungen können in eine
+Die gesamte Gleichung zum Beschreiben einer Kante lautet dann: \(v_0 + su = v_1\) bzw. \(v_0 + su - v_1 = 0\). \cite{1_merrell} All diese Kantengleichungen können in eine
 Matrix-Gleichung der Form \(Ax = 0\) gebracht werden, wobei \(x\) alle Unbekannten (Knotenpositionen und Kantenlängen) und \(A\) alle Koeffizienten dieser
 Unbekannten enthält. \(0\) stellt den Nullvektor des entsprechenden Vektorraums dar. Für jede Kantengleichung werden zwei neue Zeilen in die Matrix-Gleichung
 eingefügt, da wir mit zweidimensionalen Vektoren arbeiten. Eine Zeile beschreibt die x-Koordinaten, die andere Zeile die y-Koordinaten der Vektoren.
@@ -517,14 +507,7 @@ s
 \]
 
 Nun können wir beliebige Werte für \(s\) und \(t\) einsetzen, um eine konkrete Lösung für das Gleichungssystem zu erhalten. Leider bedeutet das Finden einer solchen
-Lösung nicht unbedingt, dass wir nun auch eine valide Darstellung für die Output-Struktur gefunden haben. Die gefundene Lösung könnte eventuell negative Werte für
+Lösung nicht unbedingt, dass wir nun auch eine valide Darstellung für die Outputstruktur gefunden haben. Die gefundene Lösung könnte eventuell negative Werte für
 die Kantenlängen enthalten, welche nicht dargestellt werden können. Um dies zu umgehen, müssen wir die vorgeschlagenen Lösungen also stets auf ungültige Werte überprüfen
 und ggf. eine neue Lösung generieren. Neben dem Überprüfen auf negative Kantenlängen könnten wir hier außerdem weitere durch den Endnutzer angegebene Kriterien überprüfen
-und so z.B. alle Kantenlängen auf einen bestimmten Wertebereich beschränken.
-
-%\subsubsection{Optimierung durch inkrementelles Vorgehen}
-% TODO: Merrell 6.2
-% vllt erst in Implementierungskapitel darauf eingehen
-
-% TODO:
-% - Hinzufügen von weiteren Quellen (?)
+und so z.B. alle Kantenlängen auf einen bestimmten Wertebereich beschränken. \cite{1_merrell}

@@ -1,11 +1,16 @@
 % @author Benjamin Schröder
 %
 \chapter{Auswertung}
+\label{chap:auswertung}
 Werten wir die vorgestellte Implementierung nun aus. Dazu stellen wir die Ergebnisse einiger Beispieldurchläufe vor, diskutieren diese, und überprüfen
 anschließend die anfangs vorgestellten Anforderungen.
 
 \section{Ergebnisse}
-% TODO
+% TODO:
+% allgemeine Beschreibung
+% auf Anpassungen bei Finden der Grammatik eingehen
+% auf Defizite des MeshSolvers eingehen
+% positive und negative Ergebnisse zeigen
 
 \section{Überprüfen der Anforderungen}
 \subsection{Funktionale Anforderungen}
@@ -29,13 +34,13 @@ erfolgreich durchgelaufen, so lässt sich jeder Teil der dadurch erzeugten Outpu
 lokal ähnlich zum Input. In vielen Fällen kann das Verfahren aufgrund der Defizite der \code{MeshSolver} Komponente jedoch nicht erfolgreich durchlaufen,
 wodurch diese Anforderung dann nicht vollständig erfüllt werden kann.
 
-\textit{a) aus einer eingelesenen Inputstruktur sollen automatisch Regeln für eine Graphgrammatik abgeleitet werden können.} Diese Anforderung wird
+\textit{a) Aus einer eingelesenen Inputstruktur sollen automatisch Regeln für eine Graphgrammatik abgeleitet werden können.} Diese Anforderung wird
 durch die Klasse \code{GrammarBuilder} realisiert, welche ein gegebenes \code{PolygonMesh} Objekt in eine \code{GraphGrammar} umwandeln kann.
 
-\textit{b) aus einer gegebenen Graphgrammatik sollen verschiedene Graphen abgeleitet werden können.} Hierfür ist die \code{GraphBuilder} Klasse zuständig.
+\textit{b) Aus einer gegebenen Graphgrammatik sollen verschiedene Graphen abgeleitet werden können.} Hierfür ist die \code{GraphBuilder} Klasse zuständig.
 Der dort entwickelte Algorithmus nimmt ein \code{GraphGrammar} Objekt entgegen und erzeugt daraus ein neues \code{AngleGraph} Objekt.
 
-\textit{c) aus einem solchen Graphen soll dann eine planare Outputstruktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können.}
+\textit{c) Aus einem solchen Graphen soll dann eine planare Outputstruktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können.}
 Dies wird vom \code{MeshSolver} übernommen, welcher ein \code{AngleGraph} Objekt in ein \code{PolygonMesh} Objekt umwandeln kann. Aufgrund der bereits
 erwähnten Defizite dieser Komponente ist der hierdurch erzeugte Output jedoch oft nicht planar.
 
@@ -74,9 +79,9 @@ wiederholt, so sind die erzeugten Ergebnisse ebenfalls immer und immer wieder id
 
 \subsubsection{Nichtfunktionale Anforderung 4}
 \textit{Die Software soll modular aufgebaut sein, wobei die Module selbst eine hohe Kohäsion vorweisen und untereinander schwach gekoppelt sein sollen.}
-Wie in \autoref{chap:architektur} ausführlich erklärt wurde, besteht die entwickelte Software aus vielen verschiedenen und logisch gekapselten Komponenten.
-Aufgrund des gewählten \gls{ac:mvc}-Entwurfsmusters sind die drei Hauptkomponenten Ansicht, Datenmodell und Steuerung ledglich lose gekoppelt und können
-größtenteils unabhängig voneinander existieren. Es werden einheitliche Schnittstellen geboten oder die Informationen werden über das Beobachter-Muster
+Wie in \autoref{chap:architektur} ausführlich erklärt wurde, besteht die entwickelte Software aus vielen verschiedenen in sich logisch gekapselten Komponenten.
+Aufgrund des gewählten \gls{ac:mvc}-Entwurfsmusters sind die drei Hauptkomponenten Ansicht, Datenmodell und Steuerung lose untereinander gekoppelt und können
+größtenteils unabhängig voneinander existieren. \cite{48_bucanek} Es werden einheitliche Schnittstellen geboten oder die Informationen werden über das Beobachter-Muster
 zwischen den Komponenten ausgetauscht. In beiden Fällen wäre ein Austauschen der einzelnen Komponenten ledglich mit sehr geringem Aufwand verbunden. Die
 Kohäsion innerhalb der einzelnen Module ist hoch, da diese jeweils einen klar definierten Aufgabenbereich haben und die gesamte darin umgesetzte Funktionalität
 nur zum Umsetzen der entsprechenden Aufgabe des Moduls genutzt wird. Funktionalität, die sich von mehreren Komponenten geteilt wird, wurde in eine separate
@@ -89,7 +94,7 @@ hätte jeweils eventuell auch in eine separate Klasse ausgelagert werden können
 die drei implementierten Algorithmus-Klassen \code{GrammarBuilder}, \code{GraphBuilder} und \code{MeshSolver}. In diesen wird jeweils der gesamte Ablauf
 des entsprechenden implementierten Teilschritts getestet, indem die erhaltenen Endergebnisse überprüft werden. Außerdem befinden sich dort Tests für
 viele, aber nicht alle, Teilfunktionen, die dabei genutzt werden. Auch für die Datenstrukturen gibt es Tests, allerdings nur für die Klassen \code{AngleGraph}
-und \code{PolygonMesh}, da diese Funktionalität für komplexere Transformationen der entsprechenden Datenstrukturen enthalten. % TODO was wurde nicht abgedeckt?
+und \code{PolygonMesh}, da diese Funktionalität für komplexere Transformationen der entsprechenden Datenstrukturen enthalten.
 
 \subsubsection{Nichtfunktionale Anforderung 6}
 \textit{Der Code soll verständlich sein und alle nicht-trivialen Bestandteile des Codes sollen mit Kommentaren versehen werden.} Jede von uns selbst
