@@ -1,7 +1,100 @@
 % @author Benjamin Schröder
 %
-\chapter{Auswertung} % Auswerten der Implementierung
+\chapter{Auswertung}
+Werten wir die vorgestellte Implementierung nun aus. Dazu stellen wir die Ergebnisse einiger Beispieldurchläufe vor, diskutieren diese, und überprüfen
+anschließend die anfangs vorgestellten Anforderungen.
+
+\section{Ergebnisse}
+% TODO
 
 \section{Überprüfen der Anforderungen}
+\subsection{Funktionale Anforderungen}
+\subsubsection{Funktionale Anforderung 1}
+\textit{Es sollen beliebige polygonale 2D-Strukturen als Input eingelesen werden können.} Diese Anforderung wird
+durch die entwickelte \code{PolygonMesh} Datenstruktur realisiert. In dieser können beliebige Polygone in eine größere zusammenhängende
+Struktur gebracht werden. Diese Datenstruktur kann von der \code{GrammarBuilder} Klasse als Input entgegengenommen werden, was die
+Grundlage für das Durchführen aller weiteren Teilschritte des Verfahrens darstellt.
 
-\section{Probleme}
+\subsubsection{Funktionale Anforderung 2}
+\textit{Es sollen einige Beispielstrukturen als Input zur Verfügung gestellt werden, zwischen denen der Nutzer auswählen kann.}
+Dies wird durch die vorgestellte \code{InputScene} realisiert. Hier kann der Benutzer ein Dropdown-Menü öffnen und erhält eine Liste an
+möglichen Beispielstrukturen, die alle vom \code{InversePcgController} in ein \code{PolygonMesh} Objekt umgewandelt werden können.
+Beispielstrukturen können ohne viel Aufwand und ohne Anpassung des Codes entfernt, hinzugefügt oder ausgetauscht werden, da diese in
+separaten \code{.mesh}-Dateien gespeichert werden und dynamisch zur Laufzeit eingelesen werden können.
+
+\subsubsection{Funktionale Anforderung 3}
+\textit{Es sollen automatisch zum Input lokal ähnliche Strukturen generiert werden können.} Die Theorie hinter dem implementierten Verfahren beruht
+vollständig auf den in \autoref{chap:konzept} vorgestellten Konzepten und erzeugt den Output nach dem dort beschriebenen Vorgehen. Ist das Verfahren
+erfolgreich durchgelaufen, so lässt sich jeder Teil der dadurch erzeugten Outputstruktur im Input wiederfinden und die erzeugte Strukture ist somit
+lokal ähnlich zum Input. In vielen Fällen kann das Verfahren aufgrund der Defizite der \code{MeshSolver} Komponente jedoch nicht erfolgreich durchlaufen,
+wodurch diese Anforderung dann nicht vollständig erfüllt werden kann.
+
+\textit{a) aus einer eingelesenen Inputstruktur sollen automatisch Regeln für eine Graphgrammatik abgeleitet werden können.} Diese Anforderung wird
+durch die Klasse \code{GrammarBuilder} realisiert, welche ein gegebenes \code{PolygonMesh} Objekt in eine \code{GraphGrammar} umwandeln kann.
+
+\textit{b) aus einer gegebenen Graphgrammatik sollen verschiedene Graphen abgeleitet werden können.} Hierfür ist die \code{GraphBuilder} Klasse zuständig.
+Der dort entwickelte Algorithmus nimmt ein \code{GraphGrammar} Objekt entgegen und erzeugt daraus ein neues \code{AngleGraph} Objekt.
+
+\textit{c) aus einem solchen Graphen soll dann eine planare Outputstruktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können.}
+Dies wird vom \code{MeshSolver} übernommen, welcher ein \code{AngleGraph} Objekt in ein \code{PolygonMesh} Objekt umwandeln kann. Aufgrund der bereits
+erwähnten Defizite dieser Komponente ist der hierdurch erzeugte Output jedoch oft nicht planar.
+
+\subsubsection{Funktionale Anforderung 4}
+\textit{Es soll eine grafische Benutzeroberfläche geben, in welcher der Nutzer Parameter für die Generierung einstellen, sowie zwischen
+den verschiedenen Inputstrukturen auswählen können soll.} Dies wird durch die Klasse \code{InversePcgApplication} realisiert. In den drei darin
+implementierten Szenen kann der Nutzer alle wichtigen Einstellungen vornehmen. In der \code{InputScene} kann der Seed für den Zufallsgenerator festgelegt
+und eine Inputstruktur ausgewählt werden. In der \code{GrammarScene} kann die Anzahl an Generation in der Graph-Hierarchie festgelegt werden. In der
+\code{OutputScene} können alle weiteren in \autoref{chap:datenmodell} vorgestellten Parameter eingestellt werden.
+
+\subsubsection{Funktionale Anforderung 5}
+\textit{Sowohl die Inputstrukturen, die daraus erzeugt Grammatik und die generierten Variationen sollen visualisiert werden können.} Die Visualisierung
+der hier genannten Datenstrukturen wird ebenfalls durch die \code{InversePcgApplication} übernommen. In der \code{InputScene} wird die ausgewählte
+Inputstruktur dargestellt, die \code{GrammarScene} übernimmt das Darstellen der daraus erzeugten Grammatik, und die \code{OutputScene} wird zum
+Visualisieren der verschiedenen erzeugten Variationen benutzt.
+
+\subsection{Nichtfunktionale Anforderungen}
+\subsubsection{Nichtfunktionale Anforderung 1}
+\textit{Die Anwendung soll auf Windows ausführbar sein.} Der gesamte Code wurde auf einem Windows 11 PC und einem Laptop mit Windows 10 implementiert
+und getestet. Bei der Ausführung der Anwendung auf beiden Geräten gibt es keine Probleme. Die Anforderung wurde also erfüllt.
+
+\subsubsection{Nichtfunktionale Anforderung 2}
+\textit{Die Nutzeroberfläche soll einfach und übersichtlich gehalten werden.} Die implementierte Benutzeroberfläche wurde sehr simpel gestaltet und
+stellt nur die wichtigsten Funktionen bereit. Es gibt lediglich drei verschiedene Szenen, welche jeweils nur aus einem Viewport und einer kurzen
+Reihe an Einstellungsmöglichkeiten, sowie einem Knopf zum Senden eines Befehls an die Steuerungskomponente bestehen. Alles wird in einem Fenster
+dargestellt, es gibt keine Pop-ups und mit der Ausnahme des Dropdown-Menüs zum Auswählen der Inputstruktur auch keine aufklappbaren Komponenten mit
+versteckter Komplexität. Da die Anwendung vollständig mit Swing und AWT umgesetzt wurde, ist das Design der verwendeten GUI-Komponenten selbst ebenfalls
+sehr simpel gehalten.
+
+\subsubsection{Nichtfunktionale Anforderung 3}
+\textit{Die implementierten Algorithmen sollen sich deterministisch verhalten und alle Ergebnisse sollen reproduzierbar sein.} Auch diese Anforderung
+wird erfüllt. Alle Algorithmen, bei denen das Erzeugen von Zufallszahlen eine Rolle spielt, erhalten die Zufallszahlen von ein und demselben
+Zufallszahlengenerator, der von der Steuerungskomponente verwaltet wird. Dieser wird stets mit einem vom Benutzer festgelegten Seed initialisiert und
+erzeugt bei gleichem Seed stets die gleichen zufälligen Zahlen. Werden vom Nutzer nach Start der Anwendung die exakt gleichen Aktionen immer und immer
+wiederholt, so sind die erzeugten Ergebnisse ebenfalls immer und immer wieder identisch.
+
+\subsubsection{Nichtfunktionale Anforderung 4}
+\textit{Die Software soll modular aufgebaut sein, wobei die Module selbst eine hohe Kohäsion vorweisen und untereinander schwach gekoppelt sein sollen.}
+Wie in \autoref{chap:architektur} ausführlich erklärt wurde, besteht die entwickelte Software aus vielen verschiedenen und logisch gekapselten Komponenten.
+Aufgrund des gewählten \gls{ac:mvc}-Entwurfsmusters sind die drei Hauptkomponenten Ansicht, Datenmodell und Steuerung ledglich lose gekoppelt und können
+größtenteils unabhängig voneinander existieren. Es werden einheitliche Schnittstellen geboten oder die Informationen werden über das Beobachter-Muster
+zwischen den Komponenten ausgetauscht. In beiden Fällen wäre ein Austauschen der einzelnen Komponenten ledglich mit sehr geringem Aufwand verbunden. Die
+Kohäsion innerhalb der einzelnen Module ist hoch, da diese jeweils einen klar definierten Aufgabenbereich haben und die gesamte darin umgesetzte Funktionalität
+nur zum Umsetzen der entsprechenden Aufgabe des Moduls genutzt wird. Funktionalität, die sich von mehreren Komponenten geteilt wird, wurde in eine separate
+Klasse \code{Utils} ausgelagert. Die Komponenten mit der niedrigsten Kohäsion sind die Klassen \code{PolygonMesh} und \code{AngleGraph}, da diese neben dem
+Definieren der entsprechenden Datenstruktur auch komplexere Funktionalität für die Transformation dieser Datenstruktur enthalten. Diese Funktionalität
+hätte jeweils eventuell auch in eine separate Klasse ausgelagert werden können.
+
+\subsubsection{Nichtfunktionale Anforderung 5}
+\textit{Alle wichtigen Komponenten sollen durch Tests abgedeckt sein.} Diese Anforderung wurde größtenteils umgesetzt. Es gibt separate Testklassen für
+die drei implementierten Algorithmus-Klassen \code{GrammarBuilder}, \code{GraphBuilder} und \code{MeshSolver}. In diesen wird jeweils der gesamte Ablauf
+des entsprechenden implementierten Teilschritts getestet, indem die erhaltenen Endergebnisse überprüft werden. Außerdem befinden sich dort Tests für
+viele, aber nicht alle, Teilfunktionen, die dabei genutzt werden. Auch für die Datenstrukturen gibt es Tests, allerdings nur für die Klassen \code{AngleGraph}
+und \code{PolygonMesh}, da diese Funktionalität für komplexere Transformationen der entsprechenden Datenstrukturen enthalten. % TODO was wurde nicht abgedeckt?
+
+\subsubsection{Nichtfunktionale Anforderung 6}
+\textit{Der Code soll verständlich sein und alle nicht-trivialen Bestandteile des Codes sollen mit Kommentaren versehen werden.} Jede von uns selbst
+implementierte und nicht von anderen Klassen geerbte Methode wurde mit Javadoc-Kommentaren versehen, die die genaue Funktionsweise, die involvierten
+Paramater und den Rückgabewert der Methode erklären. Komplexere Methoden wurden außerdem intern mit weiteren Kommentaren versehen, wenn die einzelnen
+Teilschritte als nicht-trivial erachtet wurden. Die Benennung der verschiedenen Klassen, Methoden und Variablen wurde so gewählt, dass diese so präzise
+wie möglich den entsprechenden Zweck beschreiben. Generell wurde der Code auf Basis der in \cite{49_java_conventions} vorgestellten Konventionen erstellt.
+Damit gilt diese Anforderung als erfüllt.

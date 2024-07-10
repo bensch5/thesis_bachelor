@@ -10,30 +10,32 @@ diese Anforderungen dann umgesetzt werden, indem die verwendeten Technologien un
 Die funktionalen Anforderungen beschreiben, \textit{was} umgesetzt werden soll, also welche konkreten Funktionen von der Software
 bereitgestellt werden sollen. Diese lauten wie folgt:
 
-\begin{itemize}
+\begin{enumerate}
     \item es sollen beliebige polygonale 2D-Strukturen als Input eingelesen werden können
     \item es sollen einige Beispielstrukturen als Input zur Verfügung gestellt werden, zwischen denen der Nutzer auswählen kann
-    \item mithilfe einer polygonalen Struktur als Input sollen automatisch ähnliche Strukturen generiert werden können:
-    \begin{itemize}
+    \item es sollen automatisch zum Input lokal ähnliche Strukturen generiert werden können:
+    \begin{enumerate}
         \item aus einer eingelesenen Inputstruktur sollen automatisch Regeln für eine Graphgrammatik abgeleitet werden können
         \item aus einer gegebenen Graphgrammatik sollen verschiedene Graphen abgeleitet werden können
         \item aus einem solchen Graphen soll dann eine planare Outputstruktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können
-    \end{itemize}
-    \item es soll eine Benutzeroberfläche geben, in welcher der Nutzer Parameter für die Generierung einstellen sowie verschiedene Inputstrukturen auswählen können soll
+    \end{enumerate}
+    \item es soll eine grafische Benutzeroberfläche geben, in welcher der Nutzer Parameter für die Generierung einstellen, sowie zwischen den verschiedenen
+    Inputstrukturen auswählen können soll
     \item sowohl die Inputstrukturen, die daraus erzeugt Grammatik und die generierten Variationen sollen visualisiert werden können
-\end{itemize}
+\end{enumerate}
 
-\subsection{Nicht-funktionale Anforderungen}
-Die nicht-funktionalen Anforderungen beschreiben, \textit{wie} die oben aufgelisteten Funktionen umgesetzt werden sollen, also
+\subsection{Nichtfunktionale Anforderungen}
+Die nichtfunktionalen Anforderungen beschreiben, \textit{wie} die oben aufgelisteten Funktionen umgesetzt werden sollen, also
 welche Qualitätskriterien dabei eingehalten werden sollen. Diese lauten wie folgt:
 
-\begin{itemize}
+\begin{enumerate}
     \item die Anwendung soll auf Windows ausführbar sein
     \item die Nutzeroberfläche soll einfach und übersichtlich gehalten werden
-    \item die implementierten Algorithmen sollen sich deterministisch verhalten und durch einen Seed reproduzierbar sein
+    \item die implementierten Algorithmen sollen sich deterministisch verhalten und alle Ergebnisse sollen reproduzierbar sein
+    \item die Software soll modular aufgebaut sein, wobei die Module selbst eine hohe Kohäsion vorweisen und untereinander schwach gekoppelt sein sollen
     \item alle wichtigen Komponenten sollen durch Tests abgedeckt sein
-    \item alle nicht-trivialen Bestandteile des Codes sollen mit Kommentaren versehen werden
-\end{itemize}
+    \item der Code soll verständlich sein und alle nicht-trivialen Bestandteile des Codes sollen mit Kommentaren versehen werden
+\end{enumerate}
 
 \section{Verwendete Technologien und Bibliotheken}
 Der gesamte Code ist in Java 16 geschrieben. Die grafische Benutzeroberfläche wird mithilfe des Java GUI-Toolkits Swing umgesetzt,
@@ -45,6 +47,7 @@ Generierung befinden. Die grundsätzlichen von uns verwendeten Datenstrukturen u
 und wir bedienen uns lediglich einiger Helfer-Funktionen, z.B. für das Einlesen von Dateien oder dem Loggen des Programmablaufs.
 
 \section{Architektur}
+\label{chap:architektur}
 
 \begin{figure}[h]
     \centering
@@ -102,7 +105,7 @@ Neben der Verwaltung der eigentlichen Datenstruktur stellt die \code{PolygonMesh
 und Deserialisieren der Objekte bereit. Ein \code{PolygonMesh} Objekt kann in eine \code{.mesh} Datei umgewandelt werden und umgekehrt
 kann ein neues \code{PolygonMesh} Objekt durch das Einlesen einer \code{.mesh} Datei initialisiert werden. So können wir neue
 \code{PolygonMesh} Objekte zur Laufzeit erzeugen. In einer \code{.mesh} Datei werden alle Knotenpositionen, die Knoten-Indexe der einzelnen
-Polygone, sowie die Polygonfarben als Plain-Text abgespeichert. Dies ermöglicht das einfache Erstellen von neuen Polygon-Strukturen, die
+Polygone, sowie die Polygonfarben als Plain-Text abgespeichert. Dies ermöglicht das einfache Erstellen von neuen Polygonstrukturen, die
 dann dem Nutzer als Input für den Algorithmus bereitgestellt werden können.
 
 \subsection{AngleGraph}
@@ -138,6 +141,7 @@ werden muss. Alle anderen Regeln werden durch ein Paar von Winkelgraphen gebilde
 Regel repräsentieren.
 
 \section{Datenmodell}
+\label{chap:datenmodell}
 Betrachten wir nun das Datenmodell. Dieses wird in der Klasse \code{InversePcgModel} realisiert. Dieses enthält Felder für die polygonale
 Inputstruktur, die daraus erzeugte Grammatik, sowie für die letztendlich erzeugte polygonale Outputstruktur. Außerdem werden hier alle
 für die Steuerung relevanten Parameter verwaltet, welche zunächst im Konstruktor mit vorgebenen Standardwerten initialisiert werden und
@@ -193,7 +197,7 @@ Kanten im ursprünglichen \code{PolygonMesh} Objekt in einen entsprechenden Wink
 können dabei aus den Positionen der Start- und Endknoten berechnet werden. Die abgeleiteten Winkelgraphen in der ersten Generation der
 Hierarchie bestehen dann jeweils aus einer Halbkante \(a\) und einer weiteren Halbkante \(\overline{a}\) mit dem zu \(a\) entgegengesetzten
 Kantenwinkel. Die zweite Generation kann ebenfalls direkt aus dem \code{PolygonMesh}-Input erzeugt werden. Dazu wird für jeden Knoten \(K\)
-in der Polygon-Struktur ein neuer Winkelgraph \(G\) erzeugt. Für jede Kante, die mit \(K\) verbunden ist, wird anschließend eine neue
+in der Polygonstruktur ein neuer Winkelgraph \(G\) erzeugt. Für jede Kante, die mit \(K\) verbunden ist, wird anschließend eine neue
 Halbkante in \(G\) eingefügt. Ist dies für alle Knoten geschehen, so wird anschließend noch der \gls{ac:gbs} für alle erzeugten
 Winkelgraphen bestimmt. Somit haben wir nun auch alle Primitive für den entsprechenden Input gefunden. Anschließend werden alle weiteren
 Generationen der Graph-Hierarchie durch Anwenden von Klebeoperationen erzeugt, welche ebenfalls in dieser Klasse implementiert werden.
@@ -236,6 +240,14 @@ Anschließend werden die Knotenpositionen des generierten \code{PolygonMesh} Obj
 bei der Darstellung auch vollständig im Viewport der Anwendung befindet.
 
 \section{Ansicht}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{images/scenes.pdf}
+    \caption{Die verschiedenen Szenen der Benutzeroberfläche.}
+    \label{fig:scenes}
+\end{figure}
+
 Als letzte grundlegende Komponente der Anwendung betrachten wir die Ansicht, welche die Interaktion mit dem Benutzer realisiert und
 dafür eine Benutzeroberfläche bereitstellt. Diese Benutzeroberfläche wird mithilfe des Java GUI-Toolkits Swing implementiert. Dies geschieht
 in der Klasse \code{InversePcgApplication}, welche die gesamte Anwendung darstellt. Diese basiert auf der von Prof. Dr. Philipp Jenke
@@ -257,7 +269,7 @@ Außerdem kann in dieser Szene der \code{seed} für den Zufallsgenerator festgel
 Die \code{GrammarScene} wird genutzt, um die aus dem Input erzeugte Graph-Grammatik darzustellen. Um die Grammatik zu erhalten, wird
 zunächst erneut die Steuerungskomponente dazu beauftragt, diese aus dem momentan in der \code{InputScene} ausgewählten Input abzuleiten.
 Anschließend kann die Graphgrammatik aus dem Datenmodell entnommen und visuell dargestellt werden. Zum Steuern der Ableitung dieser
-Grammatik kann der Nutzer hier den Parameter \code{maxGeneration} anpassen. Da die in den
+Grammatik kann der Endnutzer hier den Parameter \code{maxGeneration} anpassen. Da die in den
 Produktionsregeln enthaltenen Winkelgraphen neben den Kantenwinkeln keine festen Geometrie-Eigenschaften besitzen, können diese nur
 angenähert dargestellt werden. Die einzelnen Kanten werden mit zufällig festgelegten Kantenlängen dargestellt und es wird versucht, die
 Winkel der Kanten weitesgehend zu respektieren. Soll jedoch eine Kante gezeichnet werden, die zwei bereits gezeichnete Knoten verbindet,
