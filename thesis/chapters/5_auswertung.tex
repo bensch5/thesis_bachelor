@@ -2,15 +2,9 @@
 %
 \chapter{Auswertung}
 \label{chap:auswertung}
-Werten wir die vorgestellte Implementierung nun aus. Dazu stellen wir die Ergebnisse einiger Beispieldurchläufe vor, diskutieren diese, und überprüfen
-anschließend die anfangs vorgestellten Anforderungen.
-
-\section{Ergebnisse}
-% TODO:
-% allgemeine Beschreibung
-% auf Anpassungen bei Finden der Grammatik eingehen
-% auf Defizite des MeshSolvers eingehen
-% positive und negative Ergebnisse zeigen
+Werten wir die vorgestellte Implementierung nun aus. Dazu überprüfen wir zunächst die anfangs vorgestellten Anforderungen an die gesamte
+Software und diskutieren anschließend, wie erfolgreich dabei das eigentliche Verfahren umgesetzt wurde. Dazu werden einige
+Beispieldurchläufe mit verschiedenen Parameter-Werten betrachtet.
 
 \section{Überprüfen der Anforderungen}
 \subsection{Funktionale Anforderungen}
@@ -31,8 +25,8 @@ separaten \code{.mesh}-Dateien gespeichert werden und dynamisch zur Laufzeit ein
 \textit{Es sollen automatisch zum Input lokal ähnliche Strukturen generiert werden können.} Die Theorie hinter dem implementierten Verfahren beruht
 vollständig auf den in \autoref{chap:konzept} vorgestellten Konzepten und erzeugt den Output nach dem dort beschriebenen Vorgehen. Ist das Verfahren
 erfolgreich durchgelaufen, so lässt sich jeder Teil der dadurch erzeugten Outputstruktur im Input wiederfinden und die erzeugte Strukture ist somit
-lokal ähnlich zum Input. In vielen Fällen kann das Verfahren aufgrund der Defizite der \code{MeshSolver} Komponente jedoch nicht erfolgreich durchlaufen,
-wodurch diese Anforderung dann nicht vollständig erfüllt werden kann.
+lokal ähnlich zum Input. In vielen Fällen kann das Verfahren aufgrund von Defiziten in der \code{MeshSolver} Komponente jedoch nicht erfolgreich durchlaufen,
+wodurch diese Anforderung nicht immer vollständig erfüllt werden kann.
 
 \textit{a) Aus einer eingelesenen Inputstruktur sollen automatisch Regeln für eine Graphgrammatik abgeleitet werden können.} Diese Anforderung wird
 durch die Klasse \code{GrammarBuilder} realisiert, welche ein gegebenes \code{PolygonMesh} Objekt in eine \code{GraphGrammar} umwandeln kann.
@@ -41,8 +35,14 @@ durch die Klasse \code{GrammarBuilder} realisiert, welche ein gegebenes \code{Po
 Der dort entwickelte Algorithmus nimmt ein \code{GraphGrammar} Objekt entgegen und erzeugt daraus ein neues \code{AngleGraph} Objekt.
 
 \textit{c) Aus einem solchen Graphen soll dann eine planare Outputstruktur mit fester Geometrie (also festen Knotenpositionen) erzeugt werden können.}
-Dies wird vom \code{MeshSolver} übernommen, welcher ein \code{AngleGraph} Objekt in ein \code{PolygonMesh} Objekt umwandeln kann. Aufgrund der bereits
-erwähnten Defizite dieser Komponente ist der hierdurch erzeugte Output jedoch oft nicht planar.
+Dies wird vom \code{MeshSolver} übernommen, welcher ein \code{AngleGraph} Objekt in ein \code{PolygonMesh} Objekt umwandeln kann. Hier gibt es allerdings
+das Problem, dass in vielen Fällen keine valide Lösung für die Outputstruktur gefunden werden kann. Bei der Verarbeitung etwas größerer Winkelgraphen
+entstehen beim Lösen des entstandenen Gleichungssystems so viele freie Variablen, dass es eine ziemlich große Wahrscheinlichkeit gibt, dass zumindest
+eine dieser Variablen zum Erzeugen von ungültigen Werten für eine der anderen unbekannten Variablen führt. Dies versuchen wir zu umgehen, indem
+dieser Vorgang bis zu \code{maxTries} Mal wiederholt wird, in der Hoffnung, dass die jeweils nächste zufällige Lösung gültig sein wird. Da jedes Mal
+jedoch alle Variablen erneut generiert werden, ist die Fehlerwahrscheinlichkeit dabei so hoch, dass in den meisten Fällen auch nach etlichen Versuchen
+keine valide Lösung generiert werden kann. In diesem Fall visualisieren wir trotzdem die zuletzt erzeugte Struktur, jedoch wird diese nicht vollständig
+zum Input lokal ähnlich sein.
 
 \subsubsection{Funktionale Anforderung 4}
 \textit{Es soll eine grafische Benutzeroberfläche geben, in welcher der Nutzer Parameter für die Generierung einstellen, sowie zwischen
@@ -103,3 +103,12 @@ Paramater und den Rückgabewert der Methode erklären. Komplexere Methoden wurde
 Teilschritte als nicht-trivial erachtet wurden. Die Benennung der verschiedenen Klassen, Methoden und Variablen wurde so gewählt, dass diese so präzise
 wie möglich den entsprechenden Zweck beschreiben. Generell wurde der Code auf Basis der in \cite{49_java_conventions} vorgestellten Konventionen erstellt.
 Damit gilt diese Anforderung als erfüllt.
+
+\section{Auswertung der Ergebnisse}
+Allgemein sind die Ergebnisse durchaus zufriedenstellend. Die erzeugten Strukturen erfüllen zwar in vielen Fällen nicht die Anforderungen an die lokale
+Ähnlichkeit und können auch oft nicht ohne Überschneidungen einiger der Kanten dargestellt werden, jedoch wird durch die von uns implementierte Software
+klar demonstriert, dass dieses Verfahren grundsätzlich funktioniert. Auch wenn es dabei noch viele Probleme gibt, die behoben werden müssen um dieses
+Verfahren wirklich in der Praxis einsetzen zu können, erfüllt die entwickelte Anwendung voll und ganz ihren Zweck als Prototyp. Nachfolgend werden einige
+Testdurchläufe mit verschiedenen Parametern präsentiert, anhand derer die Ergebnisse der Umsetzung nachvollzogen werden können.
+
+% TODO

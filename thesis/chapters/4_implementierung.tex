@@ -220,7 +220,7 @@ zu schaffen. Wir erhalten einen vollständigen Graphen \(G\). Anschließend wird
 (\code{iterations}) immer wieder eine neue zufällige Regel ausgewählt und versucht, diese auf \(G\) anzuwenden. Dabei gibt es keine Garantien
 dafür, dass die gewählten Regeln überhaupt angewandt werden können und es kann passieren, dass sich \(G\) in einigen der Iterationen
 nicht verändert. Zum Anwenden einer Regel muss eine der beiden in der Regel enthaltenen Graphen als Subgraph in \(G\) vorhanden sein,
-d.h. wir müssen einen Homomorphismus finden, der von dem Graphen in der Regel auf \(G\) abbildet. Dafür gibt es effiziente Algorithmen,
+d.h. wir müssen einen Homomorphismus finden, der von dem Graphen in der Regel auf \(G\) abbildet. Dafür gibt es effiziente Algorithmen (siehe \cite{8_eppstein}),
 jedoch wird von uns aufgrund von Zeitgründen lediglich ein Brute-Force Ansatz verwendet, der zufällige Abbildungen zwischen den Knoten
 der beiden Graphen generiert und anschließend für jede generierte Abbildung prüft, ob diese einen validen Homomorphismus darstellt.
 Dies stellt bei kleineren Graphen kein Problem dar, wird aber mit zunehmender Anzahl an Knoten sehr schnell äußerst zeitaufwändig und
@@ -240,14 +240,6 @@ Anschließend werden die Knotenpositionen des generierten \code{PolygonMesh} Obj
 bei der Darstellung auch vollständig im Viewport der Anwendung befindet.
 
 \section{Ansicht}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{images/scenes.pdf}
-    \caption{Die verschiedenen Szenen der Benutzeroberfläche.}
-    \label{fig:scenes}
-\end{figure}
-
 Als letzte grundlegende Komponente der Anwendung betrachten wir die Ansicht, welche die Interaktion mit dem Benutzer realisiert und
 dafür eine Benutzeroberfläche bereitstellt. Diese Benutzeroberfläche wird mithilfe des Java GUI-Toolkits Swing implementiert. Dies geschieht
 in der Klasse \code{InversePcgApplication}, welche die gesamte Anwendung darstellt. Diese basiert auf der von Prof. Dr. Philipp Jenke
@@ -257,6 +249,14 @@ die dieser Anwendung hinzugefügt werden. Die implementierten Szenen erweitern j
 von Prof. Dr. Philipp Jenke bereitgestellt wird. In dieser wird Funktionalität zum Zeichnen von Linien, Polygonen, etc. implementiert.
 
 \subsection{InputScene}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth*3/4]{images/input_scene.pdf}
+    \caption{Die Input-Szene der Benutzeroberfläche.}
+    \label{fig:input_scene}
+\end{figure}
+
 Die \code{InputScene} wird zum Rendern der verschiedenen Inputstrukturen genutzt. Der Nutzer kann zwischen
 einer Reihe an bereitgestellten Strukturen auswählen, welcher dann in dieser Szene visualisiert werden. Diese Strukturen werden
 in Form von \code{.mesh}-Dateien gespeichert, zwischen welchen der Nutzer in einer \code{JComboBox} auswählen kann. Um aus den
@@ -266,6 +266,14 @@ wird folglich über diese Änderung informiert und kann nun die ausgewählte Inp
 Außerdem kann in dieser Szene der \code{seed} für den Zufallsgenerator festgelegt werden.
 
 \subsection{GrammarScene}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth*3/4]{images/grammar_scene.pdf}
+    \caption{Die Grammatik-Szene der Benutzeroberfläche.}
+    \label{fig:grammar_scene}
+\end{figure}
+
 Die \code{GrammarScene} wird genutzt, um die aus dem Input erzeugte Graphgrammatik darzustellen. Um die Grammatik zu erhalten, wird
 zunächst erneut die Steuerungskomponente dazu beauftragt, diese aus dem momentan in der \code{InputScene} ausgewählten Input abzuleiten.
 Anschließend kann die Graphgrammatik aus dem Datenmodell entnommen und visuell dargestellt werden. Zum Steuern der Ableitung dieser
@@ -278,7 +286,16 @@ Knoten vorgegeben wird. Trotzdem sind die entstehenden Darstellungen nützlich, 
 Graphgrammatik zu bekommen.
 
 \subsection{OutputScene}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth*3/4]{images/output_scene.pdf}
+    \caption{Die Output-Szene der Benutzeroberfläche.}
+    \label{fig:output_scene}
+\end{figure}
+
 In der \code{OutputScene} werden die final erzeugten Ergebnisse visualisiert. Dazu stehen dem Benutzer hier die Einstellungsmöglichkeiten
 für alle noch fehlenden Parameter (\code{iterations}, \code{maxTries}, \code{minRandVal}, \code{maxRandVal} und \code{waitTime}) zur
-Verfügung. Mithilfe dieser Angaben kann die Steuerungskomponente einen neuen Output erzeugen, der zunächst wieder in das Datenmodell
-eingetragen wird, bevor dieser dann in der \code{OutputScene} visualisiert werden kann.
+Verfügung. \code{minRandVal} und \code{maxRandVal} werden dabei in der Darstellung zu \code{valRange} zusammengefasst. Mithilfe dieser Angaben
+kann die Steuerungskomponente einen neuen Output erzeugen, der zunächst wieder in das Datenmodell eingetragen wird, bevor dieser dann in der
+\code{OutputScene} visualisiert werden kann.
