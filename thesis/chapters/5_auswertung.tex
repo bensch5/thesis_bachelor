@@ -104,11 +104,91 @@ Teilschritte als nicht-trivial erachtet wurden. Die Benennung der verschiedenen 
 wie möglich den entsprechenden Zweck beschreiben. Generell wurde der Code auf Basis der in \cite{49_java_conventions} vorgestellten Konventionen erstellt.
 Damit gilt diese Anforderung als erfüllt.
 
+\section{Beispieldurchläufe}
+Nachfolgend werden einige der erhaltenen Ergebnisse präsentiert, welche mithilfe von verschiedenen Parameter-Konfigurationen erzeugt wurden. Zunächst
+zeigen wir einige erfolgreiche Ergebnisse. Es werden jeweils die verwendete Inputstruktur, die daraus erzeugte Grammatik, sowie die letztendliche Outputstruktur
+dargestellt. Die Grammatik kann in den meisten Fällen aufgrund der großen Anzahl an Regeln nicht vollständig dargestellt werden und es wird jeweils nur ein
+Ausschnitt an Regeln gezeigt. Außerdem werden die verwendeten Parameter-Konfigurationen für jedes Beispiel gezeigt.
+
+\subsection{Erfolgreiche Durchläufe}
+
+Für den in Abbildung \ref{fig:house_success} dargestellten Durchlauf verwendete Parameter: \code{seed = 23456}, \code{maxGeneration = 6}, \code{iterations = 5},
+\code{maxTries = 100}, \code{minRandVal = 10}, \code{maxRandVal = 100}. Die Ergebnisse entsprechen den Erwartungen.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/house_success.png}
+    \caption{Erfolgreicher Durchlauf mit Input-Datei \code{house.mesh}.}
+    \label{fig:house_success}
+\end{figure}
+
+Für den in Abbildung \ref{fig:square_double_success} dargestellten Durchlauf verwendete Parameter: \code{seed = 77}, \code{maxGeneration = 3}, \code{iterations = 7},
+\code{maxTries = 100}, \code{minRandVal = 10}, \code{maxRandVal = 100}. Die Ergebnisse entsprechen den Erwartungen.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/square_double_success.png}
+    \caption{Erfolgreicher Durchlauf mit Input-Datei \code{square\_double.mesh}.}
+    \label{fig:square_double_success}
+\end{figure}
+
+Für den in Abbildung \ref{fig:square_success} dargestellten Durchlauf verwendete Parameter: \code{seed = 5555}, \code{maxGeneration = 3}, \code{iterations = 5},
+\code{maxTries = 100}, \code{minRandVal = 10}, \code{maxRandVal = 10}. Die Ergebnisse entsprechen den Erwartungen. Durch das Limitieren der Zufallszahlen auf nur
+exakt einen Wert enthält der Output sehr viele Kanten mit der gleichen Kantenlänge und nimmt somit eine regelmäßige Form an. Es wirkt, als wäre der Output auf
+Basis eines Gitters modelliert worden.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/square_success.png}
+    \caption{Erfolgreicher Durchlauf mit Input-Datei \code{square.mesh}.}
+    \label{fig:square_success}
+\end{figure}
+
+Für den in Abbildung \ref{fig:rhombus_success} dargestellten Durchlauf verwendete Parameter: \code{seed = 123}, \code{maxGeneration = 3}, \code{iterations = 10},
+\code{maxTries = 100}, \code{minRandVal = 10}, \code{maxRandVal = 70}. Die Ergebnisse entsprechen den Erwartungen.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/rhombus_success.png}
+    \caption{Erfolgreicher Durchlauf mit Input-Datei \code{rhombus.mesh}.}
+    \label{fig:rhombus_success}
+\end{figure}
+
+\subsection{Fehlerhafte Durchläufe}
+
+Für den in Abbildung \ref{fig:house_fail} dargestellten Durchlauf verwendete Parameter: \code{seed = 337}, \code{maxGeneration = 7}, \code{iterations = 7},
+\code{maxTries = 100}, \code{minRandVal = 10}, \code{maxRandVal = 100}. Die Ergebnisse entsprechen nicht den Erwartungen. Alle dargestellten Kantenwinkel
+lassen sich zwar im Input wiederfinden und es wirkt so, als wäre die erzeugte Outputstruktur zumindest lokal ähnlich zum Input. Das Ergebnis ist jedoch
+trotzdem fehlerhaft, da sich einige der Kanten überschneiden.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/house_fail.png}
+    \caption{Fehlerhafter Durchlauf mit Input-Datei \code{house.mesh}.}
+    \label{fig:house_fail}
+\end{figure}
+
+Für den in Abbildung \ref{fig:octagon_fail} dargestellten Durchlauf verwendete Parameter: \code{seed = 445}, \code{maxGeneration = 2}, \code{iterations = 7},
+\code{maxTries = 10}, \code{minRandVal = 10}, \code{maxRandVal = 100}. Diesmal ist der dargestellte Output planar, jedoch liegt hier keine lokale Ähnlichkeit
+vor. Die Kantenwinkel stimmen zwar alle mit den Kantenwinkeln im Input überein, jedoch unterscheidet sich die Topologie der beiden Strukturen an einigen Stellen.
+Einige der Knoten in der Outputstruktur (an den ``Spitzen'') lassen sich nicht im Input wiederfinden.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/octagon_fail.png}
+    \caption{Fehlerhafter Durchlauf mit Input-Datei \code{octagon.mesh}.}
+    \label{fig:octagon_fail}
+\end{figure}
+
+Für den in Abbildung \ref{fig:triangle_fail} dargestellten Durchlauf verwendete Parameter: \code{seed = 23456}, \code{maxGeneration = 30}, \code{iterations = 3},
+\code{maxTries = 100}, \code{minRandVal = 10}, \code{maxRandVal = 100}. Der Output entspricht den geforderten Eigenschaften, ist sowohl zum Input lokal
+ähnlich als auch planar und somit nicht fehlerhaft. Trotzdem ist das Ergebnis unbrauchbar, da sich der Output kaum vom Input unterscheidet. Der Output
+besitzt zwar andere Kantenlängen, ist strukturell allerdings exakt gleich aufgebaut. Trotz der hohen Anzahl an zugelassenen Generationen konnte das Verfahren
+lediglich nur eine einzige Starter-Regel für die Grammatik ableiten (beide dargestellten Starter-Regeln sind identisch). Aus dieser Grammatik kann keine
+hohe Vielfalt an Ergebnissen erzeugt werden.
+\begin{figure}[H]  
+    \centering  
+    \includegraphics[width=\textwidth]{images/triangle_fail.png}
+    \caption{Ungenügender Durchlauf mit Input-Datei \code{triangle.mesh}.}
+    \label{fig:triangle_fail}
+\end{figure}
+
 \section{Auswertung der Ergebnisse}
 Allgemein sind die Ergebnisse durchaus zufriedenstellend. Die erzeugten Strukturen erfüllen zwar in vielen Fällen nicht die Anforderungen an die lokale
 Ähnlichkeit und können auch oft nicht ohne Überschneidungen einiger der Kanten dargestellt werden, jedoch wird durch die von uns implementierte Software
 klar demonstriert, dass dieses Verfahren grundsätzlich funktioniert. Auch wenn es dabei noch viele Probleme gibt, die behoben werden müssen um dieses
-Verfahren wirklich in der Praxis einsetzen zu können, erfüllt die entwickelte Anwendung voll und ganz ihren Zweck als Prototyp. Nachfolgend werden einige
-Testdurchläufe mit verschiedenen Parametern präsentiert, anhand derer die Ergebnisse der Umsetzung nachvollzogen werden können.
-
-% TODO
+Verfahren wirklich in der Praxis einsetzen zu können, erfüllt die entwickelte Anwendung voll und ganz ihren Zweck als Prototyp.
